@@ -1,0 +1,124 @@
+﻿@using WebMatrix.Data;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+    @{
+
+
+        var FirstName = "";
+        var LastName = "";
+        var Address = "";
+        var CustomerId = UrlData[0];
+
+        if (CustomerId.IsEmpty())
+        {
+            Response.Redirect("~/reports/index");
+        }
+        var db = Database.Open("CS");
+
+        if (IsPost)
+        {
+            var updateQueryString = "UPDATE Customers SET FirstName = @0, LastName = @1,Address = @2 WHERE Id = @3";
+            FirstName = Request["FirstName"];
+            LastName = Request["LastName"];
+            Address = Request["Address"];
+            db.Execute(updateQueryString, FirstName, LastName, Address, CustomerId);
+
+            // Display the page that lists products.
+            Response.Redirect(@Href("~/EditCustomers"));
+        }
+        else
+        {
+            var selectQueryString = @"select 
+                                            e.id,
+                                            e.KnownAs,
+                                            e.FileNumber,
+                                            b.ShiftId,
+                                            b.TempShiftId,
+                                            b.IsPrivate
+            from BasicBayWorks b,Employees e, Personals p
+            where e.Id = b.EmployeeId and e.PersonalId = p.id and p.StatusId<>3 and e.ID = @0";
+            var row = db.QuerySingle(selectQueryString, CustomerId);
+            FirstName = row.FileNumber;
+            LastName = row.TempShiftId;
+            Address = row.IsPrivate;
+        }
+    }
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Update Customer</title>
+        <style type="text/css">
+            label {
+                float: left;
+                width: 8em;
+                text-align: right;
+                margin-right: 0.5em;
+            }
+
+            fieldset {
+                padding: 1em;
+                border: 1px solid;
+                width: 50em;
+            }
+
+            legend {
+                padding: 2px 4px;
+                border: 1px solid;
+                font-weight: bold;
+            }
+
+            .validation-summary-errors {
+                font-weight: bold;
+                color: red;
+                font-size: 11pt;
+            }
+        </style>
+
+    </head>
+    <body>
+        <h1>Update Customer</h1>
+        @Html.ValidationSummary("Errors with your submission:")
+
+        <form method="post" action="">
+            <fieldset>
+                <legend>Update Customer</legend>
+                <div>
+                    <label>First Name:</label>
+                    <input name="FirstName" type="text" size="50" value="@FirstName" />
+                </div>
+
+                <div>
+                    <label>Last Name:</label>
+                    <input name="LastName" type="text" size="50" value="@LastName" />
+                </div>
+
+                <div>
+                    <label>Address:</label>
+                    <input name="Address" type="text" size="50" value="@Address" />
+                </div>
+
+                <div>
+                    <label> </label>
+                    <input type="submit" value="Save" class="submit" />
+                </div>
+
+            </fieldset>
+        </form>
+
+    </body>
+</html>
+    </div>
+</body>
+</html>

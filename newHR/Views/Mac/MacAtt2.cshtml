@@ -1,0 +1,179 @@
+﻿
+@{
+   
+    ViewBag.Title = "رفع الحضور والانصراف";
+}
+
+<style>
+    th, td,input,select {
+    text-align:center;
+    font-size:24px;
+    }
+    
+    .formContainer {
+        border: 2px solid black;
+        width: 80%;
+        /*height:80%;*/
+        position: fixed;
+        top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: powderblue;
+        overflow-y:auto;
+    }
+
+    .formHeader {
+        display: flex;
+        background-color: #e1d2d2;
+        border: 0px double black;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: stretch;
+        
+    }
+
+    #formTable {
+        margin-top: 30px;
+        border: none;
+        height:80%;
+        overflow-y:auto;
+    }
+
+</style>
+
+<h2>رفع الحضور والانصراف</h2>
+<hr>
+<div class="input-group" style="width:60%">
+    
+    <button id="uploadATT" class="btn btn-outline-success" onclick="uploadATT(temp)"><b>رفع</b></button>
+    <button id="okay" class="btn btn-outline-primary"><b>إنشاء</b></button>
+    <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text">الي</label>
+    <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text">من</label>
+    
+</div>
+<br>
+<div id="progress" class="progress" style="height:30px">
+    <div id="bar" class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<table id="tbl" class="table table-bordered" dir="rtl">
+ <thead>
+     <tr>
+         <th>التاريخ</th>
+         <th>رقم الملف</th>
+         <th>الاسم</th>
+         <th>من</th>
+         <th>الى</th>
+     </tr>
+     <tr>
+         <th><input type="search" id="DF"/></th>
+         <th><input type="search" id="FNF"/></th>
+         <th><input type="search" id="NF" /></th>
+         <th><input type="search" id="FF"/></th>
+         <th><input type="search" id="TF"/></th>
+     </tr>
+ </thead>
+ <tbody>
+
+ </tbody>
+</table> 
+<script>
+    //variables
+    var res = [];
+    var temp = [];
+    //functions
+    function display(data) {
+    var html = '';
+    $.each(data, function (index, item) {
+        html += '<tr><td>' + item.date.substr(0, 10)
+              + '</td><td>' + item.fileNumber
+              + '</td><td>' + item.name
+              + (item.timeFrom == '' ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeFrom)
+             + (item.timeTo == '' ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeTo)
+              + '</td></tr>';
+    });
+    $('tbody').html(html);
+}
+    function excute() {
+        $.ajax({
+            url: "GetMacAtt",
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val() },
+            success: function (response) {
+                console.log(response);
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(temp);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+   
+    //events
+    $("#FNF,#NF").keyup(function () {
+
+        if ($("#FNF").val()) {
+            temp = res.filter(w => w.fileNumber == $("#FNF").val()).filter(w=>w.name.includes($("#NF").val())==true);
+            //console.log("ahmed");
+            display(temp);
+        } else if ($("#NF").val()) {
+            temp = res.filter(w=>w.name.includes($("#NF").val()) == true);
+            display(temp);
+        } else {
+            display(res);
+        }
+    });
+    
+    $("#okay").click(function () {
+	    $("#bar").css("width","0");
+        excute();
+        
+    });
+    
+</script>
+
+<!--رفع النتائج الي جدول الحضور -->
+<script>
+    var run = false;
+    var total = 0, tempDone = 0;
+   function uploadATT(arr) {
+        var promises = [];
+        if (!run) { total = arr.length; tempDone = 0 }
+        run = true;
+        //console.log(temp.length);
+        for (var i = 0; i < 1000; i++) {
+            var request = $.ajax({
+                url: "SetMacAtt",
+                data: {
+                    FN: arr[i].fileNumber,
+                    DT: arr[i].date.substr(0,10),
+                    F: arr[i].timeFrom,
+                    T: arr[i].timeTo
+                },
+                success: function (response) {
+                    console.log(response);
+                    tempDone++;
+                    if (tempDone == total) $("#bar").removeClass("progress-bar-animated");
+                    $("#bar").css("width", tempDone / total * 100 + "%");
+                    $("#bar").html('<b>'+(tempDone / total * 100).toFixed(2) + "%"+'</b>');
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+
+            promises.push(request);
+        }
+
+        $.when.apply($, promises).always(function () {
+            console.log('All Done');
+            arr.splice(0, 1000);
+            if (arr.length > 0) uploadATT(arr);
+            else run = false;
+        });
+    }
+</script>

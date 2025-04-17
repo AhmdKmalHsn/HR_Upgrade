@@ -1,0 +1,409 @@
+﻿@using WebMatrix.Data;
+@{
+    var db = Database.Open("CS");
+    var selectQueryString = " select Id,MacIP,MacType,MacName,IsFixed from Mac";
+    ViewBag.Title = "ماكينات البصمة";
+}
+<style>
+    table {
+        border: 2px solid black;
+    }
+     th, td,input,select, label {
+    text-align:center;
+    font-size:24px;
+    font-weight:bolder;
+    }
+        table td {
+            text-align: center;
+            font-size: 18px;
+            font-weight:bolder;
+        }
+
+    .formContainer {
+        border: 2px solid black;
+        width: 80%;
+        /*height:80%;*/
+        position: fixed;
+        top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: powderblue;
+    }
+
+    .formHeader {
+        display: flex;
+        background-color: #e1d2d2;
+        border: 0px double black;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: stretch;
+    }
+
+    #formTable {
+        margin-top: 30px;
+        border: none;
+    }
+  
+</style>
+<script>
+    var machine = [];
+    @foreach (var row in db.Query(selectQueryString))
+    {
+        <text>
+            machine.push({IP:'@row.MacIP',dir:'@row.MacType'});
+        </text>
+    }
+</script>
+<h2>ماكينات البصمة</h2>
+<hr>
+<div class="input-group mb-3" style="width:80%">
+    <button id="okay" class="btn btn-outline-dark"><b>سحب</b></button>
+    <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text" for="inputGroupSelect01">الى</label>
+    <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text" for="inputGroupSelect01">من</label>
+</div>
+
+<div>
+    <button class="btn btn-light btn-lg" style="float:left" onclick="dialog.dialog('open'); $('#createBtn').show(); $('#updateBtn').hide();"><span class="glyphicon glyphicon-plus"> أضافة </span></button>
+
+    <table id="tbl" class="table table-hover table-bordered" dir="rtl">
+        <tr>
+            <td><input type="checkbox" id="checkAll" onchange="checker()" style="transform:scale(2);" /></td>
+            <td>م</td>
+            <td>IP</td>
+            <td>اسم الماكينة</td>
+            <td>نوع الماكينة</td>
+            <td>تعديل</td>
+            <td>حذف</td>
+        </tr>
+        @foreach (var row in db.Query(selectQueryString))
+        {
+            <tr>
+                <td><input class="macCheckBox" style="transform:scale(2);" type="checkbox" id=@row.MacIP></td>
+                <td>@row.Id</td>
+                <td class="@row.MacIP">@row.MacIP</td>
+                <td>@row.MacName</td>
+                <td>@row.MacType</td>
+                <td><button onclick="update(this)" class="btn btn-success btn-lg btn-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                    </button>
+                </td>
+                <td><button onclick="del(this)" class="btn btn-danger btn-lg btn-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+        }
+    </table>
+    
+</div>
+<div>
+    <div class="col-xs-9">
+        <div id="progress" class="progress" style="height:30px">
+            <div id="bar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>   
+    </div>
+    <div class="col-xs-3"> <a id="upload" onclick="upload2(temp)" class="btn btn-primary">رفع</a></div>
+</div>
+<div id="formContainer" class="formContainer">
+    <!--div class="formHeader"><span onclick="$('.formContainer').hide()" style="float:right;padding:8px;font-size:24px">X</span></div-->
+    <table id="formTable" class="table table-bordered" dir="rtl" border="1">
+        <tr>
+            <td colspan="2">ماكينة بصمة</td>
+        </tr>
+        <tr>
+            <td>MacIP</td> 
+            <td><input type="text" id="MacIP" class="input-lg" /></td> 
+        </tr>
+        <tr>
+            <td>MacType</td>
+            <td>
+             <select id="MacType" class="input-lg">
+                <option value="All">الكل</option>
+                <option value="In">دخول</option>
+                <option value="Out">خروج</option>
+             </select>
+            </td>
+        </tr>
+        <tr>
+            <td>MacName</td>
+            <td><input type="text" id=MacName class="input-lg"/></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <button id="createBtn" class="btn btn-primary btn-lg">اضافة</button>
+                <button id="updateBtn" class="btn btn-primary btn-lg">تعديل</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="cont">
+<img id="loading" src="~/1.gif"  style="z-index:5;display:none">
+<table class="table table-bordered table-striped table-hover"dir="rtl">
+    <thead >
+        <tr>
+            <td>م</td>
+            <td>رقم الملف</td>
+            <td>الوقت</td>
+            <td>دخول/خروج</td>
+            <td>الماكينة</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="search" id="FileNo"/></td>
+            <td><input type="search" id="Time" /></td>
+            <td><input type="search" id="State" /></td>
+            <td><input type="search" id="MacIP1" /></td>
+        </tr>
+    </thead>
+    <tbody id="TBody"></tbody>
+</table>
+</div>
+
+<!--تعديل الماكينات-->
+<script>
+   var dialog= $('.formContainer').dialog({
+      autoOpen: false,
+      resizable: false,
+      height: "auto",
+      width: 600,
+      modal: true
+      });
+    //$('.formContainer').hide();
+    var id;
+    //console.log(machine);
+function del(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        id = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+        var result = confirm("Want to delete?");
+        if (result) {
+            $.ajax({
+                url: "delete",
+                data:
+                    {
+                        Id: id
+                    },
+                dataType: "json",
+                success: function (data) { alert("تمت العملية بنجاح"); window.location.reload(); },
+                fail: function (response) { alert("خطأ");console.log(response); }
+            });
+        }
+}
+function getData(id) {
+    
+    $.ajax({
+        url: "getdata",
+        data: {Id:id},
+        dataType: "json",
+        success: function (data) { console.log(data); },
+        fail: function (response) { /*console.log("failed from id"+id);*/ }
+    });
+}
+function update(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        id = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+        $.ajax({
+            url: "getdata",
+            data: { Id: id },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                $.each(response, function (key, data) {
+                    
+                    $('#MacIP').val(data.MacIP);
+                    $('#MacType').val(data.MacType);
+                    $('#MacName').val(data.MacName);
+                });
+
+                dialog.dialog("open");//$('.formContainer').show();
+                $('#createBtn').hide();
+                $('#updateBtn').show();
+            },
+            fail: function (response) { console.log(response); }
+        });
+    }
+
+$("#createBtn").click(function () {
+    
+    $.ajax({
+        url: "create",
+        data:
+            {
+                MacIP:$('#MacIP').val(),
+                MacType:$('#MacType').val(),
+                MacName:$('#MacName').val()
+            },
+        dataType: "json",
+        success: function (data) {console.log(data); alert("تمت العملية بنجاح"); window.location.reload(); },
+        fail: function (response) { alert("خطأ"); console.log(response); }
+    });
+});
+$("#updateBtn").click(function () {
+    $.ajax({
+        url: "update",
+        data:
+            {
+                Id: id,
+                MacIP: $('#MacIP').val(),
+                MacType: $('#MacType').val(),
+                MacName: $('#MacName').val()
+            },
+        dataType: "json",
+        success: function (data) { console.log(data); alert(); window.location.reload(); },
+        fail: function (response) { console.log(response); }
+    });
+});
+
+</script>
+
+<!--اختيار الماكينات-->
+<script>
+    var MacList=[]
+    $('#okay').click(function () {
+        MacList = [];
+        //$('#tbl').hide();
+        console.log($('.macCheckBox:checked').length);
+        $('.macCheckBox:checked').each(function (index) {
+            MacList.push($(this).attr("id"));          
+        });
+        console.log(MacList);
+        if (MacList.length == 0) alert("please select at least one device!");else excute();
+    });
+
+
+    var res = [];
+    var temp = [];
+  function excute() {
+       res = [];
+       temp = [];
+       var promises = [];
+
+            $("#loading").css("display", "block");
+                for (let i = 0; i < MacList.length; i++) {
+                    var request = $.ajax(//begin ajax card
+                    {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        //async:false,
+                        url: 'GetAllLogsBetween',//vary important #change
+                        data: { Ip: MacList[i], F: $('#dateFrom').val(), T: $('#dateTo').val()},
+                        success:
+                            function (response) {                              
+                                res = res.concat(response);//اضافة النتائج لنتائج سابقة 
+                                temp = res;
+								console.log("Success in Machine : " + MacList[i]+" , "+"#IP+"+MacList[i]); 
+								document.getElementsByClassName(MacList[i])[0].style.backgroundColor="green";
+                            },
+                            error:
+                            function (response) {
+                                console.log("Error in Machine : " + MacList[i]+" , "+"#IP+"+MacList[i]); //اظهار الاخطاء 
+								document.getElementsByClassName(MacList[i])[0].style.backgroundColor="red";
+                            }
+                    });
+
+                    promises.push(request);
+                }
+                
+                $.when.apply($, promises).always(function () {
+                    console.log('All Done');
+                    $.each(res, function (key, item) {
+                        if (machine.find(w=>w.IP == item.MacIP).dir == "All") {
+                            
+                        }
+                        else {
+                            if (machine.find(w=>w.IP == item.MacIP).dir == "Out") {
+                                item.State = 1;
+                            }
+                            else if (machine.find(w=>w.IP == item.MacIP).dir == "In") {
+                                item.State = 0;
+                            }
+                        }
+                    });
+                  
+                    $("#loading").css("display", "none");
+                    display(1,35);
+                });
+  }
+  function display(from, no) {
+        var html = '';
+        for (var i = from - 1; i < (from - 1 + no) ; i++) {
+            if (i > temp.length - 1) break;
+            else {
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + temp[i].IndRegID + '</td>';
+                html += '<td>' + temp[i].DateTimeRecord + '</td>';
+                if (temp[i].State == 1) html += '<td>خروج </td>';
+                else html += '<td>دخول</td>';
+                html += '<td>' + temp[i].MacIP + '</td>';
+                html += '</tr>';
+            }     
+        }
+        $('#TBody').html(html)
+    }
+  $("#FileNo,#Time,#State,#MacIP1").keyup(function () {
+     
+      if ($("#FileNo").val()) temp = res.filter(w => w.IndRegID == $("#FileNo").val()).filter(w => w.DateTimeRecord.includes($("#Time").val())).filter(w => w.MacIP.includes($("#MacIP1").val()));
+      else temp = res.filter(w => w.DateTimeRecord.includes($("#Time").val())).filter(w => w.MacIP.includes($("#MacIP1").val()));
+      display(1, 35);
+  });
+
+</script>
+
+<!--رفع النتائج الي قاعدة البيانات-->
+<script>
+
+    var run=false;
+	var total=0,tempDone=0;
+	function upload2(arr) {
+        var promises = [];
+        if(!run){total=arr.length;tempDone=0}
+		run=true;
+		console.log(arr.length);
+        for (var i = 0; i < 1000 && i<arr.length; i++) {
+            var request = $.ajax(//begin ajax card
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'upload',//vary important #change
+                data:
+                    {
+                        FN: arr[i].IndRegID,
+                        DT: arr[i].DateTimeRecord,
+                        TP: arr[i].State == 1 ? 'Out' : 'In',
+                        IP: arr[i].MacIP
+                    },
+                success:
+                    function (response) {
+					    tempDone++;
+                        $("#bar").css("width", tempDone / total * 100 + "%");
+                        $("#bar").html((tempDone / total * 100 ).toFixed(2)+ "%");
+                    },
+                error:
+                    function (response) {
+                        console.log("Error: " + response);
+                    }
+            });
+            promises.push(request);
+        }
+        $.when.apply($, promises).always(function () {
+            //console.log('All Done');
+            arr.splice(0, 1000);
+            if (arr.length > 0) upload2(arr);
+			else{run=false; /*alert("job done");*/}
+        });
+    }
+    function checker(){
+if(document.getElementById("checkAll").checked)
+$("input[type='checkbox']").prop("checked", true);
+else $("input[type='checkbox']").prop("checked", false);
+}
+</script>

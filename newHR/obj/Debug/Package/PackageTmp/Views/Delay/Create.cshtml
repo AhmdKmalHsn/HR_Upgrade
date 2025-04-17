@@ -1,0 +1,176 @@
+﻿<h2>Create</h2>
+<div class="card">
+    <div class="row">
+        <div class="col-2"><label class="form-label">id</label></div>
+        <div class="col-4"><div id="Id"></div></div>
+        <div class="col-3"><label class="form-label">Warning From</label></div>
+        <div class="col-3"><input id="Warning_From" type="time" class="form-control" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2"><label class="form-label">shift id</label></div>
+        <div class="col-4"><div id="ShiftId"></div></div>
+        <div class="col-3"><label class="form-label">Warning_To</label></div>
+        <div class="col-3"><input id="Warning_To" type="time" class="form-control" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2"><label class="form-label">shift name</label></div>
+        <div class="col-4"><select id="ShiftName" onchange="document.getElementById('ShiftId').innerHTML=this.value"></select></div>
+        <div class="col-3"><label class="form-label">Allowed_Delay</label></div>
+        <div class="col-3"><input id="Allowed_Delay" type="time" class="form-control" /></div>
+    </div>
+</div>
+
+<div id="myTableContainer" style="display:none">
+    <button id="deleyAdd" class="btn btn-outline-success" style="float:left">إضافة</button>
+    <br>
+    <table id="myTable"></table>
+</div>
+
+<div id="AddForm" dir="rtl" title="Create new Delay">
+    <div class="row p-2">
+        <div class="col-2">
+            <div class="col-form-label">من</div>
+        </div>
+        <div class="col-4">
+            <input type="time" class="form-control" id="timeFrom" />
+        </div>
+        <div class="col-2">
+            <div class="col-form-label">حتي</div>
+        </div>
+        <div class="col-4">
+            <input type="time" class="form-control" id="timeTo" />
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col-2">
+            <div class="col-form-label">القيمة</div>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                <input type="number" class="form-control" id="timeValue1" />:<input type="number" class="form-control" id="timeValue2" />
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row p-2">
+        <div class="col-2">
+            <input value="تأكيد" class="btn btn-outline-warning" type="button" id="timeSubmit">
+        </div>
+    </div>
+</div>
+
+<input value="حفظ التغييرات" class="btn btn-outline-warning" type="button" id="changesSave">
+<script>
+    var select='';
+    var shifts = readSQL(`select Id,ShiftName from shifts where id not in(select Shift_Id from Delays)`);
+    for (var i = 0; i < shifts.length;i++)
+    {
+        select+='<option value="'+shifts[i].Id+'">'+shifts[i].ShiftName+'</option>';
+    }
+    $("#ShiftName").html(select);
+            var id ;//url.searchParams.get("id");
+            /*var sql1 = `select Id,ShiftId,ShiftName,Warning_From,Warning_To,Allowed_Delay froim Delays where id=${id}`;
+            
+            var data1 = readSQL(sql1);*/
+           
+            var sql2 = `select Id,[From],[To],Value,DelayId from  DelayFromToes where DelayId =${id}`;
+            var table;
+           
+            function init() {
+                table = $("#myTable").dataTable(
+                    {
+                        data: readSQL(sql2),
+                        columns: [
+
+                            {
+                                title: "From",
+                                data: "From",
+                            },
+                            {
+                                title: "To",
+                                data: "To",
+                            },
+                            {
+                                title: "Value",
+                                data: "Value",
+                            },
+                            {
+                                title: "delete",
+                                data: "Id",
+                                render: function (e) {
+                                    return '<button onclick="del(' + e + ')" class="btn btn-outline-danger">delete</button>'
+                                }
+                            },
+                        ]
+                    });
+
+            } 
+            function del(id) {
+                var res = excuteSQL(`delete from DelayFromToes where Id =${id}`);
+                if (res == 1) {
+                    alert("Delete Successfully!")
+                    table.fnDestroy();
+                    $('#myTable').empty();
+                    init();
+                }
+                else alert("Error")
+            }
+            var dialog = $('#AddForm').dialog(
+                 {
+                     autoOpen: false,
+                     height: 280,
+                     width: 550,
+                     modal: true,
+                 });
+            init();
+            $("#deleyAdd").click(function () {
+                dialog.dialog("open");
+            });
+
+
+            $("#timeSubmit").click(function () {
+                var sql = `insert  into DelayFromToes([From],[To],Value,DelayId )values('${$("#timeFrom").val()}','${$("#timeTo").val()}','${$("#timeValue2").val()}:${$("#timeValue1").val()}',${id})`
+          
+                if (excuteSQL(sql) == 1)
+                {
+                    alert("Insert Successfully!")
+                    dialog.dialog("close");
+                    table.fnDestroy();
+                    $('#myTable').empty();
+                    init();
+                }
+
+                else alert("Error")
+            });
+
+
+            $("#changesSave").click(function () {
+                var cnt = readSQL(`select count(*)cnt from Delays where ShiftId='${$("#ShiftName").val()}'`)[0].cnt;
+                
+                if (cnt == 0) {
+                    var sql = `insert into Delays(ShiftId,Shift_Id,ShiftName,Warning_From,Warning_To,Allowed_Delay) values('${$("#ShiftName").val()}','${$("#ShiftName").val()}','${$("#ShiftName option:selected").text()}','${$("#Warning_From").val()}','${$("#Warning_To").val()}','${$("#Allowed_Delay").val()}')`
+                    console.log(sql);
+                    if (excuteSQL(sql) == 1) {
+                        $("#Id").prop("disabled", true);
+                        $("#ShiftId").prop("disabled", true);
+                        $("#ShiftName").prop("disabled", true);
+                        $("#Warning_From").prop("disabled", true);
+                        $("#Warning_To").prop("disabled", true);
+                        $("#Allowed_Delay").prop("disabled", true);
+                        alert("Saved Successfully!");
+                        id = readSQL(`SELECT IDENT_CURRENT('Delays') id`)[0].id;
+                        console.log(id);
+                        console.log(readSQL(`SELECT IDENT_CURRENT('Delays') id`)[0].id);
+                        $("#myTableContainer").css("display", "block");
+                    }
+                    else {
+                        alert("Error")
+                    }
+                } else
+                {
+                    alert("This shift is already exist");
+                }
+            });
+</script>
+
+

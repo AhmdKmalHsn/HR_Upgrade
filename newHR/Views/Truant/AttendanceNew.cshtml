@@ -1,0 +1,169 @@
+﻿<head>
+    <style>
+        .row 
+        {
+            justify-content:center;
+            direction:rtl;
+        }
+        td {
+            font-size:16px;
+            font-weight:600;
+        }
+        #loader {
+           display:none;
+            z-index:5;
+        }
+        .sticky {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: yellow;
+            padding: 50px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<h2>Attendance</h2>
+
+<div id="empContainer"><table id=empTable style="width:100%"></table></div>
+<div class="container-fluid mx-lg-auto" >
+    <div class="row ">
+        <div class="col-2 p-1">
+            رقم االملف
+        </div>
+        <div class="col-6 p-1">
+            <div class="input-group">
+               <input id="FN" type="number" class="form-control" />
+               <input id="FNChoose" type="button" class="btn btn-outline-dark" value="choose" onclick="dialog.dialog('open')" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2  p-1">
+            الشهر
+        </div>
+        <div class="col-6  p-1">
+            <select id="M" class="form-control">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2 p-1">
+            السنة
+        </div>
+        <div class="col-6 p-1">
+            <select id="Y" class="form-control">
+                <option value="2022">2023</option>
+                <option value="2022">2022</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 p-1">
+            <button onclick="getTable()" class="btn btn-outline-dark">تأكيد</button>
+        </div>
+    </div>
+
+</div>
+<div id="loader"><img src="~/1.gif"></div>
+<div id="mytable"></div>
+<script>
+    var sql1 = `select filenumber,knownas name from employees`;
+    console.log(readSQL(sql1));
+    var empTable = $("#empTable").dataTable({
+        data: readSQL(sql1),
+        columns: [
+            {
+                title: "filenumber",
+                data:"filenumber",
+            },
+            {
+                title: "name",
+                data:"name",
+            },
+            {
+                title: "choose",
+                data: "filenumber",
+                render: function (a) {
+                    return `<button onclick="document.getElementById('FN').value=${a};dialog.dialog('close')" >choose</button>`
+                }
+            }
+        ]
+    });
+    var dialog = $("#empContainer").dialog({
+        width: 500,
+        height: 300,
+        autoOpen: false
+    });
+    var ajax;
+   function getTable()
+    {
+       $("#loader").css("display","block");
+        ajax = $.ajax({
+                  type: 'POST',
+                  dataType: 'JSON',
+                  url: '/Truant/SalaryFileNo2',
+                  data: { fileNo: $("#FN").val(), M: $("#M").val(), Y: $("#Y").val() },
+        });
+        $.when(ajax).done(function (res) {
+            $("#loader").css("display", "none");
+            display(res);
+        });
+    }
+   $("#M").val(new Date().getMonth()+1);
+   function display(res) {
+       var v = JSON.parse(res);
+       console.log(v);
+       console.log(v.filter(w=>w.dateDay.substr(0,10)=='2022-12-12'))
+       var html = '<table class="table"><thead class="sticky">';
+       html += '<tr style="background-color:darkorange;">';
+       html += '<td class="--bs-cyan" style="background-color:">DayName</td>';
+       html += '<td style="background-color:">dateDay</td>';
+       html += '<td style="background-color:">TimeFrom</td>';
+       html += '<td style="background-color:">TimeTo</td>';
+       html += '<td style="background-color:">att</td>';
+       html += '<td style="background-color:">abs</td>';
+       html += '<td style="background-color:">vacDay</td>';
+       html += '<td style="background-color:">lateHours</td>';
+       html += '<td style="background-color:">leaveHours</td>';
+       html += '<td style="background-color:">overTimeHour</td>';
+       html += '<td style="background-color:">AbsenceType</td>';   
+       html += '</tr></thead><tbody>';
+      
+       for (var i = 0; i < v.length; i++)
+       {
+           var abs = (1 - v[i]["att"] - v[i]["vacDay"]).toFixed(2);
+           if(v[i]["weekend"]==0)html += '<tr>'; else html += '<tr style="background-color:#05F548">'; 
+           html += '<td class="--bs-cyan" style="background-color:">' + v[i]["DayName"] + '</td>';
+           html += '<td style="background-color:">' + v[i]["dateDay"].substr(0, 10) + '</td>';
+           html += '<td style="background-color:">' + (v[i]["TimeFrom"] == null ? '' : v[i]["TimeFrom"]) + '</td>';
+           html += '<td style="background-color:">' + (v[i]["TimeTo"]== null ? '' : v[i]["TimeTo"]) + '</td>';
+           html += '<td style="background-color:#17fb17cc">' + (v[i]["att"] == null ? '' : v[i]["att"] <= 0 ? '' : v[i]["att"]) + '</td>';
+           html += '<td style="background-color:#ef3939cc">' + (abs > 0 ? abs : '') + '</td>';
+           html += '<td style="background-color:#d7d718cc">' + (v[i]["vacDay"] == null ? '' : v[i]["vacDay"] <= 0 ? '' : v[i]["vacDay"]) + '</td>';
+           html += '<td style="background-color:#d53dc5cc">' + (v[i]["lateHours"] == null ? '' : v[i]["lateHours"] <= 0 ? '' : v[i]["lateHours"]) + '</td>';
+           html += '<td style="background-color:#370fa3cc">' + (v[i]["leaveHours"] == null ? '' : v[i]["leaveHours"] <= 0 ? '' : v[i]["leaveHours"]) + '</td>';
+           if (v[i].overTimeC < 0 && v[i]["overTimeHour"]== null) html += '<td style="background-color:silver">' + (v[i]["overTimeHour"] == null ? '' : v[i]["overTimeHour"] <= 0 ? '' : v[i]["overTimeHour"]) + '</td>';
+           else html += '<td style="background-color:gold">' + (v[i]["overTimeHour"] == null ? '' : v[i]["overTimeHour"] <= 0 ? '' : v[i]["overTimeHour"]) + '</td>';
+           html += '<td style="background-color:gray">' + (v[i]["AbsenceType"] == null ? '' : v[i]["AbsenceType"] ) + '</td>';
+           html += '</tr>';
+       }
+       html += '</tbody></table>';
+       $("#mytable").html(html);
+   }
+</script>
+
+

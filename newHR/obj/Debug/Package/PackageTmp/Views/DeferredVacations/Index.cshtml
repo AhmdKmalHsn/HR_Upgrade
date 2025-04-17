@@ -1,0 +1,131 @@
+﻿@using WebMatrix.Data;
+<h2>تقرير رصيد الأجازات</h2>
+<div class="input-group" dir="rtl">
+    <button class="btn btn-success " id="excel">EXCEL</button>
+</div>
+<hr>
+<div id="container" style="overflow-x:auto">
+    <table dir="rtl" id="example" class="display" style="width:100%"></table>
+</div>
+<div id="dialog-form">
+
+</div>
+<script>
+    $.ajax({
+        url:"/DeferredVacations/ListAll",
+        success: function (data) {
+       var columns = [
+      {data: 'fileNumber', title: 'رقم الملف'}
+     ,{data: 'name', title: 'الاسم',}
+     ,{data: 'departmentId', title: 'القسم', }
+     ,{data: 'deferredDate', title: 'تاريخ التعديل',render:function(k,i){return k.substr(0,10);}}
+     ,{data: 'deferredDays', title: 'رصيد افتتاحي', }
+     ,{data: 'abcenceDays', title: 'مجموع الأجازات',}
+     ,{data: 'availableDays', title: 'رصيد الاجازات',render:function(k,i){return '<b>'+k+'</b>';}}
+     ,{"defaultContent": "<button id='del-btn' class='btn btn-success'>show</button>"}
+            ];
+            //console.log(columns);
+          console.log(data);
+            var tb = $('#example').dataTable({
+                stateSave: true,
+                "destroy": true,
+                "data": data.filter(w =>EMPS.includes(''+w.fileNumber)),
+                "columns": columns
+            });
+             $('#example tbody').on('click', "#del-btn", function() {
+              let mainData=
+              {
+                  fileNo:$(this).closest('tr').find("td").eq(0).html(),
+                  name:$(this).closest('tr').find("td").eq(1).html(),
+                  OB:$(this).closest('tr').find("td").eq(4).html(),
+                  OBdate:$(this).closest('tr').find("td").eq(3).html(),
+                  balance:$(this).closest('tr').find("td").eq(6).text()
+              }
+            console.log(mainData);
+            readVacs(mainData);
+            dialog.dialog( "open" );
+        });
+        }
+        });
+</script>
+<script src="~/scripts/excelexportjs.js"></script>
+<script>
+    $(function () {
+         $('#excel').click(function () {
+             $.ajax(
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: '/DeferredVacations/ListAll',
+                success:
+                    function (response) {
+                        $("table").excelexportjs({
+                            datatype: 'json'
+                           , dataset: response
+                           , columns: getColumns(response)
+                        });
+                    },
+                error:
+                    function (response) {
+                        alert("Error: " + response);
+                    }
+            });
+         });       
+ });
+
+ function readVacs(mainData)
+{
+var  sql0=
+"select DateFrom,sum(DayPart)DayPart from Absences where " +
+"    DateFrom>='"+mainData.OBdate+"' "+
+"and AbsenceTypeId in(3,7) and "+
+"    EmployeeId =(select id  from Employees where FileNumber='"+mainData.fileNo+"')"+
+"group by DateFrom order by DateFrom asc";
+var data=readSQL(sql0);
+if(data.length==0)
+	{
+       console.log('fail!');
+       var html='<table border=1 dir="rtl" class="table table-bordered"><tr><th>التاريخ</th><th>الاجازة</th><th>الرصيد</th></tr>';
+           html+='<tr style="background-color:yellow"><th>'+ mainData.OBdate +'</th><th></th><th>'+ mainData.OB +'</th></tr>';
+           html+='<tr style="background-color:yellow"><th>'+ new Date().toISOString().substr(0,10)+'</th><th></th><th>'+mainData.balance+'</th></tr>'
+           html+='</table>';
+       $("#dialog-form").html(html);
+	}
+else
+	{
+        var html='<table border=1 dir="rtl" class="table table-bordered"><tr><th>التاريخ</th><th>الاجازة</th><th>الرصيد</th></tr>';
+        html+='<tr style="background-color:yellow"><th>'+mainData.OBdate+'</th><th></th><th>'+mainData.OB+'</th></tr>'
+        var balance=parseFloat(mainData.OB);
+        var now= new Date();
+        var daysOfYear = [];
+        for (var d = new Date(mainData.OBdate); d <= now; d.setDate(d.getDate() + 1)) 
+        {
+            if(d.getDate()==26)balance+=1.75;
+            let row=data.find((e)=>e.DateFrom.substr(0,10) == new Date(d).toISOString().substr(0,10))
+            if(row)
+            {
+                balance-=row.DayPart
+                html+='<tr><td>'+row.DateFrom.substr(0,10)+'</td><td>'+row.DayPart+'</td><td>'+balance+'</td></tr>'   
+            }
+            else
+            {
+            }
+        }
+        html+='<tr style="background-color:yellow"><th>'+new Date().toISOString().substr(0,10)+'</th><th></th><th>'+mainData.balance+'</th></tr>'
+        html+='</table>';
+       //console.log(html);
+        $("#dialog-form").html(html);
+	}
+}
+var dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 800,
+      width: 500,
+      modal: true,
+      buttons: {
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      }
+    });
+ </script>

@@ -1,0 +1,91 @@
+﻿@using WebMatrix.Data;
+@if(Request.Cookies["Reports_Abs"]==null)
+{
+Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Reports_Abs"].Value)>1){
+
+}else
+{
+   Response.Redirect("~/home/Index");
+}
+
+@{
+    ViewBag.Title = "payments";
+}
+@{
+    ViewBag.Title = "Attendance";
+    var db = Database.Open("CS");
+    var selectQueryString = @"select e.id,e.KnownAs,e.FileNumber,b.ShiftId,b.TempShiftId,b.IsPrivate 
+from BasicBayWorks b,Employees e,Personals p 
+where e.Id=b.EmployeeId and e.PersonalId=p.id and p.StatusId<>3";
+    var data = db.Query(selectQueryString);
+    var grid = new WebGrid(data, canPage: true, rowsPerPage: 30);
+    if (IsPost)
+    {
+        //var deleteQueryString = " WHERE Id=@0";
+        //db.Execute(deleteQueryString, Request.Form["id"]);
+    }
+
+}
+<html>
+<head>
+    <title>Displaying Data Using the WebGrid Helper</title>
+<style>
+    td, th {
+    border:1px solid #999999;
+    padding:8px;
+    text-align:center
+    }
+    table {
+        direction:rtl;
+        border:solid;    
+        border-collapse:collapse;
+    }
+</style>
+</head>
+<body> 
+    <h1>sam</h1>
+    <div id="grid">
+        @grid.GetHtml(
+          tableStyle: "Grid",
+          headerStyle: "center",
+        columns: grid.Columns(
+        grid.Column("Id", format:@<a href="@Href("~/reports/EditPrivate", item.Id)">@item.id</a>, canSort: true),
+        grid.Column("الاسم", format:@<i>@item.KnownAs</i>, canSort: true),
+        grid.Column("رقم الملف", format:@<i>@item.FileNumber</i>, canSort: true),
+        grid.Column("الوردية", format:@<i>@item.shiftId</i>, canSort: true),
+        grid.Column("وردية احتياطية", format:@<i>@item.tempShiftId</i>, canSort: true)
+           
+                )
+                );
+                <!--table>
+                   foreach (var row in db.Query(selectQueryString))
+                         {
+                             <tr>
+                                 <td>row.id</td>
+                                 <td>row.shiftId</td>
+                                 <td>row.TempShiftId</td>
+                                 <td><input type="checkbox" checked=row.IsPrivate></td>
+                                 <td><a href="">delete</a></td>
+                                 <td><a href="">edite</a></td>
+                             </tr>
+                         }
+                </table-->
+
+</div>
+
+</body>
+</html>
+<script>
+function select(r) {
+            var i = r.parentNode.rowIndex;
+            id = document.querySelector("tbody").rows[i].cells[0].innerHTML;
+            name = document.querySelector("tbody").rows[i].cells[1].innerHTML;
+            obj = {
+                id: id,
+                name: name
+            }
+            console.log(obj);           
+}
+</script>

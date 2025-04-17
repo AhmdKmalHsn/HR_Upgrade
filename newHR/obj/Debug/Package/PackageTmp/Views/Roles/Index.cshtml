@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@using WebMatrix.Data;
+
+if(Request.Cookies["Logs"]==null)
+{
+Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Logs"].Value)>1){
+
+}else
+{
+   Response.Redirect("~/home/Index");
+}
+
+@if (Session["user"] == null)
+{
+    //Response.Redirect("~/home/log");
+}
+@{
+    var db = Database.Open("CS");
+    var sql = "select Id,Name from Roles2";
+}
+<h2>صلاحيات المستخدمين</h2>
+<table id="myTable" dir="rtl" class="table table-borderless">
+    <thead>
+        <tr>
+            <td>م</td>
+            <td>اسم الصلاحية</td>
+            <td>تعديل</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in db.Query(sql)) {
+           <tr>
+               <td>@row.id</td>
+               <td>@row.name</td>
+               <td>
+                   
+                       <div class="btn btn-link">edit</div>
+                   
+               </td>
+           </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $('#myTable').DataTable();
+</script>

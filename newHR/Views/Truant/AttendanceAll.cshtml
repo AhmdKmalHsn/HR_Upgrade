@@ -1,0 +1,297 @@
+﻿@using WebMatrix.Data;
+@{
+    ViewBag.Title = "AttendanceAll";
+}
+<head>
+<style>
+#myProgress {
+
+  width: 100%;
+  background-color: #ddd;
+  display: flex;
+}
+
+.myBar {
+  position:relative;
+  height: 30px;
+  background-color: #04AA6D;
+}
+</style>
+</head>
+<h2>AttendanceAll</h2>
+<script>
+    var all = [];
+</script>
+@{
+    var db1 = Database.Open("CS");
+    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
+	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId<>3 order by FileNumber";
+}
+<script>
+@foreach (var row in db1.Query(selectQueryString1))
+{
+
+        @:all.push({fileNo:@row.fn,dept:@row.deptId})
+
+} 
+</script>
+
+<style>
+    #tblStocks {
+          tr:nth-child(even){background-color: #f2f2f2;}
+    }
+    #thead td{
+        vertical-align:middle;
+    }
+</style>
+    <h2>المرتبات  </h2>
+ <!--modal-->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+		<hr>
+		<div style="overflow-y:auto;height:400px">
+		  <table id="myTable" class="table table-bordered table-responsive-lg">
+		  <thead>
+			<tr>
+			  <th>رقم الملف</th>
+			  <th>الاسم</th>
+			  <th>القسم</th>
+			  <th>choose</th>
+			</tr>
+			</thead>
+			<tbody>
+		    @foreach (var row in db1.Query(sql))
+                     {
+                        <tr> 
+						 <td style="text-align:center">@row.fn</td>
+						 <td style="text-align:center">@row.name</td>
+						 <td style="text-align:center">@row.dept</td>
+						 <td style="text-align:center">
+						   <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" /></td>
+						</tr>
+                     }
+			</tbody>
+		  </table>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!---->
+	<hr>
+    <table class="container" style="width:100%">
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+			 <div class="input-group">
+			    <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				<input id="fileNo" class="form-control" type="number" />
+			  </div>
+			</td>
+            <td>
+				<h3 style="margin:10px;float:right">رقم الملف </h3>
+			</td>
+
+        </tr>
+        <tr>
+
+            <td>
+                @{
+                    var db = Database.Open("CS");
+                    var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+                }
+                <select id="D" class="form-control">
+                    @foreach (var row in db.Query(selectQueryString))
+                    {
+                        <option style="text-align:right" value="@row.Id">@row.Name</option>
+                    }
+                </select>
+            </td>
+            <td><h3 style="margin:10px;float:right">القسم </h3></td>
+
+            <td>
+                <input type="date" id="f" class="form-control">
+                    
+                
+            </td>
+            <td><h3 style="margin:10px;float:right">من </h3></td>
+            
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input id="ok" class="btn btn-primary" value="المرتب" type="button" />
+                <button onclick="ExportToExcel('xlsx')" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                    Excel
+                </button>
+                <button onclick="printData()" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-print"></span>
+                    طباعة
+                </button>
+            </td>
+
+            <td>
+                <input type="date" id="t" class="form-control">
+                    
+            </td>
+            <td><h3 style="margin:10px;float:right">الي </h3></td>
+
+            
+
+        </tr>
+
+    </table>
+    <div id="loader">
+        <center><img src="~/1.gif" /></center>
+    </div>
+    <div class="table-responsive-lg" style="overflow-x:auto">
+        <table id ="tblStocks" border="1" dir="rtl" class="table table-hover table-bordered">
+            <tbody id="container1" style="text-align:center;font-size:large">
+            </tbody>
+            <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+        
+    </div>
+
+<h1>JavaScript Progress Bar</h1>
+
+<div id="myProgress">
+  <!--div class="myBar"></div-->
+</div>
+<div id="screen"></div>
+<script>
+            $('#loader').hide();
+            $('.table-responsive-lg').show();
+            var department = [];
+            $('#ok').click(function () {
+                if ($('#fileNo').val()){
+                    department=all.filter(w=>w.fileNo==$('#fileNo').val());
+                }
+                else{
+                    department=all.filter(w=>w.dept==$('#D').val());
+                }
+                excute();
+            });
+
+            function excute() {
+
+               $("#myProgress").html("");            
+                 var a=reCalc(reSet(getDayData('2234').filter(w=>w.fileNo=='2022-11-12')));
+                    $("#screen").html(a);
+                }  
+            
+            function getDayData(fn,d1,d2)
+            {
+                var sqlcom=`select *
+from
+(
+select FileNumber,
+       cast(DateTime as date)'date',
+	   cast(DateTime as time(0))time ,
+	   type
+ from AClogs ac
+ where FileNumber=${fn}
+
+ union
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeFrom,'In'
+ from Attendances a
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeFrom is not null and TimeFrom <> ''
+
+ union
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
+ from Attendances a
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> ''
+
+ union
+
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	timefrom,'In'
+ from Absences ab
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId=4
+
+ UNION
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
+ from Absences ab
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId=4
+
+ )q where date >='${d1}' and date <='${d2}' order by date,time`;
+                return readSQL(sqlcom);
+            }//حساب بيانات يوم 
+            function reSet(data) //تصفية البيانات               
+            {
+                var array2=[]
+                for(var i=0;i<data.length;i++)
+                {
+                    if(data[i].type=="In")
+                    {
+                        if(i>0){
+                            if(data[i-1].type!=data[i].type){
+                                array2.push(data[i]);
+                            }
+                        }else  array2.push(data[i]);
+                    }
+                    if(data[i].type=="Out")
+                    {
+                        if(i<data.length-1){
+                            if(data[i].type!=data[i+1].type){
+                                array2.push(data[i]);
+                            }
+                        }else  array2.push(data[i]);
+                    }
+                }
+                if(array2.length>0)if(array2[0].type == 'out')array2=array2.slice(1)
+                if(array2.length>0)if(array2[array2.length-1].type=='in')array2=array2.slice(0,array2.length-1)
+                return array2;
+            }//تصفية البيانات    
+            function reCalc(array2)//حساب الفرق
+            {
+                if(array2.length>1) {
+                    for(var i=0;i<array2.length;i+=2)
+                    {
+                        var dd=new Date(array2[i].date.substr(0,10)+' '+array2[i].time);
+                        var dddd=new Date(array2[i+1].date.substr(0,10)+' '+array2[i+1].time);
+                        var left=(dd.getHours()*60+dd.getMinutes())/1440*100;
+                        var width=(dddd.getHours()*60+dddd.getMinutes())/1440*100;
+                        console.log((dd.getHours()*60+dd.getMinutes())/1440*100)
+                       // $("#myProgress").append('<div class="myBar" style="left:'+left+'%;width:'+(width-left)+'%;"'+'></div>')
+                    }
+                }
+                var absTime=0;
+                if(array2.length>2) {
+                    for(var i=1;i<array2.length;i+=2)
+                    {
+                        if(i<array2.length-1)
+                        { 
+                            var d1=new Date(array2[i].date.substr(0,10)+' '+array2[i].time);
+                            var d2=new Date(array2[i+1].date.substr(0,10)+' '+array2[i+1].time);
+                            absTime+=(d2.getHours()*60+d2.getMinutes())-(d1.getHours()*60+d1.getMinutes())
+                            //console.log("absTime "+ absTime);
+                        }  
+                    }
+                } 
+                return absTime;
+            }//حساب الفرق  
+            function display(){
+
+            }
+</script>
+<script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
+<script>
+    $("#myTable").DataTable({
+    "pagingType":"full_numbers"
+    });
+</script>

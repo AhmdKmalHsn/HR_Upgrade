@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewBag.Title = "All";
+}
+
+<h2>All</h2>
+
+@using WebMatrix.Data;
+
+<style>
+    table {
+        margin: auto;
+        width: 90%;
+    }
+
+    td, th {
+        font-size: 24px;
+        text-align: center;
+    }
+</style>
+
+
+<b style="font-size:large">date :</b> <input id="dt" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")' type="date" class="input-lg" />
+<b style="font-size:large">department:</b>
+@{
+    var db = Database.Open("CS");
+    var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+    var selectQueryString2 = "select Id,Name from AbsenceTypes where id=8 or id=3 or id=5 or id=6 ";
+}
+<select id="dept" class="input-lg">
+    <option style="text-align:right" value="0">الكل</option>
+    @foreach (var row in db.Query(selectQueryString))
+    {
+        <option style="text-align:right" value="@row.Id">@row.Name</option>
+    }
+</select>
+
+<input type="button" onclick="search()" class="btn btn-primary btn-lg" value="search" />
+<input type="text" id="myInput" placeholder="search..." class="input input-lg input-block">
+<div id="container">
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle">الاضافي</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+               
+                <table>
+                    <tr>
+                        <td colspan="3">
+                            <div id="modalDate" style="text-align:center;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="modalName"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">الاسم</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="modalFN"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">رقم الملف</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="bfr_chk" style="transform:scale(1.5);text-align:right">
+                        </td>
+                        <td>
+                            <input type="number" id="bfr_txt" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            أضافي قبل
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="afr_chk" style="transform:scale(1.5);text-align:right">
+                        </td>
+                        <td>
+                            <input type="number" id="afr_txt" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            أضافي بعد
+                        </td>
+
+                    </tr>
+                </table>
+                <div class="modal-footer">
+                    <button id="add" type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end modal -->
+<!-- Modal -->
+<div class="modal fade" id="vacationModal" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle">اجازة</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                <div id="modalDate1" style="text-align:center;"></div>
+                <hr>
+                 <table>
+                   
+                    <tr>
+                        <td colspan="2">
+                            <div id="modalName1"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">الاسم</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="modalFN1"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">رقم الملف</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">                            
+                            <input type="number" id="vac_txt" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            اجازة
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <select id="type" class="input-lg">
+                                @foreach (var row in db.Query(selectQueryString2))
+                                {
+                                    <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                }
+                            </select> 
+                        </td>
+                        <td>
+                            نوع الاجازة
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer">
+                    <button  id="add1" type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">add</button>
+                    <button id="delete1" style="float:left" type="button" class="btn btn-danger btn-lg" data-dismiss="modal">delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end modal -->
+<script>
+        function search() {
+            $.ajax({
+                url: "getAllBydepartment",
+                data: { date: $('#dt').val(), dept: $('#dept').val() },
+                method: "post",
+                type: "json",
+                success: function (data) {
+                    console.log(data);
+                    $('#container').html("");
+                    var html = "<table id='tbl' class='table table-bordered table-hover' style='width:90%'><tr><th>رقم الملف</th><th>الاسم</th><th>من</th><th>ألى</th><th>أجازة</th><th>أضافي</th></tr>";
+                    $.each(data, function (key, item) {
+                        html += "<tr><td id='fn'>" + item.fileNo 
+                             + "</td><td id='nm'>" + item.name
+                             + "</td><td id='tfrm'>" + item.timeFrom
+                             + "</td><td id='tto'>" + item.timeTo
+                             + "</td><td ondblclick='selecte1(this)'>" + item.vaction
+                             + "</td><td ondblclick='selecte2(this)'>" + item.addition + "</td></tr>";
+                    });
+                    html += "</table>";
+                    $('#container').html(html);
+                },
+                error:
+                    function (response) {
+                        console.log(response);
+                    }
+            });
+        }
+
+        function addAddition(from1, fileNo1, hoursNo1, offset1) {
+            $.ajax({
+                url: "createAddition",//:,,,
+                data: { from: from1, fileNo: fileNo1, hoursNo: hoursNo1, offset: offset1 },
+                method: "post",
+                type: "json",
+                success: function (data) {
+                    console.log(data);
+                    search();
+                },
+                error:
+                    function (response) {
+                        console.log(response);
+                    }
+            });
+        }
+        function addVacation(from1, fileNo1, dayPart1,type1) {
+            //createVacation(DateTime from, int fileNo, float dayPart)
+            $.ajax({
+                url: "createVacation",//:,,,
+                data: { from: from1, fileNo: fileNo1, dayPart: dayPart1,type:type1 },
+                method: "post",
+                type: "json",
+                success: function (data) {
+                    console.log(data);
+                    search();
+                },
+                error:
+                    function (response) {
+                        console.log(response);
+                    }
+            });
+        }
+        function delVacation(from1, fileNo1) {
+            //delVacation(DateTime from, int fileNo, float dayPart)
+            $.ajax({
+                url: "deleteVacation",//:,,,
+                data: { from: from1, fileNo: fileNo1 },
+                method: "post",
+                type: "json",
+                success: function (data) {
+                    console.log(data);
+                    search();
+                },
+                error:
+                    function (response) {
+                        console.log(response);
+                    }
+            });
+        }
+        function selecte1(r) {
+            var i = r.parentNode.rowIndex;
+            id = document.getElementById("tbl").rows[i].cells[0].innerHTML;
+            name = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+            
+           // console.log(obj);
+            $('#modalName1').html(name);
+            $('#modalDate1').html($('#dt').val());
+            $('#modalFN1').html(id);
+            $('#vacationModal').modal('show');
+        }
+        function selecte2(r) {
+            var i = r.parentNode.rowIndex;
+            id = document.getElementById("tbl").rows[i].cells[0].innerHTML;
+            name = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+            
+            $('#modalName').html(name);
+            $('#modalDate').html($('#dt').val());
+            $('#modalFN').html(id);
+            $('#exampleModalLong').modal('show');
+        }
+
+        $('#add').click(function () {
+
+             if (document.getElementById("afr_chk").checked == true) {
+                if ($("#afr_txt").val() > 0) {
+                    addAddition($('#dt').val(),document.getElementById("modalFN").innerHTML, $("#afr_txt").val(), 0)
+                    console.log("ok after");
+                }
+                else {
+                    alert("تأكد من قيمة ساعات الاضافي");
+                }
+            }
+            if (document.getElementById("bfr_chk").checked == true) {
+                if ($("#bfr_txt").val() > 0) {
+                    addAddition($('#dt').val(), document.getElementById("modalFN").innerHTML, $("#bfr_txt").val(), 1)
+                    console.log("ok before");
+                }
+                else {
+                    alert("تأكد من قيمة ساعات الاضافي");
+                }
+            }
+
+
+        });
+        $('#add1').click(function () {   
+            if ($("#vac_txt").val()==1||$("#vac_txt").val() ==.5||$("#vac_txt").val() ==.25) {
+                //console.log($('#dt').val() + "," + document.getElementById("modalFN1").innerHTML + "," + $("#vac_txt").val() + "," + $("#type").val());
+                addVacation($('#dt').val(), document.getElementById("modalFN1").innerHTML, $("#vac_txt").val(), $("#type").val());
+                }
+                else {
+                    alert("تأكد من قيمة الاجازة");
+                }
+        });
+        $('#delete1').click(function () {
+            //if ($("#vac_txt").val() == 1 || $("#vac_txt").val() == .5 || $("#vac_txt").val() == .25) {
+                console.log($('#dt').val() + "," + document.getElementById("modalFN1").innerHTML + "," + $("#vac_txt").val() + "," + $("#type").val());
+                delVacation($('#dt').val(), document.getElementById("modalFN1").innerHTML);
+            //}
+            //else {
+                //alert("تأكد من قيمة الاجازة");
+            //}
+        });
+
+</script>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#tbl tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>

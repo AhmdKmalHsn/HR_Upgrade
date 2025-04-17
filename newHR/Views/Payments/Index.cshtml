@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<body>
+    <h2>Index</h2>
+    <a class="btn btn-outline-success m-2" href="/payments/create">انشاء</a>
+    <div >
+        <table id="mytable" class="display">
+            <thead>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+    </div>
+</body>
+<script>
+    var sql = `select Id,(select filenumber from employees where id= EmployeeId)fileno,(select knownas from employees where id= EmployeeId) name,	Date,	Amount	,CurrencyId	,(select name from PaymentDeductions where id= PaymentDeductionId)PaymentDeductionId,RecurringOneTimeId	,case when TotalNet=0 then 'Total' else 'net' end TotalNet,	EmployeeId	,Remarkes,	DaysNumber from deductions`;
+    var data = readSQL(sql);
+    console.log(data);
+    $('#mytable').dataTable(
+        {
+            data: data,
+            columns:[ 
+                {
+                    data:'Id',
+                    title:'id',
+                },
+                {
+                    data: 'name',
+                    title: 'الاسم',
+                },
+                {
+                    data: 'fileno',
+                    title: 'رقم الملف',
+                },
+                {
+                    data: 'Date',
+                    render:function(a){return a.substr(0,10)},
+                    title:'التاريخ',
+                },
+                {
+                    data:'Amount',
+                    title:'المبلغ',
+                },
+                {
+                    data:'PaymentDeductionId',
+                    title:'نوع الخصم',
+                },
+                
+                {
+                    data:'RecurringOneTimeId',
+                    title:'عدد الاشهر',
+                },
+                {
+                    data:'TotalNet',
+                    title:'اجمالي/صافي',
+                },
+                /*{
+                    data:'EmployeeId',
+                    title:'EmployeeId',
+                },*/
+                {
+                    data:'Remarkes',
+                    title:'ملاحظات',
+                },
+                 {
+                     data:'DaysNumber',
+                     title:'عدد الايام',
+                 },
+                {
+                    data: 'Id',
+                    render: function (id) { return '<a class="btn btn-danger" href="/payments/delete/'+ id + '">delete</a>'; },
+                    title: 'delete',
+                },
+            
+            ]
+        }
+    );
+</script>

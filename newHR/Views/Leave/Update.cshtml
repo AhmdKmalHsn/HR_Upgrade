@@ -1,0 +1,150 @@
+﻿<h2>تعديل انصراف</h2>
+<div class="card">
+    <div class="row">
+        <div class="col-2"><label class="form-label">id</label></div>
+        <div class="col-4"><div id="Id"></div></div>
+        <div class="col-3"><label class="form-label">Warning From</label></div>
+        <div class="col-3"><input id="Warning_From" type="time" class="form-control" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2"><label class="form-label">shift id</label></div>
+        <div class="col-4"><div id="ShiftId"></div></div>
+        <div class="col-3"><label class="form-label">Warning_To</label></div>
+        <div class="col-3"><input id="Warning_To" type="time" class="form-control" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2"><label class="form-label">shift name</label></div>
+        <div class="col-4"><div id="ShiftName"></div></div>
+        <div class="col-3"><label class="form-label">Allowed_Delay</label></div>
+        <div class="col-3"><input id="Allowed_Delay" type="time" class="form-control" /></div>
+    </div>
+</div>
+<button id="delayAdd" class="btn btn-outline-success" style="float:left">إضافة</button>
+<br>
+<table id="myTable"></table>
+<div id="AddForm" dir="rtl" title="Create new Delay">
+    <div class="row p-2">
+        <div class="col-2">
+            <div class="col-form-label">من</div>
+        </div>
+        <div class="col-4">
+            <input type="time" class="form-control" id="timeFrom" />
+        </div>
+        <div class="col-2">
+            <div class="col-form-label">حتي</div>
+        </div>
+        <div class="col-4">
+            <input type="time" class="form-control" id="timeTo" />
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col-2">
+            <div class="col-form-label">القيمة</div>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                <input type="number" class="form-control" id="timeValue1" />:<input type="number" class="form-control" id="timeValue2" />
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row p-2">
+        <div class="col-2">
+            <input value="تأكيد" class="btn btn-outline-warning" type="button" id="timeSubmit">
+        </div>
+    </div>
+</div>
+
+<input value="حفظ التغييرات" class="btn btn-outline-warning" type="button" id="changesSave">
+<script>
+            var q = window.location.href;
+            var url = new URL(q);
+            var id = url.searchParams.get("id");
+            var sql1 = `select Id,ShiftId,ShiftName,Warning_From,Warning_To,Allowed_Delay from Delays where id=${id}`;
+            var sql2 = `select Id,[From],[To],Value,DelayId from  LeaveFromToes where DelayId =${id}`;
+            var data1 = readSQL(sql1);
+            //var data2 = readSQL(sql2);
+
+            $("#Id").html(data1[0].Id)
+            $("#ShiftId").html(data1[0].ShiftId)
+            $("#ShiftName").html(data1[0].ShiftName)
+            $("#Warning_From").val(data1[0].Warning_From)
+            $("#Warning_To").val(data1[0].Warning_To)
+            $("#Allowed_Delay").val(data1[0].Allowed_Delay)
+            var table;
+            function init(){
+                table = $("#myTable").dataTable(
+                    {
+                        data: readSQL(sql2),
+                        columns: [
+
+                            {
+                                title: "From",
+                                data: "From",
+                            },
+                            {
+                                title: "To",
+                                data: "To",
+                            },
+                            {
+                                title: "Value",
+                                data: "Value",
+                            },
+                            {
+                                title: "delete",
+                                data: "Id",
+                                render: function (e) {
+                                    return '<button onclick="del(' + e + ')" class="btn btn-outline-danger">delete</button>'
+                                }
+                            },
+                        ]
+                    });
+            }
+            function del(id) {
+                var res = excuteSQL(`delete from LeaveFromToes where Id =${id}`);
+                if (res == 1) {
+                    alert("Delete Successfully!")
+                    table.fnDestroy();
+                    $('#myTable').empty();
+                    init();
+                }
+                else alert("Error")
+            }
+            var dialog = $('#AddForm').dialog(
+                 {
+                     autoOpen: false,
+                     height: 280,
+                     width: 550,
+                     modal: true,
+                 });
+            init();
+            $("#delayAdd").click(function () {
+                dialog.dialog("open");
+                //console.log(table);
+
+            });
+
+
+            $("#timeSubmit").click(function () {
+                var sql = `insert  into LeaveFromToes([From],[To],Value,DelayId )values('${$("#timeFrom").val()}','${$("#timeTo").val()}','${$("#timeValue2").val()}:${$("#timeValue1").val()}',${id})`
+                console.log(sql);
+                if (excuteSQL(sql) == 1) {
+                    alert("Insert Successfully!")
+                    dialog.dialog("close");
+                    table.fnDestroy();
+                    $('#myTable').empty();
+                    init();
+                }
+                else alert("Error")
+            });
+
+
+            $("#changesSave").click(function () {
+                var sql = `update Delays set ShiftId='${$("#ShiftId").html()}',ShiftName='${$("#ShiftName").html()}',Warning_From='${$("#Warning_From").val()}',Warning_To='${$("#Warning_To").val()}',Allowed_Delay='${$("#Allowed_Delay").val()}'  where id=${$("#Id").html()}`
+                console.log(sql);
+                if (excuteSQL(sql) == 1)
+                    alert("Saved Successfully!")
+                else alert("Error")
+            });
+</script>
+

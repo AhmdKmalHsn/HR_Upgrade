@@ -1,0 +1,144 @@
+﻿@using WebMatrix.Data;
+@{
+    ViewBag.Title = "MacReport";
+}
+
+@{
+    var db2 = Database.Open("CS");
+    var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId=1 order by FileNumber";
+}
+<h2>MacReport</h2>
+<div class="input-group" dir="rtl">
+    <label class="input-group-text">من</label>
+    <input type="date" id="f" class="form-control" value=@DateTime.Now.Date.ToString("yyyy-MM-dd") />
+    <label class="input-group-text">الى</label>
+    <input type="date" id="t" class="form-control" value=@DateTime.Now.Date.ToString("yyyy-MM-dd") />
+    
+        <label class="input-group-text" style="width: 110px;text-align:center;"><b>file number</b></label>
+        <input style="float:left" type="number" class="form-control " name="fileNo" id="fileNo">
+        <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+   
+    <button id="btn" class="btn btn-outline-success">إنشاء</button>
+</div>
+<!--modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <hr>
+                <div style="overflow-y:auto;height:400px">
+                    <table id="myTable" class="table table-bordered table-responsive-lg">
+                        <thead>
+                            <tr>
+                                <th>رقم الملف</th>
+                                <th>الاسم</th>
+                                <th>القسم</th>
+                                <th>choose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in db2.Query(sql))
+                            {
+                                <tr>
+                                    <td style="text-align:center">@row.fn</td>
+                                    <td style="text-align:center">@row.name</td>
+                                    <td style="text-align:center">@row.dept</td>
+                                    <td style="text-align:center">
+                                        <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+
+<div id="container" style="overflow-x:auto">
+    <table id="example" class="display" style="width:100%" dir="rtl"></table>
+</div>
+<script>
+    $("#btn").click(function () {
+        if (!$('#fileNo').val()) { alert("من فضلك ادخل الحقول الفارغة");} //$('#f').val()+" ,"+$('#t').val());
+        $.ajax({
+            url: 'MoveReportFN',
+            data: { FN: $('#fileNo').val(), f: $('#f').val(), t: $('#t').val() },
+            success: function (res) {
+                const data = JSON.parse(res);
+                var tb = $('#example').dataTable({
+                    stateSave: true,
+                    "destroy": true,
+                    "data": data,
+                    "columns": [
+    {
+        "data": "الاسم",
+        "title": "الاسم"
+    },
+    {
+        "data": "FileNumber",
+        "title": "رقم الملف"
+    },
+    {
+        "title": "التاريخ",
+        "data": "date",
+        "render": function (data, type, row, meta)
+        {
+            return data.substr(0, 10);
+        }
+    },
+    {
+        "data": "time",
+        "title": "الوقت"
+    },
+    {
+        "data": "type",
+        "title": "نوع الحركة"
+    }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        console.log(data.type);
+                        if (data.type === "دخول") {
+                            $(row).css("color","#DD4545");
+                        }else 
+                        {
+                            $(row).css("color","#45DD45");
+                        }
+                    }
+                });
+            }
+        });
+        /*$('#example thead th').each(function () {
+            var title = $(this).text();
+            $(this).append('<input type="text" placeholder="Search ' + title + '" />');
+        });
+        var table = $('#example').DataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api()
+                    .columns()
+                    .every(function () {
+                        var that = this;
+
+                        $('input', this.header()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that.search(this.value).draw();
+                            }
+                        });
+                    });
+            },
+        });*/
+    });
+    $("#myTable").DataTable({
+        "pagingType": "full_numbers"
+    });
+</script>

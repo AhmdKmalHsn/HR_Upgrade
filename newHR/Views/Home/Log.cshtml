@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Log";
+}
+<style>
+    .form-signin 
+    {
+        border:thick 5px black;
+
+    }
+</style>
+<main class="form-signin w-50 m-auto">
+    <form onsubmit="" action="~/home/logIn" method="post">
+        <img class="mb-4" src="~/assets/img/logo.jpg" alt="" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" name="UserName" id="user" placeholder="UserName">
+            <label for="floatingInput">User Name</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" name="Password"  
+                   id="password" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+        <p class="mt-5 mb-3 text-muted"></p>
+    </form>
+</main>
+<script>
+    function login()
+    {
+        var sqlLogin = `SELECT u.Id userId,UserName,isnull(HaveApprove,0)HaveApprove,isnull(ApproveId,0)ApproveId,r.* from Users2 u join Roles2 r on r.id=u.RoleId where u.UserName='${$("#user").val()}' and u.password='${$("#password").val()}'`;
+        var dataLogin = readSQL(sqlLogin);
+        const d = new Date();
+        d.setYear(2024)
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = "user="+dataLogin[0].UserName+";" + expires;
+        console.log(dataLogin);
+        return false;
+    }
+    function logOut()
+    {
+        const d = new Date();
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = "user=;" + expires;
+        console.log(document.cookie);
+    }
+</script>

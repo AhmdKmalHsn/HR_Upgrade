@@ -1,0 +1,75 @@
+﻿
+@if(Request.Cookies["Reports_Salary_Details"]==null)
+{
+Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>=2){
+
+}else
+{
+   Response.Redirect("~/home/Index");
+}
+
+@{
+    ViewBag.Title = "payments";
+}
+<html>
+<body>
+    <h2>الخصومات</h2>
+    <hr>
+    <div class="input-group mb-3" style="width:80%">
+        <button id="okay" class="btn btn-outline-dark"><b>سحب</b></button>
+        <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+        <label class="input-group-text" for="inputGroupSelect01">الى</label>
+        <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+        <label class="input-group-text" for="inputGroupSelect01">من</label>
+    </div>
+    <table id="result" class="table table-striped">
+        <thead></thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+    </table>
+</body>
+</html>
+<script>
+    $('#okay').click(function () {
+        $.ajax({
+            url: "sanctions_total",
+            data: { f: $("#dateFrom").val(), t: $("#dateTo").val() },
+            success: function (res) {
+                $('thead').html('<tr><th>القسم</th><th>عدد الايام</th><th>القيمة</th></tr>');
+                var html1='',sum_amnt=0,sum_days=0;
+                $.each(JSON.parse(res), function (index, item) {
+                    sum_amnt += item.amount;
+                    sum_days += item.days;
+                    html1 += '<tr onclick="showMe(this.id)" id="row'+index+'"><td>' + item.Name + '</td><td>' + item.days + '</td><td>' + item.amount + '</td></tr>';
+                    html1 += '<tr style="display:none" id="div_row'+index+'"><td colspan="3"><table class="table" id="'+item.Name+'"><tr><td>التاريخ</td><td>رقم الملف</td><td>الاسم</td><td>عدد الايام</td><td>القيمة</td></tr></table></td></tr>'
+                });
+                $('tbody').html(html1);
+                $('tfoot').html('<tr><td>الاجمالي</td><td>' + sum_days + '</td><td>' + sum_amnt.toFixed(2) + '</td></tr>');
+                $.ajax({
+                    url: "sanctions_details",
+                    data: { f: $("#dateFrom").val(), t: $("#dateTo").val() },
+                    success: function (res) {
+                        var html2='';
+                        console.log(JSON.parse(res));
+                        $.each(JSON.parse(res), function (index, item) {
+                            document.getElementById(item.Name).innerHTML += '<tr><td>' +item.date.substr(0,10) 
+                                + '</td><td>' + item.FileNumber + '</td><td>' + item.KnownAs
+                                + '</td><td>' + item.DaysNumber + '</td><td>' + item.Amount + '</td></tr>';
+                        });
+                        
+                    }
+                });
+
+            }
+        });
+        
+    });
+    function showMe(parent_id)
+    {
+        var visual = document.getElementById('div_' + parent_id).style.display;
+        if (visual == "none") document.getElementById('div_' + parent_id).style.display = "contents";
+        if (visual == "contents") document.getElementById('div_' + parent_id).style.display = "none";
+    }
+</script>

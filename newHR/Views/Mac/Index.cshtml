@@ -1,0 +1,377 @@
+﻿@using WebMatrix.Data;
+@{
+    var db = Database.Open("CS");
+    var selectQueryString = " select Id,MacIP,MacType,MacName,IsFixed from Mac";
+    ViewBag.Title = "Index";
+}
+<style>
+    table {
+        border: 2px solid black;
+    }
+
+        table td {
+            text-align: center;
+            font-size: 24px;
+        }
+
+    .formContainer {
+        border: 2px solid black;
+        width: 80%;
+        /*height:80%;*/
+        position: fixed;
+        top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: powderblue;
+    }
+
+    .formHeader {
+        display: flex;
+        background-color: #e1d2d2;
+        border: 0px double black;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: stretch;
+    }
+
+    #formTable {
+        margin-top: 30px;
+        border: none;
+    }
+</style>
+<script>
+    var machine = [];
+    @foreach (var row in db.Query(selectQueryString))
+    {
+        <text>
+            machine.push({IP:'@row.MacIP',dir:'@row.MacType'});
+        </text>
+    }
+</script>
+<h2>Index</h2>
+<input type="date" id="dateFrom" class="input-lg" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+<input type="date" id="dateTo" class="input-lg" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+<button id="okay" class="btn btn-light btn-lg">سحب</button>
+<button class="btn btn-light btn-lg" style="float:left" onclick="$('.formContainer').show(); $('#createBtn').show(); $('#updateBtn').hide();"><span class="glyphicon glyphicon-plus"> أضافة </span></button>
+
+<table id="tbl" class="table table-hover table-bordered">
+    <tr><td></td><td>Id</td><td>MacIP</td><td>MacName</td><td>MacType</td><td>تعديل</td><td>حذف</td></tr>
+    @foreach (var row in db.Query(selectQueryString))
+    {
+        <tr>
+            <td><input class="input-lg" style="transform:scale(2);" type="checkbox" id=@row.MacIP></td>
+            <td>@row.Id</td>
+            <td>@row.MacIP</td>
+            <td>@row.MacName</td>
+            <td>@row.MacType</td>
+            <td><button onclick="update(this)" class="btn btn-success btn-lg btn-block" ><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></td>
+            <td><button onclick="del(this)" class="btn btn-danger btn-lg btn-block"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+        </tr>
+    }
+</table>
+<button id="upload" onclick="upload2(temp)" class="btn btn-primary btn-lg">رفع</button>
+<div id="progress" style="height:30px;border:1px solid black;text-align:left"><div id="bar" style="text-align:center;height:100%;width:1%;background-color:aqua"></div></div>
+<div class="formContainer">
+    <div class="formHeader"><span onclick="$('.formContainer').hide()" style="float:right;padding:8px;font-size:24px">X</span></div>
+    <table id="formTable" class="table table-bordered" dir="rtl" border="1">
+        <tr>
+            <td colspan="2">ماكينة بصمة</td>
+        </tr>
+        <tr>
+            <td>MacIP</td> 
+            <td><input type="text" id="MacIP" class="input-lg" /></td> 
+        </tr>
+        <tr>
+            <td>MacType</td>
+            <td>
+             <select id="MacType" class="input-lg">
+                <option value="All">الكل</option>
+                <option value="In">دخول</option>
+                <option value="Out">خروج</option>
+             </select>
+            </td>
+        </tr>
+        <tr>
+            <td>MacName</td>
+            <td><input type="text" id=MacName class="input-lg"><td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <button id="createBtn" class="btn btn-primary btn-lg">اضافة</button>
+                <button id="updateBtn" class="btn btn-primary btn-lg">تعديل</button>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div id="cont">
+<img id="loading" src="~/1.gif"  style="z-index:5;display:none">
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <td>م</td>
+            <td>رقم الملف</td>
+            <td>الوقت</td>
+            <td>دخول/خروج</td>
+            <td>الماكينة</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="search" id="FileNo"/></td>
+            <td><input type="search" id="Time" /></td>
+            <td><input type="search" id="State" /></td>
+            <td><input type="search" id="MacIP1" /></td>
+        </tr>
+    </thead>
+    <tbody id="TBody"></tbody>
+</table>
+</div>
+<!--تعديل الماكينات-->
+<script>
+    $('.formContainer').hide();
+    var id;
+    console.log(machine);
+function del(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        id = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+
+        var result = confirm("Want to delete?");
+        if (result) {
+
+            //getData(id);
+            $.ajax({
+                url: "delete",
+                data:
+                    {
+                        Id: id
+                    },
+                dataType: "json",
+                success: function (data) { alert("تمت العملية بنجاح"); window.location.reload(); },
+                fail: function (response) { alert("خطأ");console.log(response); }
+            });
+        }
+}
+function getData(id) {
+    $.ajax({
+        url: "getdata",
+        data: {Id:id},
+        dataType: "json",
+        success: function (data) { console.log(data); },
+        fail: function (response) { console.log(response); }
+    });
+}
+function update(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        id = document.getElementById("tbl").rows[i].cells[1].innerHTML;
+        $.ajax({
+            url: "getdata",
+            data: { Id: id },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                $.each(response, function (key, data) {
+                    
+                    $('#MacIP').val(data.MacIP);
+                    $('#MacType').val(data.MacType);
+                    $('#MacName').val(data.MacName);
+                });
+
+                $('.formContainer').show();
+                $('#createBtn').hide();
+                $('#updateBtn').show();
+            },
+            fail: function (response) { console.log(response); }
+        });
+    }
+
+$("#createBtn").click(function () {
+    
+    $.ajax({
+        url: "create",
+        data:
+            {
+                MacIP:$('#MacIP').val(),
+                MacType:$('#MacType').val(),
+                MacName:$('#MacName').val()
+            },
+        dataType: "json",
+        success: function (data) {console.log(data); alert("تمت العملية بنجاح"); window.location.reload(); },
+        fail: function (response) { alert("خطأ"); console.log(response); }
+    });
+});
+$("#updateBtn").click(function () {
+    $.ajax({
+        url: "update",
+        data:
+            {
+                Id: id,
+                MacIP: $('#MacIP').val(),
+                MacType: $('#MacType').val(),
+                MacName: $('#MacName').val()
+            },
+        dataType: "json",
+        success: function (data) { console.log(data); alert(); window.location.reload(); },
+        fail: function (response) { console.log(response); }
+    });
+});
+
+</script>
+
+<!--اختيار الماكينات-->
+<script>
+    var MacList=[]
+    $('#okay').click(function () {
+        MacList = [];
+
+        $('input:checkbox:checked').each(function( index ) {
+            MacList.push($(this).attr("id"));          
+        });
+        //console.log(MacList);
+        if (MacList.length == 0) alert("please select at least one device!");else excute();
+    }); 
+    var res = [];
+    var temp = [];
+  function excute() {
+       res = [];
+       temp = [];
+       var promises = [];
+
+                $("#loading").css("display", "block");
+                for (var i = 0; i < MacList.length; i++) {
+                    console.log(machine.find(w=>w.IP==MacList[i]).dir);
+                    var request = $.ajax(//begin ajax card
+                    {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        url: 'GetAllLogsBetween',//vary important #change
+                        data: { Ip: MacList[i], F: $('#dateFrom').val(), T: $('#dateTo').val()},
+                        success:
+                            function (response) {                              
+                                res = res.concat(response);
+                                temp = res;
+                            },
+                            error:
+                            function (response) {
+                                console.log("Error: " + response);
+                            }
+                    });
+
+                    promises.push(request);
+                }
+                
+                $.when.apply($, promises).always(function () {
+                    console.log('All Done');
+                    //console.log(res);
+                    $.each(res, function (key, item) {
+                        if (machine.find(w=>w.IP == item.MacIP).dir == "All") {
+                            //console.log("All");
+                        }
+                        else {
+                            if (machine.find(w=>w.IP == item.MacIP).dir == "Out") {
+                                item.State = 1;
+                            }
+                            else if (machine.find(w=>w.IP == item.MacIP).dir == "In") {
+                                item.State = 0;
+                            }
+                        }
+                    });
+                    console.log(res);
+                    $("#loading").css("display", "none");
+                    display(1,35);
+                });
+  }
+  function display(from, no) {
+        var html = '';
+        for (var i = from - 1; i < (from - 1 + no) ; i++) {
+            if (i > temp.length - 1) break;
+            else {
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + temp[i].IndRegID + '</td>';
+                html += '<td>' + temp[i].DateTimeRecord + '</td>';
+                if (temp[i].State == 1) html += '<td>خروج </td>';
+                else html += '<td>دخول</td>';
+                html += '<td>' + temp[i].MacIP + '</td>';
+                html += '</tr>';
+            }     
+        }
+        $('#TBody').html(html)
+    }
+  $("#FileNo,#Time,#State,#MacIP1").keyup(function () {
+     
+      if ($("#FileNo").val()) temp = res.filter(w => w.IndRegID == $("#FileNo").val()).filter(w => w.DateTimeRecord.includes($("#Time").val())).filter(w => w.MacIP.includes($("#MacIP1").val()));
+      else temp = res.filter(w => w.DateTimeRecord.includes($("#Time").val())).filter(w => w.MacIP.includes($("#MacIP1").val()));
+      display(1, 35);
+  });
+
+</script>
+
+<!--رفع النتائج الي قاعدة البيانات-->
+<script>
+    
+    function upload() {
+        var promises = [];
+        console.log(temp.length);
+        for (var i = 0; i < temp.length; i++) {
+            var request =  $.ajax(//begin ajax card
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'upload',//vary important #change
+                data: 
+                    { FN: temp[i].IndRegID,
+                    DT: temp[i].DateTimeRecord,
+                    TP: temp[i].State == 1 ? 'Out' : 'In'
+                    },
+                success:
+                    function (response) {
+                        console.log("success res: " + response);
+                    },
+                error:
+                    function (response) {
+                    console.log("Error: " + response);
+                }
+               });
+           
+            promises.push(request);
+        }
+        $.when.apply($, promises).always(function () {
+            console.log('All Done');
+        });
+    }
+    function upload2(arr) {
+        var promises = [];
+        console.log(arr.length);
+        for (var i = 0; i < 1000; i++) {
+            var request = $.ajax(//begin ajax card
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'upload',//vary important #change
+                data:
+                    {
+                        FN: arr[i].IndRegID,
+                        DT: arr[i].DateTimeRecord,
+                        TP: arr[i].State == 1 ? 'Out' : 'In'
+                    },
+                success:
+                    function (response) {
+                        console.log("success res: " + response);
+                    },
+                error:
+                    function (response) {
+                        console.log("Error: " + response);
+                    }
+            });
+
+            promises.push(request);
+        }
+        $.when.apply($, promises).always(function () {
+            console.log('All Done');
+            arr.splice(0, 1000);
+            if (arr.length > 0) upload2(arr);
+        });
+    }
+
+</script>

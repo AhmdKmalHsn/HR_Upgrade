@@ -1,0 +1,7 @@
+CREATE TABLE [dbo].[LeaveFromToes] (
+    [Id]      INT            IDENTITY (1, 1) NOT NULL,
+    [From]    NVARCHAR (MAX) NULL,
+    [To]      NVARCHAR (MAX) NULL,
+    [Value]   NVARCHAR (MAX) NULL,
+    [DelayId] INT            NOT NULL,
+);

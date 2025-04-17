@@ -1,0 +1,879 @@
+﻿@using WebMatrix.Data;
+@{
+    ViewBag.Title = "";
+}
+@if (Session["user"] == null)
+{
+    //Response.Redirect("~/home/log");
+}
+@{
+    var db2 = Database.Open("CS");
+	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId<>3 order by FileNumber";
+}
+<style>
+    .topdivs {
+        padding: 8px;
+        font-size: 16px;
+        display: contents;
+    }
+    .topcont{
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+    }
+    
+</style>
+
+<h1>جدول الحضور(الكارتة)</h1>
+<hr>
+<br>
+<div class="container">
+    <div class="col-6">
+        <div class="input-group">
+            <label class="input-group-text" style="width: 110px;text-align:center;"><b>file number</b></label>
+            <input style="float:left" type="number" class="form-control " name="fileNo" id="fileNo">
+			<input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        </div>
+        <div class="input-group">
+            <label class="input-group-text" style="width: 110px;text-align:center;"><b>Month</b></label>
+            <select id="M" class="form-control" style="float:left">
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <option>@i</option>
+                }
+            </select>
+        </div>
+        <div class="input-group">
+            <label class="input-group-text" style="width: 110px;text-align:center;"><b>Year</b></label>
+            <select id="Y" class="form-control" style="float:left">
+                <option>2022</option>
+                <option>2021</option>
+            </select>
+        </div>
+        <br>
+        <div class="d-grid gap-2">
+            <button id="ok" class="btn btn-block btn-outline-primary" onclick=""><b>ok</b></button>
+        </div>
+    </div>
+</div>
+
+<hr>
+       <!--الصورة-->
+    <div id="loader">
+        <center><img src="~/1.gif" /></center>
+    </div>
+   <!--الاسم ورقم الملف -->    
+    <div class="divright">
+        <span id="n" class=""></span>
+        <span id="total1" class=""></span>
+        <span id="total2" class=""></span>
+        <span id="total3" class=""></span>
+        <span id="total4" class=""></span>
+    </div>
+    <!--جدول الحضور-->
+    <div class="table-responsive-lg" style="box-shadow:rgba(0,0,0,.2) 8px 8px;margin:20px;">
+        <table class="table table-hover table-bordered">
+            <thead id="thead" style="text-align:center;font-size:large;font-weight: bold;position:sticky; top:0px;background-color:darkorange;border:solid medium;"></thead>
+            <tbody id="container" style="text-align:center;font-size:large"></tbody>
+            <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+    </div>
+    <!-- المرتب-->
+    <div class="table-responsive-lg" style="box-shadow:rgba(0,0,0,.2) 8px 8px; margin:20px;">
+        <table class="table table-hover table-bordered">
+            <thead id="_thead" style="text-align:center;font-size:large;font-weight: bold;position:sticky; top:50px;background-color:darkorange;border:solid medium;"></thead>
+            <tbody id="_container" style="text-align:center;font-size:large"></tbody>
+            <tfoot id="_tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+    </div>
+   <!--الحضور-->
+   <!-- Modal -->
+@if(Int32.Parse(Request.Cookies["Attendance"].Value)>=3){
+<div class="modal fade" id="MODALIN" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">حضور</h2>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                
+                <table class="table" style="text-align:right;font-size:20px;font-weight:bold"> 
+                    <tr>
+                        <td colspan="2">
+                            <div id="FNIN"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">رقم الملف</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="DIN" style="border-radius:10px;text-align:right"></div>
+                        </td>
+                        <td>
+                            التاريخ 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="time" id="TIN" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            الميعاد
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                           <select id="deviceIN" onchange="$('#TIN').val( $('#deviceIN').val())">
+                           </select>
+                        </td>
+                        <td>
+                            من البصمة
+                        </td>
+                    </tr>
+                    
+                </table>
+                <div class="modal-footer">
+                    <button id="ADDIN" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">add</button>
+                    <!--button id="delete1" style="float:left" type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">delete</button-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end modal -->
+<div class="modal fade" id="MODALOUT" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">انصراف</h2>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+
+                <table class="table" style="text-align:right;font-size:20px;font-weight:bold">
+                    <tr>
+                        <td colspan="2">
+                            <div id="FNOUT"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">رقم الملف</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="DOUT" style="border-radius:10px;text-align:right"></div>
+                        </td>
+                        <td>
+                            التاريخ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="time" id="TOUT" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            الميعاد
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                           <select id="deviceOUT" onchange="$('#TOUT').val( $('#deviceOUT').val())">
+                           </select>
+                        </td>
+                        <td>
+                            من البصمة
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer">
+                    <button id="ADDOUT" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">add</button>
+                    <!--button id="delete1" style="float:left" type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">delete</button-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+   <!--الأنصراف-->
+}
+@if(Int32.Parse(Request.Cookies["Mission"].Value)>=3){
+<div class="modal fade" id="MODALMission" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">حضور</h2>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                
+                <table class="table" style="text-align:right;font-size:20px;font-weight:bold"> 
+                    <tr>
+                        <td colspan="2">
+                            <div id="FNMission"></div>
+                        </td>
+                        <td>
+                            <div style="text-align:right;font-size:20px;font-weight:bold">رقم الملف</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="DMission" style="border-radius:10px;text-align:right"></div>
+                        </td>
+                        <td>
+                            التاريخ 
+                        </td>
+                    </tr>
+                    <tr>
+						 <td colspan="2">
+                            <input type="time" id="TINMission" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            الي
+                        </td>
+                        <td colspan="2">
+                            <input type="time" id="TOUTMission" style="border-radius:10px;text-align:center">
+                        </td>
+                        <td>
+                            من
+                        </td>
+                    </tr>
+                    <tr>
+						<td colspan="2">
+                           <select id="deviceMIN" onchange="$('#TINMission').val( $('#deviceIN').val())">
+                           </select>
+                        </td>
+                        <td colspan="2">
+                           <select id="deviceMOUT" onchange="$('#TOUTMission').val( $('#deviceOUT').val())">
+                           </select>
+                        </td>
+                        <td>
+                            من البصمة
+                        </td>
+                    </tr>
+                    
+                </table>
+                <div class="modal-footer">
+                    <button id="ADDMission" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">add</button>
+                    <!--button id="delete1" style="float:left" type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">delete</button-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+<style>
+    #tblStocks {
+          tr:nth-child(even){background-color: #f2f2f2;}
+    }
+    #thead td{
+        vertical-align:middle;
+    }
+</style>
+    
+ <!--modal-->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       
+		<hr>
+		<div style="overflow-y:auto;height:400px">
+		  <table id="myTable" class="table table-bordered table-responsive-lg">
+		    <thead>
+			<tr>
+			  <th>رقم الملف</th>
+			  <th>الاسم</th>
+			  <th>القسم</th>
+			  <th>choose</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var row in db2.Query(sql))
+                     {
+                        <tr> 
+						 <td style="text-align:center">@row.fn</td>
+						 <td style="text-align:center">@row.name</td>
+						 <td style="text-align:center">@row.dept</td>
+						 <td style="text-align:center">
+						   <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" /></td>
+						</tr>
+                     }
+		    </tbody>
+		  </table>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!---->
+
+  <script>
+ $(function () {
+
+  /*fetch('http://192.168.1.49:500/employees' , 
+       {
+		   mode: 'cors',
+	        headers: {
+    					'Access-Control-Allow-Origin':'*'
+      				 }
+	   })
+  .then((response) => response.json())
+  .then((data) => console.log(data));*/
+            
+			
+			$('#loader').hide();
+            $('.table-responsive-lg').show();
+			//$('#loader').show();
+            //$('.table-responsive-lg').hide();
+			                      
+                            //$('#loader').hide();
+                          /*  
+                           if(EMPS.includes(''+response[0].fileNo)){
+
+                           $('.table-responsive-lg').show();
+                            $('#thead').html('<tr style=""><td>اليوم</td>' +
+                                             '<td>التاريخ</td>' +
+                                             '<td>الدخول</td>' +
+                                             '<td>الخروج</td>' +
+
+                                             '<td>حضور</td>' +
+                                             '<td>غياب</td>' +
+                                             '<td>اجازة</td>' +
+                                             '<td>تأخير</td>' +
+                                             '<td>انصراف مبكر</td>' +
+                                             '<td>أضافي</td>' +
+                                             '<td>مأمورية</td>' +
+                                             '</tr>');*/
+                            let l = 0,
+                                ll = 0,
+                                d = 0,
+                                occur = 0,
+                                add = 0,
+                                attSum = 0,
+                                vacSum = 0,
+                                ghSum = 0,
+                                h = 0,
+                                occurFirst=false,
+								abs;
+								fridays=0;
+                            //var event = new Date();
+                            //var html = '';
+							var data=[];
+							data.push(response[0]);
+							for(var i=1;i<response.length;i++)
+							{
+							  if(response[i].day!==response[i-1].day){data.push(response[i])}
+							}
+                            //console.log(data);
+                            return await data;
+							/*for(var i=0;i<data.length;i++)
+							{
+							//if(data[i].joiningDate=="" && data[i].day != "Friday")data[i].joiningDate=="1990-01-01";
+                            let ghDay=0,gh=0;var xlate=0;
+							if (data[i].day != "Friday" || (data[i].day != "Saturday" &&  response[0].fileNo == 2887)|| (data[i].day != "Saturday" &&  response[0].fileNo == 2431)) {
+								//بداية الحسابات
+                                abs = data[i].dayPart == 0 ? data[i].absenceValue : data[i].dayPart
+                                // calc day number
+                                gh = (60 * data[i].dailyHour)
+                                   - data[i].attend
+                                   - (data[i].lateValue > -1 ? 
+								          (data[i].late>=data[i].dailyHour/4*60&&data[i].late<data[i].dailyHour/2*60 ?data[i].late-data[i].dailyHour/4*60:
+										  (data[i].late>=data[i].dailyHour/2*60 ?data[i].late-data[i].dailyHour/2*60:
+										  data[i].late)) : 0)
+                                   - (data[i].leaveValue > -1 ?
+                                          (data[i].leave>=data[i].dailyHour/4*60&&data[i].leave<data[i].dailyHour/2*60 ?data[i].leave-data[i].dailyHour/4*60:
+										  (data[i].leave>=data[i].dailyHour/2*60 ?data[i].leave-data[i].dailyHour/2*60:
+								          data[i].leave)) : 0)
+                                   - (data[i].between == 0 ? data[i].duration : 0)
+                                   - (60 * abs * data[i].dailyHour);
+                                //end no of days
+                                
+                                ghDay = 0;
+                                if (gh > 0 && gh <= (60 * data[i].dailyHour / 4)) ghDay = 0.25;
+                                if (gh <= (60 * data[i].dailyHour / 2) && gh > (60 * data[i].dailyHour / 4)) ghDay = 0.5;
+                                if (gh > (60 * data[i].dailyHour / 2) && gh <= (3 * 60 * data[i].dailyHour / 4)) ghDay = 0.75;
+                                if (gh > (3 * 60 * data[i].dailyHour / 4)) ghDay = 1;
+                                if (data[i].attend == 0) ghDay = 1 - abs;
+                                //نهاية الحسابات
+                                $('#n').html('<h1>' + data[i].name + '</h1>');
+                                //التاخيرات
+                                
+                           
+                                if (
+								       data[i].lateValue > 0 && data[i].inbetween == 0
+									   &&( 
+									   (data[i].late > 0 && data[i].late < 53) ||
+									   (data[i].late-data[i].dailyHour*60/4 > 0 && data[i].late-data[i].dailyHour*60/4 < 53)||
+									   (data[i].late-data[i].dailyHour*60/2 > 0 && data[i].late-data[i].dailyHour*60/2 < 53)
+									   )
+									)
+									{
+									   occur++;							   
+									}
+									
+                                if (data[i].lateValue > 0 && data[i].inbetween == 0 
+								&&// لما يكون الحضور بدون اضافي
+								     (
+									   parseInt(data[i].attend)+data[i].dayPart*60*data[i].dailyHour+(data[i].leave<0?data[i].leave:0)
+									   <data[i].dailyHour*60
+									 )
+									) 
+									{
+                                    if (occur == 1&& occurFirst==false) 
+									{
+									    occurFirst=true;
+                                        xlate = 'انذار';
+                                    } 
+									else 
+									{
+									   
+                                        xlate = data[i].lateValue;
+                                        if (data[i].lateValue > 0 && l >= 2) { d++; }
+                                        if (l < 2 && l >= 0) { l += data[i].lateValue; }
+                                    }
+                                }
+                                else
+                                {
+                                    xlate = '';
+                                }
+								}
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) { html += '<tr bgcolor="#1F1">'; }
+                                else {
+                                    html += '<tr>';
+                                    if (data[i].leaveValue > 0) ll += data[i].leaveValue;//انصراف مبكر
+                                    add += data[i].addition;//اضافي
+                                }
+                                html += '<td >' + data[i].day + '</td>';
+                                html += '<td >' + data[i].date + '</td>';
+                                //;
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) html += '<td bgcolor="#1F1" onclick="selectIN(this)">'+ data[i].timeFrom+ '</td>';
+                                else html += ghDay > 0 ? '<td bgcolor="#Faa" onclick="selectIN(this)">' + data[i].timeFrom + '</td>' : '<td bgcolor="#eee"onclick=selectIN(this)>' + data[i].timeFrom + '</td>';
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887)|| (data[i].day == "Saturday" && response[0].fileNo == 2431)) html += '<td bgcolor="#1F1" onclick="selectOUT(this)">' + data[i].timeTo + '</td>';
+                                else html += ghDay > 0 ? '<td bgcolor="#Faa" onclick="selectOUT(this)">' + data[i].timeTo + '</td>' : '<td bgcolor="#eee"onclick=selectOUT(this)>' + data[i].timeTo + '</td>';
+                                /////////////
+                                //ايام الحضور
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887)  || (data[i].day == "Saturday" && response[0].fileNo == 2431))
+									{ 
+									fridays++;
+									if(new Date(data[i].joiningDate.substr(0,10))<=new Date(data[i].date))
+									{
+									 if( i>0 && i<data.length-1) {//
+										if (data[i-1].attend==0 && data[i+1].attend==0 )
+											{
+												html += '<td bgcolor="#1F1"></td>';
+											}
+										else 
+											{
+												if(fridays>1&&data.length==31)attSum++;
+                                                if(data.length<31)attSum++;
+												html += '<td bgcolor="#1F1">' + 1 + '</td>';
+											}
+										}//
+										if( i==0) {
+										if (data[i+1].attend==0 )
+											{
+												html += '<td bgcolor="#1F1"></td>';
+											}
+										else 
+											{
+												if(fridays>1&&data.length==31)attSum++;
+                                                if(data.length<31)attSum++;
+												html += '<td bgcolor="#1F1">' + 1 + '</td>';
+											}
+										}
+										if( i==data.length-1) {
+										if (data[i-1].attend==0 )
+											{
+												html += '<td bgcolor="#1F1"></td>';
+											}
+										else 
+											{
+												if(fridays>1&&data.length==31)attSum++;
+                                                if(data.length<31)attSum++;
+												html += '<td bgcolor="#1F1">' + 1 + '</td>';
+											}
+										}
+									}else html += '<td bgcolor="#1F1"></td>';//خذها من قاصرها
+										
+									}
+                                else 
+									{//حضور لسه مجاش
+										if (new Date(event.toISOString().substr(0, 10)) >= new Date(data[i].date)) 
+											{//here edit
+												attSum += data[i].officialAtt > 0 ? 1 : (1 - ghDay - abs);
+												html += '<td bgcolor="#4c4">' +((data[i].officialAtt > 0 ? 1 : (1 - ghDay - abs)) == 0 ? '' : (data[i].officialAtt > 0 ? 1 : (1 - ghDay - abs)))+ '</td>';
+											} 
+										else html += '<td bgcolor="#4c4"></td>';
+
+									}//نهاية الحضور
+									
+									//بداية الغياب
+									
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431) ) 
+									{
+									if(new Date(data[i].joiningDate.substr(0,10))<=new Date(data[i].date))
+									{
+									if( i>0 && i<data.length-1) {//
+										if (data[i-1].attend==0 && data[i+1].attend==0 )
+											{
+												if(fridays>1)ghSum+=(1-data[i].dayPart);
+												html += '<td bgcolor="#1f1">' + ((1-data[i].dayPart)==0?'':(1-data[i].dayPart)) + '</td>';
+											}
+										else 	html += '<td bgcolor="#1f1"></td>';
+										}//
+										if( i==0) {
+										if (data[i+1].attend==0 )
+											{
+												if(fridays>1)ghSum+=(1-data[i].dayPart);
+												html += '<td bgcolor="#1f1">' +((1-data[i].dayPart)==0?'':(1-data[i].dayPart))+ '</td>';
+											}
+										else 
+											{
+												html += '<td bgcolor="#1f1"></td>';
+											}
+										}
+										if( i==data.length-1) {
+										if (data[i-1].attend==0 )
+											{
+												if(fridays>1)ghSum+=(1-data[i].dayPart);
+												html += '<td bgcolor="#1f1">' + ((1-data[i].dayPart)==0?'':(1-data[i].dayPart))+ '</td>';
+											}
+										else 
+											{
+												html += '<td bgcolor="#1f1"></td>';
+											}
+										}
+										
+									  }
+									  else 
+									  {
+											    if(fridays>1)ghSum++;
+												html += '<td bgcolor="#1f1">' + 1 + '</td>';
+									  }
+									}
+                                else 
+									{//غياب في اجازات رسمية لسة مجتش
+                                    //if (new Date(event.toISOString().substr(0, 10)) >=new Date(data[i].date.substr(6,4)+"-"+data[i].date.substr(3,2)+"-"+data[i].date.substr(0,2))) {
+										ghSum += data[i].officialAtt > 0 ? 0 : ghDay;
+										html += '<td bgcolor="#c44">' +((data[i].officialAtt > 0 ? 0 : ghDay) == 0 ? '' : (data[i].officialAtt > 0 ? 0 : ghDay))+ '</td>';
+                                    //}else  html += '<td bgcolor="#c44"></td>';
+									}
+                                    
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) {
+                                    vacSum += data[i].dayPart;
+                                    html += '<td bgcolor="#1F1">' +
+									(data[i].dayPart > 0 ? data[i].dayPart : '') + 
+									'</td>';
+                                }
+                                else {
+                                    vacSum += abs;
+									html += '<td bgcolor="#Fc2">' + (abs > 0 ? abs : '') + '</td>';
+                                }
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) { html += '<td bgcolor="#1F1"></td>'; }
+                                else { html += '<td bgcolor="#78A">' + xlate + '</td>'; }
+                                //انصراف مبكر
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) { html += '<td bgcolor="#1F1"></td>'; }
+                                else { html += '<td bgcolor="#1CF">' + (data[i].leaveValue > 0 ? data[i].leaveValue : '') + '</td>'; }
+                                //اضافي
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) { html += '<td bgcolor="#1F1"></td>'; }
+                                else { html += '<td bgcolor="#Fac">' + (data[i].addition > 0 ? data[i].addition : '') + '</td>'; }
+                                //المامورية
+                                if (data[i].day == "Friday" || (data[i].day == "Saturday" && response[0].fileNo == 2887) || (data[i].day == "Saturday" && response[0].fileNo == 2431)) { html += '<td bgcolor="#1F1">' + (data[i].mission == 1 ? '<span class="glyphicon glyphicon-ok text-success"></span>' : '') + '</td>'; }
+                                else { html += '<td bgcolor="#48F" onclick="selectMission(this)">' + (data[i].mission == 1 ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>' : '') + '</td>'; }
+                                // نهاية الصف
+                                html += '</tr>';*/
+                            /*}
+                            ///نهاية الشهر
+                            //حساب جزاءات التأخير
+                            if (l > 2) d++;
+                            var dValue = 0;
+                            switch (d % 3) {
+                                case 0: dValue = parseInt(d / 3) * 1.75; break;
+                                case 1: dValue = parseInt(d / 3) * 1.75 + .25; break;
+                                case 2: dValue = parseInt(d / 3) * 1.75 + .75; break;
+                            }
+
+                            let
+                                monthly = 0,
+
+                                expensive = 0,
+                                regular = 0,
+                                management = 0,
+                                skill = 0,
+
+                                expensiveValue = 0,
+                                regularValue = 0,
+                                managementValue = 0,
+                                skillValue = 0,
+
+                                totalDays = attSum + ghSum + vacSum,
+                                noOfDays = attSum + vacSum,
+                                daysValue = 0;
+
+                            expensive = response[0].expensive;
+                            regular = response[0].regular;
+                            management = response[0].management;
+                            monthly = response[0].monthlySalary;
+                            skill = response[0].skill;
+                            //***********************قيمة عدد الايام
+                            if (totalDays > 30) { daysValue = (noOfDays>0?noOfDays - 1:0) * monthly / 30; }
+                            if (totalDays == 30) { daysValue = (noOfDays) * monthly / 30; }
+                            else if (totalDays < 30) { daysValue = (noOfDays * 30 / totalDays) * monthly / 30; }
+                            //***********************باقي الحوافز
+                            if (totalDays > 30) {
+                                expensiveValue = (noOfDays>0?noOfDays - 1:0) * expensive / 30;
+                                //regularValue=(noOfDays-1)*regular/30;
+                                managementValue = (noOfDays>0?noOfDays - 1:0) * management / 30;
+                                skillValue = ((noOfDays>0?noOfDays - 1:0) * skill) / 30;
+                            }
+                            else if (totalDays == 30) {
+                                expensiveValue = (noOfDays) * expensive / 30;
+                                //regularValue=(noOfDays)*regular/30;
+                                managementValue = (noOfDays) * management / 30;
+                                skillValue = (noOfDays) * skill / 30;
+                            }
+                            else if (totalDays < 30) {
+                                expensiveValue = (noOfDays) * expensive / totalDays;
+                                //regularValue=(noOfDays)*regular/totalDays;
+                                managementValue = (noOfDays) * management / totalDays;
+                                skillValue = (noOfDays) * skill / totalDays;
+                            }
+                            ///حافز الانتظام
+                            if(vacSum <= 1.75) {
+                                if (ghSum <= 0)regularValue = regular;
+                                if (ghSum > 0 && ghSum <= 1.5)regularValue = regular * .75;
+                            }
+                            else {
+							
+                                if(response[0].balance >= 0) {
+                                    regularValue = regular;
+                                }
+                                else {
+                                    if ((vacSum + ghSum) > 1.75 && (vacSum + ghSum) <= (1.75 + 1.5)) {
+                                        regularValue = regular * 0.75;
+                                    }
+                                }
+
+                            }
+                            if (ghSum > 1.5) {
+                                regularValue = 0;
+                            }
+							if (ghSum > 0 && ghSum <= 1.5)
+							{
+							    regularValue = regular * .75;
+							}
+
+                            let totalHave = (parseFloat(daysValue)
+                                           + parseFloat(regularValue)
+                                           + parseFloat(skillValue)
+                                           + parseFloat(expensiveValue)
+                                           + parseFloat(managementValue)
+                                           + parseFloat(add * response[0].overTime * response[0].hourSalary)
+                                           + parseFloat(response[0].rewards)).toFixed(2);
+
+                            let totalCut = (parseFloat(response[0].insurance)
+                                      + parseFloat(response[0].deductions)
+									  + parseFloat(response[0].sanctions)
+                                      + parseFloat(dValue * response[0].dailySalary)
+                                      + parseFloat((l < 2 ? l + ll : 2 + ll) * response[0].hourSalary)
+                                      + parseFloat(response[0].clothes)
+                                      + parseFloat(response[0].loans)).toFixed(2);
+                            $('#_container').html(
+                            '<tr ><td colspan="4">' + response[0].name + '</td></tr>' +
+                            '<tr style="background-color:yellow"><td>' + response[0].fileNo + '</td><td>رقم الملف</td><td>' + response[0].department + '</td><td>القسم</td></tr>' +
+                            '<tr><td colspan="2" style="background-color:red">الاستقطاعات</td><td colspan="2" style="background-color:green">الاستحقاقات</td></tr>' +
+
+                            '<tr><td >' + response[0].insurance.toFixed(2) + '</td><td > خصم التامينات </td><td >' + (daysValue).toFixed(2) + '</td><td > قيمة الحضور </td></tr>' +
+                            '<tr><td >' + (parseFloat(response[0].deductions) + (dValue * response[0].dailySalary)).toFixed(2) + '</td><td > الخصومات </td><td >' + regularValue.toFixed(2) + '</td><td > حافز الانتظام </td></tr>' +
+                            '<tr><td >' + response[0].sanctions.toFixed(2) + '</td><td > الجزاءات </td><td >' + skillValue.toFixed(2) + '</td><td > حافز المهارة </td></tr>' +
+                            '<tr><td >' + response[0].clothes.toFixed(2) + '</td><td > ملبس </td><td >' + expensiveValue.toFixed(2) + '</td><td > غلاء المعيشة </td></tr>' +
+                            '<tr><td >' + ((l < 2 ? l + ll : 2 + ll) * response[0].hourSalary).toFixed(2) + '</td><td > تاخيرات </td><td >' + managementValue.toFixed(2) + '</td><td > حافز مجلس الادارة </td></tr>' +
+                            '<tr><td >' + response[0].loans.toFixed(2) + '</td><td > سلف </td><td >' + (add * response[0].overTime * response[0].hourSalary).toFixed(2) + '</td><td > أضافي </td></tr>' +
+
+                            '<tr><td >' + totalCut + '</td><td >  اجمالي الاستقطاعات</td><td >'
+                            + totalHave + '</td><td > اجمالي الاستحقاقات </td></tr>' +
+                            '<tr><td colspan="2">' + (totalHave - totalCut).toFixed(2) + '</td><td colspan="2"> صافي المرتب </td></tr>'
+                            );
+                            
+                            $('#container').html(html);
+                            $('#tfoot').html('<tr><td colspan="4" rowspan=2>total</td><td rowspan=2>' + attSum + '</td><td rowspan=2>' + ghSum + '</td><td rowspan=2>' + vacSum + '</td><td>' + (l < 2 ? l : 2) + '</td><td rowspan=2>' + ll + '</td><td rowspan=2>' + add + '</td><td rowspan=2></td></tr><tr><td>'+dValue+'</td></tr>');
+                            }else alert("غير مسموح !");
+                       
+					   
+					    
+						*/
+function ajaxExcute() {
+        $.ajax({
+                    type: 'POST',
+                    dataType: 'JSON',
+                    url: '/truant/SalaryFN',
+                    data: { fileNo: $('#fileNo').val(), M: $('#M').val(), Y: $('#Y').val() },
+                    success:
+                        function (response) { 
+							return Response;
+                          
+						},
+                    error:
+                        function (response) {
+                            console.log("Error: " + response);
+							return null;
+                        }
+                });
+            }
+			
+
+            $('#ok').click(function () {
+                if ($('#fileNo').val())
+				{
+				   if(EMPS.includes($('#fileNo').val())){
+					   console.log(ajaxExcute())
+				   }
+				   else alert("غير مسموح !");
+				}
+                    
+                else alert("enter file number!");
+            });
+
+            $('#fileNo,#Y,#M').keyup(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    if ($('#fileNo').val())
+                        ajaxExcute();
+                    else alert("enter file number!");
+                }
+            });
+
+        });
+        var i = -1,INOUT='';
+        function selectIN(r) {
+            i = r.parentNode.rowIndex;
+            var date=$("#container tr:eq(" + (i - 1) + ") td:eq(1)").html();
+            var FN=$('#fileNo').val();
+            var sql="select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='"+date+"' and FileNumber="+FN+" and type='in' order by DateTime";
+            var data=readSQL(sql);
+            var html='<option >--select--</option>';
+            for(var i=0;i<data.length;i++)
+            {
+               html+='<option>'+data[i].time+'</option>';
+            } 
+            $('#deviceIN').html(html);
+            
+           
+            $('#FNIN').html(FN);
+            $('#DIN').html(date);
+            $('#TIN').val('');
+            $('#MODALIN').modal('show');
+        }
+        function selectOUT(r) {
+            i = r.parentNode.rowIndex;
+            var date=$("#container tr:eq(" + (i - 1) + ") td:eq(1)").html();
+            var FN=$('#fileNo').val();
+            var sql="select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='"+date+"' and FileNumber="+FN+" and type='out' order by DateTime";
+            var data=readSQL(sql);
+            var html='<option >--select--</option>';
+            for(var i=0;i<data.length;i++)
+            {
+               html+='<option>'+data[i].time+'</option>';
+            } 
+            $('#deviceOUT').html(html);
+            $('#FNOUT').html(FN);
+            $('#DOUT').html(date);
+            $('#TOUT').val('');
+            $('#MODALOUT').modal('show');
+        }
+		   function selectMission(r) {
+            i = r.parentNode.rowIndex;
+            var date=$("#container tr:eq(" + (i - 1) + ") td:eq(1)").html();
+            var FN=$('#fileNo').val();
+            var sql="select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='"+date+"' and FileNumber="+FN+" and type='in' order by DateTime";
+            var data=readSQL(sql);
+            var html='<option >--select--</option>';
+            for(var i=0;i<data.length;i++)
+            {
+               html+='<option>'+data[i].time+'</option>';
+            } 
+			var sql2="select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='"+date+"' and FileNumber="+FN+" and type='out' order by DateTime";
+            var data2=readSQL(sql2);
+            var html2='<option >--select--</option>';
+            for(var i=0;i<data2.length;i++)
+            {
+               html+='<option>'+data2[i].time+'</option>';
+            }
+            $('#deviceMOUT').html(html2);
+            
+           
+            $('#FNMission').html(FN);
+            $('#DMission').html(date);
+            $('#TINMission').val('');
+			$('#TOUTMission').val('');
+            $('#MODALMission').modal('show');
+        }
+
+        $('#ADDIN').click(function(){
+            INOUT=$('#TIN').val();
+            $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            url: 'AttendIN',
+            data: { fileNo: $('#FNIN').html(), d: $('#DIN').html(), t: $('#TIN').val() },
+            success: function (response)
+            {
+
+                if (response == 1) {
+                    $("#container tr:eq(" + (i - 1) + ") td:eq(2)").html(INOUT);//////////////////
+                    alert("Saved Successfully!");
+                }                  
+                else
+                    alert("Error!");
+            },
+            error: function (response)
+            {
+                alert("Error: " + response);
+            }
+        });
+        });
+
+        $('#ADDOUT').click(function () {
+            INOUT = $('#TOUT').val();
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'AttendOUT',
+                data: { fileNo: $('#FNOUT').html(), d: $('#DOUT').html(), t: $('#TOUT').val() },
+                success: function (response) {
+                    if (response == 1) {
+                        $("#container tr:eq(" + (i - 1) + ") td:eq(3)").html(INOUT);//////////////////
+                        alert("Saved Successfully!");
+                    }                      
+                    else
+                        alert("Error!");
+                },
+                error: function (response) {
+                    alert("Error: " + response);
+                }
+            });
+        });
+
+</script>
+
+
+

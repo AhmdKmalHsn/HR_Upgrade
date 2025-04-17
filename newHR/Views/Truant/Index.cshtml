@@ -1,0 +1,335 @@
+﻿@using WebMatrix.Data
+@{
+    
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .hd {
+    padding:8px;
+    display: none;
+    }
+    label {
+    padding:8px;
+    font-size:large;
+    }
+    button {
+    margin-left:10px;
+    }
+    .bigBtn
+    {
+        font-size: 30px;
+    }
+    #reBtn
+    {
+      display: none;
+    }
+</style>
+<h2>تقرير الغياب/الانقطاع خلال فترة</h2>
+<hr>
+
+    
+    <div class="buttons">
+        <button id="absBtn" class="btn btn-danger bigBtn">غياب</button>
+        <button id="cutBtn" class="btn btn-warning bigBtn">انقطاع</button>
+    </div>
+  
+ <!--الصورة-->
+    <div 
+    id="loader" 
+    style="display: none;
+    position: fixed;
+    top: 25%;
+    width: 100%;"
+    >
+        <center><img src="~/1.gif" /></center>
+    </div>
+<button id="reBtn" class="btn btn-info">رجوع</button>
+<div class="hd">
+    <div class="input-group" dir="rtl">
+        <label  class="input-group-text">من</label>
+          <input type="date" id="f" class="form-control" value=@DateTime.Now.Date.ToString("yyyy-MM-dd") >
+        <label  class="input-group-text">الى</label> 
+          <input type="date" id="t" class="form-control" value=@DateTime.Now.Date.ToString("yyyy-MM-dd") >
+        <!--P id="counter" style="float:right"></P-->
+        <label class="input-group-text" style="font-size:large">القسم</label>
+        @{
+            var db = Database.Open("CS");
+            var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+        }
+        <select id="dept" class="form-control">
+            @foreach (var row in db.Query(selectQueryString))
+            {
+                <option style="text-align:right" value="@row.Id">@row.Name</option>
+            }
+        </select>
+        <button id="btn" class="btn btn-outline-success">إنشاء</button>
+        <button class="btn btn-outline-primary" id="DLtoExcel">Excel</button>
+        
+    </div>
+    
+</div>
+<div id="employeeDiv">
+<table id="employee" class="table table-bordered table-hover display" cellspacing="0" dir="rtl">
+    
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table table-hover">
+                    <thead><tr><th>day</th><th>date</th></tr></thead>
+                    <tbody id="ModalTbody"></tbody>
+                </table>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                
+            </div>
+        </div>
+    </div>
+ </div>
+</div>
+</div>
+
+<!--script src="https://code.jquery.com/jquery-3.2.0.min.js"></script-->
+<script src="~/scripts/excelexportjs.js"></script>
+
+<script type="text/javascript">
+   //assuming you have a json data as above
+    //var data;
+    var $btnDLtoExcel = $('#DLtoExcel');
+
+    $btnDLtoExcel.on('click', function () {
+        //var data;
+        $.ajax(
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'List',
+                data: { from: $('#f').val(), to: $('#t').val(),dept:$('#dept').val() },
+                success:
+                    function (response) {
+                     
+                        $("#employee").excelexportjs({
+                             datatype: 'json'
+                           , dataset: response
+                           , columns: getColumns(response)
+                        });
+                        
+                    },
+                error:
+                    function (response) {
+                        alert("Error: " + response);
+                    }
+            });
+        
+
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        var tb;
+        $("#absBtn").click(function(){
+            $(".buttons").css("display","none");
+            $(".hd").css("display","block");
+            $("#reBtn").css("display","block");
+        });
+
+        $("#cutBtn").click(function(){
+            $(".buttons").css("display","none");
+            $(".hd").css("display","none");
+            $("#reBtn").css("display","block");
+            //tb.destroy();
+            ajaxExcute1();
+        });
+
+        $("#reBtn").click(function(){
+            $(".buttons").css("display","block");
+            $(".hd").css("display","none");
+            $("#reBtn").css("display","none");
+            $("#employeeDiv").html('<table id="employee"  dir="rtl"></table>');
+        });
+
+        function ajaxExcute0() {
+            $('#loader').css("display","block");
+            $.ajax({
+                type: 'POST',
+                //dataType: 'JSON',
+                url: 'List',
+                data: { from: $('#f').val(), to: $('#t').val() ,dept:$('#dept').val()},
+                success:
+                    function(response) {
+                       // $('#counter').html("<B>result :</B>" + response.length);
+                        $('#loader').css("display","none");
+                        var html = '';
+                        $.each(response, function (key, item) {
+
+                                html += '<tr>';
+                                html += '<td><button class="btn" onclick="reply_click(this.innerHTML)">' + item.fileNumber + '</button></td>';
+                                html += '<td>' + item.name + '</td>';
+                                html += '<td>' + item.abcenceDays + '</td>';
+                                html += '</tr>';
+
+                        });
+                        $('#employee').html('<colgroup><col><col><col></colgroup>'+
+    '<thead>'+
+        '<tr>'+
+            '<th>رقم الملف</th>'+
+            '<th>الاسم</th>'+
+            '<th>عدد ايام الغياب</th>'+
+        '</tr>'+
+    '</thead>'+
+    '<tbody id="tbody">'+html+'</tbody>');  
+                        
+                    },
+                error:
+                    function (response) {
+                        $('#loader').css("display","none");
+                        alert("Error: " + response);
+                    }
+            });
+        }
+        function ajaxExcute1(){
+        //$('#loader').css("display","block");
+       var sql3=`
+        with data as(
+select 
+      ROW_NUMBER()over (partition by employeeid order by datefrom desc)n,
+	  cast(DateFrom as date)date,
+	 d.Name'dept',
+	  EmployeeId,
+	  FileNumber,
+	  KnownAs,
+	   datediff(day,cast(DateFrom as date),GETDATE())noOfDays
+from (
+        select DateFrom,EmployeeId from Absences union
+		select DateFrom,EmployeeId from Attendances 
+      ) a left join 
+      Employees e on e.id=a.EmployeeId left join
+	  Personals p on e.PersonalId=p.Id left join
+	  Departements d on e.DepartementId=d.Id
+	  
+where p.StatusId<>3 and d.[group]=0
+)
+select * from data where n=1 and noOfDays >3
+order by noOfDays desc
+        `;
+        
+        var data=readSQL(sql3);
+        if(data.length==0)
+        {
+
+        }else
+        {
+            console.log(data);
+        var columns = [
+      {data: 'FileNumber', title: 'رقم الملف'}
+     ,{data: 'KnownAs', title: 'الاسم',} 
+     ,{data: 'dept', title: 'القسم',} 
+     ,{data: 'date', title: 'تاريخ اخر حضور',render:function(k,i){return k.substr(0,10);}}
+     ,{data: 'noOfDays', title: 'عدد الايام', }
+     
+            ];
+            console.log(columns);
+
+         tb = $('#employee').dataTable({
+                stateSave: true,
+                "destroy": true,
+                "data": data,
+                "columns": columns
+            });
+                    
+        }
+        }
+
+        function ajaxGetDetails(id) {
+            $.ajax(
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'ListDetails',
+                data: {
+                    ID: id
+                    , from: $('#f').val()
+                    , to: $('#t').val()
+                },
+                success:
+                    function (response) {
+                        $("#exampleModalLongTitle").html('<b>' + id + '<b> results:' + response.length);
+                        var html = '';
+                        $.each(response, function (key, item) {
+                            html += '<tr>';
+                            html += '<td>' + item["date"] + '</td>';
+                            html += '<td>' + item["day"] + '</td>';
+                            html += '</tr>';
+                            $('#ModalTbody').html(html);
+                        });
+                        $('#exampleModalLong').modal('show');
+                    },
+                error:
+                    function (response) {
+                        alert("Error: " + response);
+                    }
+            });
+        }
+
+        $('#btn').click(function () {
+            ajaxExcute0();
+            
+        });
+
+    });
+
+    function reply_click(clicked_id) {
+        function ajaxGetDetails(id) {
+            $.ajax(
+            {
+                type: 'POST',
+                dataType: 'JSON',
+                url: 'ListDetails',
+                data: {
+                    ID: id
+                    , from: $('#f').val()
+                    , to: $('#t').val()
+                },
+                success:
+                    function (response) {
+                        $("#exampleModalLongTitle").html('<b>' + id + '<b> results:' + response.length);
+                        var html = '';
+                        $.each(response, function (key, item) {
+                            html += '<tr>';
+                            html += '<td>' + item["date"] + '</td>';
+                            html += '<td>' + item["day"] + '</td>';
+                            html += '</tr>';
+                            $('#ModalTbody').html(html);
+                        });
+                        $('#exampleModalLong').modal('show');
+                    },
+                error:
+                    function (response) {
+                        alert("Error: " + response);
+                    }
+            });
+        }
+
+        $(function () {
+            //alert(clicked_id);
+            ajaxGetDetails(clicked_id);
+        }
+    );
+    }
+
+</script>
+
+
+

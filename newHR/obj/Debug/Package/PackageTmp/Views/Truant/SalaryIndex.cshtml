@@ -1,0 +1,978 @@
+﻿
+@using WebMatrix.Data
+@{
+    ViewBag.Title = "SalaryIndex";
+}
+<script>
+    var all = [];
+</script>
+@{
+    var db1 = Database.Open("CS");
+	var db2 = Database.Open("CS");
+    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
+	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId<>3 order by FileNumber";
+}
+<script>
+@foreach (var row in db1.Query(selectQueryString1))
+{
+
+        @:all.push({fileNo:@row.fn,dept:@row.deptId})
+
+} 
+</script>
+
+<style>
+    #tblStocks {
+          tr:nth-child(even){background-color: #f2f2f2;}
+    }
+    #thead td{
+        vertical-align:middle;
+    }
+</style>
+    <h2>المرتبات  </h2>
+ <!--modal-->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+		<hr>
+		<div style="overflow-y:auto;height:400px">
+		  <table id="myTable" class="table table-bordered table-responsive-lg">
+		  <thead>
+			<tr>
+			  <th>رقم الملف</th>
+			  <th>الاسم</th>
+			  <th>القسم</th>
+			  <th>choose</th>
+			</tr>
+			</thead>
+			<tbody>
+		    @foreach (var row in db2.Query(sql))
+                     {
+                        <tr> 
+						 <td style="text-align:center">@row.fn</td>
+						 <td style="text-align:center">@row.name</td>
+						 <td style="text-align:center">@row.dept</td>
+						 <td style="text-align:center">
+						   <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" /></td>
+						</tr>
+                     }
+			</tbody>
+		  </table>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!---->
+	<hr>
+    <table class="container" style="width:100%">
+        <tr>
+            <td>
+                <div class="input-group">
+				
+				<input id="N" class="form-control" type="text" onkeyup="" disabled />
+				</div>
+
+            </td>
+            <td>
+			    <h3 style="margin:10px;float:right">الأسم </h3>
+		    </td>
+            <td>
+			 <div class="input-group">
+			    <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				<input id="fileNo" class="form-control" type="number" />
+			  </div>
+			</td>
+            <td>
+				<h3 style="margin:10px;float:right">رقم الملف </h3>
+			</td>
+        </tr>
+        <tr>
+
+            <td>
+                @{
+                    var db = Database.Open("CS");
+                    var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+                }
+                <select id="D" class="form-control">
+                    @foreach (var row in db.Query(selectQueryString))
+                    {
+                        <option style="text-align:right" value="@row.Id">@row.Name</option>
+                    }
+                </select>
+            </td>
+            <td><h3 style="margin:10px;float:right">القسم </h3></td>
+
+            <td>
+                <select id="M" class="form-control">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option>@i</option>
+                    }
+                </select>
+            </td>
+            <td><h3 style="margin:10px;float:right">الشهر </h3></td>
+            
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input id="ok" class="btn btn-primary" value="المرتب" type="button" />
+                <button onclick="ExportToExcel('xlsx')" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                    Excel
+                </button>
+                <button onclick="printData()" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-print"></span>
+                    طباعة
+                </button>
+            </td>
+
+            <td>
+                <select id="Y" class="form-control">
+                    @for (int i = DateTime.Now.Year; i >= 2020; i--)
+                    {
+                        <option>@i</option>
+                    }
+                </select>
+            </td>
+            <td><h3 style="margin:10px;float:right">العام </h3></td>
+
+            
+
+        </tr>
+
+    </table>
+    <div id="loader">
+        <center><img src="~/1.gif" /></center>
+    </div>
+    <div class="table-responsive-lg" style="overflow-x:auto">
+        <table id ="tblStocks" border="1" dir="rtl" class="table table-hover table-bordered">
+            <thead id="thead" style="text-align:center;font-size:large;font-weight: bold;position:sticky; top:0px;background-color: gray;border:solid medium;">
+                <tr>
+                    <td colspan="21" id="deptLbl"> مرتبات </td> 
+                </tr>
+
+                <tr>
+                    <td rowspan="2" style="vertical-align: middle;">رقم الملف</td>
+                    <td rowspan="2" style="vertical-align: middle;">الاسم</td>
+                    <td rowspan="2" style="vertical-align: middle;"> ايام الحضور</td>
+                    <td rowspan="2" style="vertical-align: middle;">الاجازات</td>
+                    <td rowspan="2" style="vertical-align: middle;">الغياب</td>
+                    <td colspan="8"> الاستحقاقات</td>
+                    <td colspan="7"> الاستقطاعات</td>
+                    <td rowspan="2" style="vertical-align: middle;"> صافي المرتب </td>
+                </tr>
+                
+                <tr>
+				    <td> الاجر الشهري </td>
+                    <td> قيمة عدد الايام </td>
+                    <td> حافز الانتظام </td>
+                    <td> غلاء المعيشة </td>
+                    <td> حافز مجلس الادارة </td>
+                    <td> حافز المهارة </td>
+                    <td> أضافي <font color="#1111cc">(عدد الساعات)</font></td>
+                    
+                    <td>أجمالي المستحق</td>
+                    <td> خصم التامينات </td>
+                    <td> جزاءات التأخيرات +الخصومات </td>
+                    <td> تاخيرات </td>
+                    <td> الجزاءات </td>
+                    <td> ملبس </td>
+                    <td> سلف </td>
+                    <td>  اجمالي الاستقطاعات</td>
+                </tr>
+            </thead>
+            <tbody id="container1" style="text-align:center;font-size:large">
+                
+               
+            </tbody>
+            <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+        
+    </div>
+<button id="Add" class="btn btn-outline-success float-start" >Add</button>
+<script>
+       var res = [];
+        $(function () {           
+            $('#loader').hide();
+            $('.table-responsive-lg').show();
+			
+            var department = [];
+            $('#ok').click(function () {
+                //console.log($('#M').val()+"-"+$('#Y').val());
+                if ($('#fileNo').val()){
+                    department=all.filter(w=>w.fileNo==$('#fileNo').val());
+                }
+                else{
+                    department=all.filter(w=>w.dept==$('#D').val());
+                }
+                excute();
+            });
+            
+            function excute() {
+			    $('#loader').show();
+                $('.table-responsive-lg').hide();
+                res = [];
+                var promises = [];
+                for (var i = 0; i < department.length; i++) {
+                    var request = $.ajax(//begin ajax card
+                    {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        url: 'SalaryFNO',//vary important #change SalaryDetailsALL
+                        data: { fileNo: department[i].fileNo, M: $('#M').val(), Y: $('#Y').val() },
+                        success:
+                            function (response) {
+
+                            // $('#loader').hide();
+                            response = JSON.parse(response);
+                            console.log(response);
+                            if (EMPS.includes('' + response[0].fileNo))
+                            {                   
+                            var Days=[];
+                            let  l = 0,
+                                ll = 0,//
+                                d = 0,//
+                                occur = 0,//
+                                add = 0,//
+                                attSum = 0,//
+                                vacSum = 0,//
+                                ghSum = 0,//
+                                h = 0,//
+                                occurFirst=false,
+								abs;
+								fridays=0;
+                            //var event = new Date();
+                            var html = '';
+                            var data = [];
+                            response[0]["dates"] = response[0]["dates"].substr(0, 10);// "2021-12-26T00:00:00",
+                            response[0]["TIMEFROM"] = response[0]["TIMEFROM"] == null ? '' : response[0]["TIMEFROM"];
+                            response[0]["TIMETO"] = response[0]["TIMETO"] == null ? '' : response[0]["TIMETO"];
+                            response[0]["addition"] = response[0]["addition"] == null ? 0 : response[0]["addition"];
+                            response[0]["DayPart"] = response[0]["DayPart"] == null ? 0 : response[0]["DayPart"];
+                            response[0]["absenceValue"] = response[0]["absenceValue"] == null ? 0 : response[0]["absenceValue"];
+                            response[0]["joiningDate"] = response[0]["joiningDate"].substr(0, 10);
+                            response[0]["lateValue"] = response[0]["lateValue"] == null ? -1 : response[0]["lateValue"];
+                            response[0]["leaveValue"] = response[0]["leaveValue"] == null ? -1 : response[0]["leaveValue"];
+
+
+                            data.push(response[0]);
+							for(var i=1;i<response.length;i++)
+							{
+							    if (response[i].day !== response[i - 1].day)
+							    {
+							        response[i]["dates"] = response[i]["dates"].substr(0, 10);// "2021-12-26T00:00:00",
+							        response[i]["TIMEFROM"] = response[i]["TIMEFROM"] == null ? '' : response[i]["TIMEFROM"];
+							        response[i]["TIMETO"] = response[i]["TIMETO"] == null ? '' : response[i]["TIMETO"];
+							        response[i]["addition"] = response[i]["addition"] == null ? 0 : response[i]["addition"];
+							        response[i]["DayPart"] = response[i]["DayPart"] == null ? 0 : response[i]["DayPart"];
+							        response[i]["joiningDate"] = response[i]["joiningDate"].substr(0, 10);//"2020-08-15T00:00:00",
+							        response[i]["absenceValue"] = response[i]["absenceValue"] == null ? 0 : response[i]["absenceValue"];
+                                    response[i]["lateValue"] = response[i]["lateValue"] == null ? -1 : response[i]["lateValue"];
+                                    response[i]["leaveValue"] = response[i]["leaveValue"] == null ? -1 : response[i]["leaveValue"];
+							        data.push(response[i])
+							    }
+							}
+							var diffDay = getDayData(response[0].fileNo, data[0].dates.substr(0, 10), data[data.length-1].dates.substr(0, 10));
+							//console.log(diffDay);
+							for (var i = 0; i < data.length; i++)
+							{
+                                if (data[i].joiningDate == "" && data[i].weekend == 0) data[i].joiningDate == "1990-01-01";
+							let ghDay = 0, gh = 0; var xlate = 0;
+
+                            if (data[i].weekend == 0)
+                            {
+								//بداية الحسابات
+
+                                abs = data[i].DayPart == 0 ? data[i].absenceValue : data[i].DayPart
+                                //if (Days[i].weekend == 0) {
+                                    var a = reCalc(reSet(diffDay.filter(w=>w.date.substr(0,10) == data[i].dates)));
+                                    console.log(data[i].dates+":=>"+ a);
+                                //}
+                                // calc day number
+                                gh = (60 * data[i].DailyHours)
+                                   - data[i].attend
+                                   - (data[i].lateValue > -1 ?
+								          (data[i].Late>=data[i].DailyHours/4*60 && data[i].Late<data[i].DailyHours/2*60 ?data[i].Late-data[i].DailyHours/4*60:
+										  (data[i].Late>=data[i].DailyHours/2*60 ?data[i].Late-data[i].DailyHours/2*60:
+										  data[i].Late)) : 0)
+                                   - (data[i].leaveValue > -1 ?
+                                          (data[i].Leave>=data[i].DailyHours/4*60 && data[i].Leave<data[i].DailyHours/2*60 ?data[i].Leave-data[i].DailyHours/4*60:
+										  (data[i].Leave>=data[i].DailyHours/2*60 ?data[i].Leave-data[i].DailyHours/2*60:
+								          data[i].Leave)) : 0)
+                                   - (data[i].Leave < 0 ? data[i].Leave : 0)
+                                   - (60 * abs * data[i].DailyHours)
+                                   + (data[i].specialValue == -1 ? data[i].special : 0)
+                                   + a;
+                                //end no of days
+
+                                ghDay = 0;
+                                if (gh > 0 && gh <= (60 * data[i].DailyHours / 4)) ghDay = 0.25;
+                                if (gh <= (60 * data[i].DailyHours / 2) && gh > (60 * data[i].DailyHours / 4)) ghDay = 0.5;
+                                if (gh > (60 * data[i].DailyHours / 2) && gh <= (3 * 60 * data[i].DailyHours / 4)) ghDay = 0.75;
+                                if (gh > (3 * 60 * data[i].DailyHours / 4)) ghDay = 1;
+                                if (data[i].attend == 0) ghDay = 1 - abs;
+                                //نهاية الحسابات
+                                $('#n').html('<h1>' + data[i].name + '</h1>');
+                                //التاخيرات
+
+                                if (
+								       data[i].lateValue > 0
+									   &&(
+									   (data[i].Late > 0 && data[i].Late < 53) ||
+									   (data[i].Late-data[i].DailyHours*60/4 > 0 && data[i].Late-data[i].DailyHours*60/4 < 53)||
+									   (data[i].Late-data[i].DailyHours*60/2 > 0 && data[i].Late-data[i].DailyHours*60/2 < 53)
+									   )
+									)
+									{
+									   occur++;
+									}
+
+                                if (data[i].lateValue > 0
+								&&// لما يكون الحضور بدون اضافي
+								     (
+									   parseInt(data[i].attend) +
+                                       data[i].DayPart * 60 * data[i].DailyHours +
+                                       (data[i].Leave < 0 ? data[i].Leave : 0)-
+                                       (data[i].specialValue == -1 ? data[i].special : 0)
+									   <data[i].DailyHours*60
+									 )
+									)
+									{
+                                    if (occur == 1&& occurFirst==false)
+									{
+									    occurFirst=true;
+                                        xlate = 'انذار';
+                                    }
+									else
+									{
+
+                                        xlate = data[i].lateValue;
+                                        if (data[i].lateValue > 0 && l >= 2) { d++; }
+                                        if (l < 2 && l >= 0) { l += data[i].lateValue; }
+                                    }
+                                }
+                                else
+                                {
+                                    xlate = '';
+                                }
+								}
+
+                                //ايام الحضور
+                                if (data[i].weekend == 1 )
+									{
+                                         ghDay=0;
+									     fridays++;
+
+									}
+                                   //نهاية الحضور
+
+									//بداية الغياب
+
+
+                                var obj =
+                                    {
+                                     day:data[i].day
+                                    ,fileNo: data[i].fileNo
+                                    ,date:data[i].dates.substr(0,10)
+                                    ,timeIn:data[i].TIMEFROM
+                                    ,timeOut:data[i].TIMETO
+                                    ,att:(1-ghDay-data[i].DayPart)
+                                    ,vac:data[i].DayPart
+                                    ,abs:ghDay
+                                    ,weekend:data[i].weekend
+                                    ,worktime:data[i].DailyHours*60
+                                    ,vacTypeId:data[i].AbsenceTypeId
+                                    ,late:xlate
+                                    ,leave:data[i].leaveValue
+                                    ,overtime:data[i].addition
+                                    ,mission:data[i].mission==null?'':data[i].mission
+                                    ,special:data[i].special==null?'':data[i].special
+                                    ,specialValue:data[i].specialValue==null?'':data[i].specialValue
+                                   }
+                                var stData =
+                                    {
+                                        name: response[0].name,
+                                        fileNo: response[0].fileNo,
+                                        dept: response[0].Dept,
+                                        monthly: response[0].monthlySalary,
+                                        hourNo: response[0].DailyHours,
+                                        regular: response[0].regular,
+                                        expensive: response[0].expensive,
+                                        management: response[0].management,
+                                        skill: response[0].skill,
+                                        overRate: response[0].Overtime,
+                                        insurance: response[0].insurance,
+                                        deductions: response[0].deductions,
+                                        sanctions: response[0].sanctions,
+                                        clothes: response[0].clothes,
+                                        loans: response[0].loans,
+                                    }
+                                Days.push(obj);
+							}
+							//console.log(Days);
+							//console.log(stData);
+                            ///نهاية الشهر
+                            //حساب جزاءات التأخير
+                           
+                            
+                            
+							var salary = display1(Days);
+							var totalCut = 0, totalHave = 0;
+					//vacSum3//سنوية
+                    //vacSum5//بدون خصم
+                    //vacSum6//رسمية
+                    //vacSum12//من رصيد قادم
+                    //vacSum13//بالخصم
+                    //vacSum14//بدل جمعة
+                    //vacSum15//بدل تطبيق
+							var TotalDays = salary.absSum + salary.vacSum + salary.attSum;
+							var ActualDays = salary.attSum + salary.vacSum3 + salary.vacSum5 + salary.vacSum6 + salary.vacSum12 + salary.vacSum14 + salary.vacSum15;
+							
+							var CalcExpensive = (ActualDays / (TotalDays > 30 ? TotalDays - 1 : TotalDays) * stData.expensive).toFixed(2) ;
+							var CalcSkill = (ActualDays / (TotalDays > 30 ? TotalDays - 1 : TotalDays) * stData.skill).toFixed(2);
+							var CalcManage = (ActualDays / (TotalDays > 30 ? TotalDays - 1 : TotalDays) * stData.management).toFixed(2);
+							
+							var CalcRegular=0;
+							switch (true)
+							{
+							    case salary.absSum<= 1.5: CalcRegular = stData.regular; break;
+							    case (salary.absSum> 1.5 && salary.absSum<= 1.75): CalcRegular = stData.regular * 0.75; break;
+							    case salary.absSum> 1.75: CalcRegular = 0; break;
+							}
+
+							totalHave = (
+                                parseFloat(ActualDays * stData.monthly / 30) +
+                                parseFloat(CalcRegular )+
+                                parseFloat(CalcSkill )+
+                                parseFloat(CalcExpensive) +
+                                parseFloat(CalcManage) +
+                                parseFloat(salary.overSum * stData.overRate * stData.monthly / 30 / stData.hourNo)
+                                ).toFixed(2);
+
+							totalCut = (
+                                        parseFloat(stData.insurance) +
+                                        parseFloat(stData.deductions) +
+                                        parseFloat(salary.dValue * stData.monthly / 30) +
+                                        parseFloat(stData.sanctions) +
+                                        parseFloat(stData.clothes) +
+                                        parseFloat((salary.lateSum +salary.leaveSum  + salary.specSum) * stData.monthly / 30 / stData.hourNo) +
+                                        parseFloat(stData.loans)
+                                        ).toFixed(2);
+                    
+                           res.push({
+                                    name: stData.name,
+                                    fileNo: stData.fileNo,
+									dept: stData.dept,
+                                    monthly : stData.monthly,
+                                    attend: salary.attSum,
+                                    abscence: salary.absSum ,
+                                    vacation: salary.vacSum,
+                                    daysValue: (ActualDays * stData.monthly / 30).toFixed(2),
+                                    regular: CalcRegular,
+                                    expensive: CalcExpensive,
+                                    management:CalcManage,
+                                    skill: CalcSkill,
+                                    addition: (salary.overSum * stData.overRate * stData.monthly / 30 / stData.hourNo).toFixed(2),
+                                    addHours: salary.overSum,
+                                    rewards: 0,//response[0].rewards.toFixed(2),
+                                    total1: totalHave,
+                                    insurance: stData.insurance,
+                                    deduction: (parseFloat(stData.deductions) + (salary.dValue * stData.monthly / 30)).toFixed(2),
+                                    sanction: stData.sanctions,//
+                                    late: ((salary.lateSum + salary.leaveSum  + salary.specSum) * stData.monthly / 30 / stData.hourNo).toFixed(2),
+                                    clothes: stData.clothes,
+                                    loan: stData.loans,
+                                    total2: totalCut,
+                                    total3: (totalHave - totalCut).toFixed(2)
+                                }
+                           );
+                           }
+                           
+                              // alert("غير مسموح !");
+                              
+                     
+                            },
+                        error:
+                            function (response) {
+                                console.log("Error: " + response);
+                            }
+                    });
+                    
+                    promises.push(request);
+                }
+				var month=
+                    [
+                        "يناير",
+                        "فبراير",
+                        "مارس",
+                        "ابريل",
+                        "مايو",
+                        "يونيو",
+                        "يوليو",
+                        "اغسطس",
+                        "سبتمبر",
+                        "اكتوبر",
+                        "نوفمبر",
+                        "ديسمبر",
+                    ];
+                function display(){
+                    var html='';
+                    $('#deptLbl').html("مرتبات قسم( "+res[0].dept+") عن شهر "+month[$('#M').val()-1]);
+                    res.sort((a, b) => a.fileNo - b.fileNo);
+					for(var i=0;i<res.length;i++){
+					if(EMPS.includes(''+res[i].fileNo)){
+                        html+='<tr>';
+                        html+='<td>'+res[i].fileNo+'</td>';
+                        html+='<td style="white-space:nowrap">'+res[i].name+'</td>';
+                        html+='<td>'+res[i].attend+'</td>';
+                        html+='<td>'+res[i].vacation+'</td>';
+                        html+='<td>'+res[i].abscence+'</td>';
+						html+='<td>'+res[i].monthly+'</td>';
+                        html+='<td>'+res[i].daysValue+'</td>';
+                        html+='<td>'+res[i].regular+'</td>';
+                        html+='<td>'+res[i].expensive+'</td>';
+                        html+='<td>'+res[i].management+'</td>';
+                        html+='<td>'+res[i].skill+'</td>';
+                        html+='<td>'+res[i].addition+'<font color="Blue">('+res[i].addHours+')</font></td>';
+                        //html+='<td>'+res[i].rewards+'</td>';
+                        html+='<td>'+res[i].total1+'</td>';
+                        html+='<td>'+res[i].insurance+'</td>';
+                        html+='<td>'+res[i].deduction+'</td>';
+                        html+='<td>'+res[i].late+'</td>';
+                        html+='<td>'+res[i].sanction+'</td>';
+                        html+='<td>'+res[i].clothes+'</td>';
+                        html+='<td>'+res[i].loan+'</td>';
+                        html+='<td>'+res[i].total2+'</td>';
+                        html+='<td>'+res[i].total3+'</td>';
+                        html+='</tr>';
+						}
+                    }
+                    $('#container1').html(html)
+                }
+                $.when.apply(null, promises).always(function () {
+                    //alert('All done')
+                    console.log('All Done');
+                    console.log(res);
+					$('#loader').hide();
+                    $('.table-responsive-lg').show();
+					$('#Add').show();
+                    display();
+                });
+            }
+
+        });
+</script>
+<script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
+<script>
+ function ExportToExcel(type, fn, dl) {
+     var elt = document.getElementById('tblStocks');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+ }   
+ function printData()
+ {
+     var divToPrint=document.getElementById("tblStocks");
+     newWin= window.open("");
+     newWin.document.write(divToPrint.outerHTML);
+     newWin.print();
+     newWin.close();
+ }
+</script>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#myTable").DataTable({
+  "pagingType":"full_numbers"
+  });
+});
+</script>
+
+<script>   
+$("#Add").click(function () {
+            var promises = [];
+            for (var i = 0; i < res.length; i++) {
+                var sql=`insert into salarysheet(
+            FileNumber,
+            Name,
+            Attendance,
+            Vacation,
+            Abcence,
+            SalaryMonth,
+            DaysValue,
+            RegularityIncentive,
+            ExpensiveIncetive,
+            ManagmentIncetive,
+            SkillIncentive,
+            Overtime,
+            Total1,
+            Insurance,
+            Sanctions_Delays,
+            Delays,
+            Deductions,
+            Clothes,
+            Loans,
+            Total2,
+            Total3,
+            Department,	
+            Year,
+            Month
+)
+values
+            (`+
+           res[i].fileNo+",'"+
+           res[i].name+"',"+
+           res[i].attend+","+
+           res[i].vacation+","+
+           res[i].abscence+","+
+           res[i].monthly+","+
+           res[i].daysValue+","+
+           res[i].regular+","+
+           res[i].expensive+","+
+           res[i].management+","+
+           res[i].skill+","+
+           res[i].addition+","+
+           res[i].total1+","+
+           res[i].insurance+","+
+           res[i].sanction+","+
+           res[i].late+","+
+           res[i].deduction+","+
+           res[i].clothes+","+
+           res[i].loan+","+
+           res[i].total2+","+
+           res[i].total3+",'"+
+           res[i].dept+"',"+	
+           $('#Y').val()+","+
+           $('#M').val()+
+           `)`;
+                var request = $.ajax(//begin ajax card
+                {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    url:"SalarySheetAdd",
+                    data:{sql:sql},
+                    success:
+                        function (response) {
+                            console.log("Sucess: " + response);
+                        },
+                    error:
+                        function (response) {
+                            console.log("Error: " + response);
+                        }
+                });
+                    
+                promises.push(request);
+            }
+           $.when.apply(null, promises).always(function () {
+                console.log('All Done successfull!');
+            });
+        });
+</script>
+<script>
+/**************display()**************/
+
+ function display1(Days)
+          {
+            var html = '',
+               ActualAttSum=0
+               attSum=0 ,
+               absSum=0 ,
+               vacSum=0 ,
+               vacSum3=0 ,
+               vacSum5=0 ,
+               vacSum6=0 ,
+               vacSum12=0 ,
+               vacSum13=0 ,
+               vacSum14=0 ,
+               vacSum15=0 ,
+               lateSum=0 ,
+               leaveSum=0 ,
+               overSum =0,
+               missionSum=0,
+               specSum=0,
+               deduSum=0;
+              //var diffDay = getDayData(Days[i].fileNo);
+if (Days.length > 30) {
+     Days[Days.findIndex((w) => w.weekend ==1)].att = 0  
+ } 
+for (var i = 0; i < Days.length; i++)
+    {
+         
+         if (Days[i].weekend == 1)
+         {
+             var j=i, k=i;
+             if (i == 0)
+             {
+                 /*while (Days[k].weekend == 1)
+                 {
+                     k++;
+                 }
+                 if (Days[k].att > 0)
+                 {
+                     Days[i].att = 1;
+                     Days[i].abs = 0;
+                 }
+                 else
+                 {
+                     Days[i].att = 0;
+                     Days[i].abs = 1;
+                 } */
+             }
+             else if (i == Days.length - 1)
+             {
+                 /*while (Days[j].weekend == 1)
+                 {
+                     j--;
+                 }
+                 if (Days[j].att > 0) {
+                     Days[i].att = 1;
+                     Days[i].abs = 0;
+                 }
+                 else {
+                     Days[i].att = 0;
+                     Days[i].abs = 1;
+                 }*/
+             }
+             else
+             {
+                 while (Days[j].weekend == 1) {
+                     j--;
+                 }
+                 while (Days[k].weekend == 1) {
+                     k++;
+                 }
+                 if (Days[j].att > 0 || Days[k].att > 0) {
+                     Days[i].att = 1;
+                     Days[i].abs = 0;
+                 }
+                 else {
+                     Days[i].att = 0;
+                     Days[i].abs = 1;
+                 }
+             }
+             
+         }
+              attSum+=Days[i].att ;
+              absSum+=Days[i].abs ;
+              vacSum+=Days[i].vac ;
+              switch(Days[i].vacTypeId)
+              {
+                  case 3:vacSum3+=Days[i].vac; break;//سنوية
+                  case 5:vacSum5+=Days[i].vac; break;//بدون خصم
+                  case 6:vacSum6+=Days[i].vac; break;//رسمية
+                  case 12:vacSum12+=Days[i].vac; break;//من رصيد قادم
+                  case 13:vacSum13+=Days[i].vac; break;//بالخصم
+                  case 14:vacSum14+=Days[i].vac; break;//بدل جمعة
+                  case 15:vacSum15+=Days[i].vac; break;//بدل تطبيق
+              }
+            if(Days[i].late>0)
+            {
+                deduSum+=(lateSum==2?1:0);
+                if(lateSum+parseFloat(Days[i].late) <=2)
+                {
+                    lateSum+=parseFloat(Days[i].late);
+                }
+                else
+                {
+                    if(lateSum<2)deduSum++;
+                }
+            }
+            var dValue = 0;
+            switch (deduSum % 3) {
+                case 0: dValue = parseInt(deduSum / 3) * 1.75; break;
+                case 1: dValue = parseInt(deduSum / 3) * 1.75 + .25; break;
+                case 2: dValue = parseInt(deduSum / 3) * 1.75 + .75; break;
+
+            }
+              leaveSum += (Days[i].leave==-1?0:Days[i].leave);
+              overSum += Days[i].overtime ;
+              missionSum += (Days[i].mission==1?1:0);
+              specSum += (Days[i].specialValue==-1?0:Days[i].specialValue);
+             
+              if(Days[i].weekend==0) html+='<tr>';
+                  else html+='<tr style="background-color:lightgreen">';
+              html+='<td>'+Days[i].day+'</td>'+
+                    '<td>'+Days[i].date+'</td>'+
+                    '<td onclick="selectIN(this)">'+Days[i].timeIn+'</td>'+
+                    '<td onclick="selectOUT(this)">'+Days[i].timeOut+'</td>'+
+                    '<td style="background-color: #27b527">'+(Days[i].att==0?'':Days[i].att)+'</td>'+
+                    '<td style="background-color: #dc3545">'+(Days[i].abs==0?'':Days[i].abs)+'</td>'+
+                    '<td style="background-color: #ffc107">'+(Days[i].vac==0?'':Days[i].vac)+'</td>'+
+                    '<td style="background-color: #df14c1">'+(Days[i].late==0||Days[i].late==-1?'':Days[i].late)+'</td>'+
+                    '<td style="background-color: #1196dd">'+(Days[i].leave==0||Days[i].leave==-1?'':Days[i].leave)+'</td>'+
+                    '<td style="background-color: #8907ff">'+(Days[i].overtime==0?'':Days[i].overtime)+'</td>'+
+                    '<td style="background-color: #77abbd" onclick="selectMission(this)">'+(Days[i].mission==1?'<svg xmlns="http://www.w3.org/2000/svg" color="green" width="30" height="30" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>':'')+'</td>'+
+                    '<td style="background-color: #0277bd" onclick="selectMission(this)">'+(Days[i].specialValue==0 ?'': Days[i].specialValue==-1?'<svg xmlns="http://www.w3.org/2000/svg" color="red" width="30" height="30" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>':Days[i].specialValue)+'</td>'+
+                    '</tr>';
+            }
+
+if (Days.length > 30)
+{
+    if (Days.find(w=>w.weekend == 1).att == 1) ActualAttSum = attSum - 1;
+    else ActualAttSum = attSum;
+}
+/*$('#thead').html('<tr style="">' +
+                                '<td>اليوم</td>' +
+                                '<td>التاريخ</td>' +
+                                '<td>الدخول</td>' +
+                                '<td>الخروج</td>' +
+                                '<td>حضور</td>' +
+                                '<td>غياب</td>' +
+                                '<td>اجازة</td>' +
+                                '<td>تأخير</td>' +
+                                '<td>انصراف مبكر</td>' +
+                                '<td>أضافي</td>' +
+                                '<td>مأمورية</td>' +
+                                '<td>أذن</td>' +
+                            '</tr>');
+            $('#container').html(html)
+            $('#tfoot').html(
+                    '<tr><td colspan="4" rowspan=2>total</td><td rowspan=2>' +
+                        attSum + '</td><td rowspan=2>' +
+                        absSum + '</td><td rowspan=2>' +
+                        vacSum + '</td><td>' +
+                        lateSum + '</td><td rowspan=2>' +
+                        leaveSum + '</td><td rowspan=2>' +
+                        overSum + '</td><td rowspan=2>'+
+                        missionSum+'</td><td rowspan=2>'+
+                        specSum+'</td></tr><tr><td>'+
+                        dValue+'</td></tr>'
+                        );*/
+            return {
+                ActualAttSum: ActualAttSum,
+                attSum: attSum,
+                absSum: absSum,
+                vacSum: vacSum,
+                vacSum3: vacSum3,
+                vacSum5: vacSum5,
+                vacSum6: vacSum6,
+                vacSum12: vacSum12,
+                vacSum13: vacSum13,
+                vacSum14: vacSum14,
+                vacSum15: vacSum15,
+                lateSum: lateSum,
+                leaveSum: leaveSum,
+                overSum: overSum,
+                missionSum: missionSum,
+                specSum: specSum,
+                dValue: dValue,
+            }
+           
+          }
+        /***************************/
+
+</script>
+<script>
+function getDayData(fn, d1,d2)//حساب بيانات يوم 
+{
+        var sqlcom = `select *
+from
+(
+select FileNumber,
+       cast(DateTime as date)'date',
+	   cast(DateTime as time(0))time ,
+	   type
+ from AClogs ac
+ where FileNumber=${fn}
+
+ union
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeFrom,'In'
+ from Attendances a
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeFrom is not null and TimeFrom <> ''
+
+ union
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
+ from Attendances a
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> ''
+
+ union
+
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	timefrom,'In'
+ from Absences ab
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId in(4,11)
+
+ UNION
+
+ select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
+ from Absences ab
+ where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId in(4,11)
+
+ ) q where date >='${d1}' and date <='${d2}'  order by date, time,Type desc`;
+        return readSQL(sqlcom);
+}//حساب بيانات يوم 
+function reSet(data) //تصفية البيانات               
+{
+    var array2 = []
+    if (data != null && data.length > 2)
+    {
+        
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].type == "In") {
+                if (i > 0) {
+                    if (data[i - 1].type != data[i].type) {
+                        array2.push(data[i]);
+                    }
+                } else array2.push(data[i]);
+            }
+            if (data[i].type == "Out") {
+                if (i < data.length - 1) {
+                    if (data[i].type != data[i + 1].type) {
+                        array2.push(data[i]);
+                    }
+                } else array2.push(data[i]);
+            }
+        }
+        if (array2.length > 0) if (array2[0].type == 'out') array2 = array2.slice(1)
+        if (array2.length > 0) if (array2[array2.length - 1].type == 'in') array2 = array2.slice(0, array2.length - 1)
+       
+    }
+    return array2;
+    }//تصفية البيانات    
+function reCalc(array2)//حساب الفرق
+    {
+        /*if (array2.length > 1) {
+            for (var i = 0; i < array2.length; i += 2) {
+                var dd = new Date(array2[i].date.substr(0, 10) + ' ' + array2[i].time);
+                var dddd = new Date(array2[i + 1].date.substr(0, 10) + ' ' + array2[i + 1].time);
+                var left = (dd.getHours() * 60 + dd.getMinutes()) / 1440 * 100;
+                var width = (dddd.getHours() * 60 + dddd.getMinutes()) / 1440 * 100;
+                console.log((dd.getHours() * 60 + dd.getMinutes()) / 1440 * 100)
+                // $("#myProgress").append('<div class="myBar" style="left:'+left+'%;width:'+(width-left)+'%;"'+'></div>')
+            }
+        }*/
+        var absTime = 0;
+        if (array2.length > 2) {
+            for (var i = 1; i < array2.length; i += 2) {
+                if (i < array2.length - 1) {
+                    var d1 = new Date(array2[i].date.substr(0, 10) + ' ' + array2[i].time);
+                    var d2 = new Date(array2[i + 1].date.substr(0, 10) + ' ' + array2[i + 1].time);
+                    absTime += (d2.getHours() * 60 + d2.getMinutes()) - (d1.getHours() * 60 + d1.getMinutes())
+                    //console.log("absTime "+ absTime);
+                }
+            }
+        }
+        return absTime;
+    }//حساب الفرق  
+</script>
+
+
+
+

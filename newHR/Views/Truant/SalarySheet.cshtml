@@ -1,0 +1,282 @@
+﻿
+@{
+    ViewBag.Title = "SalarySheet";
+}
+@using WebMatrix.Data;
+@{
+    var db = Database.Open("cs");
+    var sql = @"select FileNumber,
+            Name,
+            Attendance,
+            Vacation,
+            Abcence,
+            SalaryMonth,
+            DaysValue,
+            RegularityIncentive,
+            ExpensiveIncetive,
+            ManagmentIncetive,
+            SkillIncentive,
+            Overtime,
+            Total1,
+            Insurance,
+            Sanctions_Delays,
+            Delays,
+            Deductions,
+            Clothes,
+            Loans,
+            Total2,
+            Total3,
+            Department,	
+            Year,
+            Month from SalarySheet";
+} 
+  <h2>SalarySheet</h2>
+<div style="overflow-x:auto">
+    <table dir="rtl" class="display"  id="example" style="width:100%">
+        <thead>
+            <tr>
+                <td class="filter">
+                    رقم الملف
+                </td>
+                <td class="filter">
+                    الاسم
+                </td>
+                <td class="filter">
+                    حضور
+                </td>
+                <td class="filter">
+                    أجازة
+                </td>
+                <td class="filter">
+                    غياب
+                </td>
+                <td class="filter">
+                    الاجر الشهري
+                </td>
+                <td class="filter">
+                    قيمة الحضور
+                </td>
+                <td class="filter">
+                    حافز الانتظام
+                </td>
+                <td class="filter">
+                    حافز غلاء المعيشة
+                </td>
+                <td class="filter">
+                   حافز مجلس الادارة
+                </td>
+                <td class="filter">
+                    حافز المهارة
+                </td>
+                <td class="filter">
+                    الاضافي
+                </td>
+                <td class="filter">
+                    اجمالي المستحق
+                </td>
+                <td class="filter">
+                    خصم التامين
+                </td>
+                <td class="filter">
+                    خصومات 
+                </td>
+                <td class="filter">
+                    تأخيرات
+                </td>
+                <td class="filter">
+                    جزاءات
+                </td>
+                <td class="filter">
+                    ملبس
+                </td>
+                <td class="filter">
+                    سلف
+                </td>
+                <td class="filter">
+                    أجمالي المستقطع
+                </td>
+                <td class="filter">
+                    صافي المرتب
+                </td>
+                <td class="filter">
+                    القسم
+                </td>
+                <td class="filter">
+                    العام
+                </td>
+                <td class="filter">
+                    الشهر
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in db.Query(sql))
+            {
+                <tr>
+                    <td>
+                        @row.FileNumber
+                    </td>
+                    <td style="white-space:nowrap">
+                        @row.Name
+                    </td>
+                    <td>
+                        @row.Attendance
+                    </td>
+                    <td>
+                        @row.Vacation
+                    </td>
+                    <td>
+                        @row.Abcence
+                    </td>
+                    <td>
+                        @row.SalaryMonth
+                    </td>
+                    <td>
+                        @row.DaysValue
+                    </td>
+                    <td>
+                        @row.RegularityIncentive
+                    </td>
+                    <td>
+                        @row.ExpensiveIncetive
+                    </td>
+                    <td>
+                        @row.ManagmentIncetive
+                    </td>
+                    <td>
+                        @row.SkillIncentive
+                    </td>
+                    <td>
+                        @row.Overtime
+                    </td>
+                    <td>
+                        @row.Total1
+                    </td>
+                    <td>
+                        @row.Insurance
+                    </td>
+                    <td>
+                        @row.Sanctions_Delays
+                    </td>
+                    <td>
+                        @row.Delays
+                    </td>
+                    <td>
+                        @row.Deductions
+                    </td>
+                    <td>
+                        @row.Clothes
+                    </td>
+                    <td>
+                        @row.Loans
+                    </td>
+                    <td>
+                        @row.Total2
+                    </td>
+                    <td>
+                        @row.Total3
+                    </td>
+                    <td>
+                        @row.Department
+                    </td>
+                    <td>
+                        @row.Year
+                    </td>
+                    <td>
+                        @row.Month
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+         <tr>
+                <td>
+                    م
+                </td>
+                <td >
+                    الاسم
+                </td>
+                <td>
+                    حضور
+                </td>
+                <td>
+                    أجازة
+                </td>
+                <td>
+                    غياب
+                </td>
+                <td>
+                    SalaryMonth
+                </td>
+                <td>
+                    DaysValue
+                </td>
+                <td>
+                    RegularityIncentive
+                </td>
+                <td>
+                    ExpensiveIncetive
+                </td>
+                <td>
+                    ManagmentIncetive
+                </td>
+                <td>
+                    SkillIncentive
+                </td>
+                <td>
+                    Overtime
+                </td>
+                <td>
+                    Total1
+                </td>
+                <td>
+                    Insurance
+                </td>
+                <td>
+                    Sanctions_Delays
+                </td>
+                <td>
+                    Delays
+                </td>
+                <td>
+                    Deductions
+                </td>
+                <td>
+                    Clothes
+                </td>
+                <td>
+                    Loans
+                </td>
+                <td>
+                    Total2
+                </td>
+                <td>
+                    Total3
+                </td>
+                <td>
+                    Department
+                </td>
+                <td>
+                    Year
+                </td>
+                <td>
+                    Month
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    
+
+</div>
+  <script>
+      $(document).ready(function () {
+          // Setup - add a text input to each footer cell
+         
+          var table = $('#example').DataTable({
+              orderCellsTop: true,
+              fixedHeader: true,
+              scrollX: true
+          });
+      });
+
+</script>

@@ -1,0 +1,65 @@
+﻿@using WebMatrix.Data;
+@{
+           var db = Database.Open("CS");
+           var selectQueryString = "select count(*) c from AdditionApprovals where cast(Date as date) =@0 and EmployeeId  =@1";
+           var data=db.QuerySingle(selectQueryString,"2021-12-6","5212");
+}
+<script>
+    //alert);
+</script>
+
+
+ 
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script>
+    var a = "2021-12-6";
+    $(function () {
+        $('#btn').click(function () {
+            
+            alert(@db.QuerySingle(selectQueryString,a,"5212")[0]);
+
+        });
+    });
+
+</script>
+
+<h2>Index of ahmed Kamal</h2>
+<label>Date From :</label><input type="date" id="f"><label>To</label><input type="date" id="t"><p id="counter" style="float:right"></p>
+<button id="btn" onclick="display()">Create</button>
+<table id="myTable" class="table-responsive table-bordered">
+  
+   
+   {
+       <h1></h1>
+ 
+       
+    }
+
+
+
+    
+        <tr>
+            <th class="idd"></th>
+            
+            <td class="tabledit-view-mode hh">
+                <button class="btn btn-primary choose btnSelect"> choose</button>
+            </td>
+        </tr> 
+        
+    
+   
+        <script>
+           //alert(a); 
+            
+        </script> 
+  
+    
+</table>
+
+<div id="pager">
+    <button id="prev" class="dx-button-success"><=</button><div style="width:50%;display:inline">Page:<span id="currentPageNo" style="border:1px solid red">0</span></div><button id="next">=></button>
+</div>
+

@@ -1,0 +1,57 @@
+﻿@using WebMatrix.Data;
+
+@{
+    var db = Database.Open("CS");
+    if (IsPost)
+    {
+        var sql = "insert users2(UserName,Password,Name,RoleId) values(@0,@1,@2,@3)";
+        db.Execute(sql, Request["userName"], Request["passWord"], Request["name"], Request["roles"]);
+        Response.Redirect(@Href("~/roles/UsersIndex"));
+    }
+    else
+    {
+
+
+    }
+}
+<h2>المستخدمين</h2>
+<form method="post" action="">
+    <div class="col-6">
+
+        <div class="row" dir="rtl">
+            <div class="btn-group p-1">
+                <div class="input-group-text w-25">اسم المستخدم</div>
+                <input type="text" id="userName" name="userName" class="form-control" />
+            </div>
+        </div>
+        <div class="row" dir="rtl">
+            <div class="btn-group P-1">
+                <div class="input-group-text w-25 p">الرقم السري</div>
+                <input type="password" id="passWord" name="passWord" class="form-control" />
+            </div>
+        </div>
+        <div class="row" dir="rtl">
+            <div class="btn-group P-1">
+                <div class="input-group-text w-25">الأسم</div>
+                <input type="text" id="name" name="name" class="form-control" />
+            </div>
+        </div>
+        <div class="row" dir="rtl">
+            <div class="btn-group P-1">
+                <div class="input-group-text w-25">رقم الصلاحيات</div>
+                <select id="roles" name="roles" class="form-control">
+                    @{ var roles = "select id,name from roles2"; }
+                    @foreach (var row in db.Query(roles))
+                    {
+                        <option style="text-align:right" value="@row.id">@row.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <input value="أضف" type="submit" class="btn btn-outline-info w-100 m-1">
+    </div>
+    
+</form>
+             
+
+

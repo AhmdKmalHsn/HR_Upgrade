@@ -1,0 +1,233 @@
+﻿
+if(Request.Cookies["ClosingPeriod"]==null)
+{
+Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["ClosingPeriod"].Value)>1){
+
+}else
+{
+   Response.Redirect("~/home/Index");
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+<script>
+if(getCookie("userId") ==null)location.href="/home/log"
+//else location.href=/it/truant/index"
+</script>
+<style>
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<h2>قفل العمليات</h2>
+<hr>
+<div id="container" style="overflow-x:auto">
+    <table id="myTable" class="display" style="width:100%" dir="rtl"></table>
+</div>
+
+<div class="modal fade" id="crudForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center">
+                <h2 class="modal-title" style="width:100%">تعديل</h2>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'addForm')">فترة جديد</button>
+                    <button class="tablinks" onclick="openCity(event, 'editForm')">تعديل فترة</button>
+                </div>
+                <div id="editForm" class="tabcontent">
+                    <form method="post" onsubmit="editSubmit()" style="" id="form1" action="javascript:void(0);">
+                        <input class="form-control" type="text" id="id1" disabled />
+                        <label>من</label>
+                        <input class="form-control" type="date" id="dateFrom1" />
+                        <label>الى</label>
+                        <input class="form-control" type="date" id="dateTo1" />
+                        <label>حالة الفترة</label>
+                        <select class="form-control" id="status1" placeholder="select......">
+                            <option value="C">قفل</option>
+                            <option value="O">فتح</option>
+                        </select>
+                        <input type="submit" value="تعديل" class="btn btn-outline-warning">
+                    </form>
+
+                </div>
+                <div id="addForm" class="tabcontent">
+                    <form method="post" onsubmit="addSubmit()" style="" id="form0" action="javascript:void(0);">
+                        <label>من</label>
+                        <input class="form-control" type="date" id="dateFrom0" />
+                        <label>الى</label>
+                        <input class="form-control" type="date" id="dateTo0" />
+                        <label>حالة الفترة</label>
+                        <select class="form-control" id="status0" placeholder="select......">
+                            <option value="C">قفل</option>
+                            <option value="O">فتح</option>
+                        </select> 
+                        <input type="submit" value="تعديل" class="btn btn-outline-warning">
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $.ajax({
+        url: 'getPeriods',
+        method:'post',
+        success: function (res) {
+            const data = JSON.parse(res);
+            var columns = [];
+            $.each(data[0], function (key, item) {
+                var column = {
+                    "data": key,
+                    "title": key
+                };
+                columns.push(column);
+            });
+            
+            var tb = $('#myTable').dataTable({
+                "stateSave": true,
+                "destroy": true,
+                "data": data,
+                "columns": [
+                            columns[0],
+                            {
+                                'data': columns[1].data,
+                                'title': 'من',
+                                'render': function (data, type, row, meta) {
+                                    return data.substr(0, 10);
+                                     
+                                }
+                            },
+                            {
+                                'data': columns[2].data,
+                                'title': 'الي',
+                                'render': function (data, type, row, meta) {
+                                    return data.substr(0, 10);
+
+                                }
+                            },
+                             {
+                                 'data': columns[3].data,
+                                 'title': 'الحالة',
+                                 'render': function (data, type, row, meta) {
+                                     return data=='C'? 'مغلق':'مفتوح';
+
+                                 }
+                             }
+                           ]
+            });
+        }
+    });
+</script>
+<script>
+    $('#myTable').on('click', 'td', function () {
+        var table = $('#myTable').DataTable();
+        var data = table.row(this).data();
+        var index = table.column(this).index();
+        //console.log(data);
+        $.ajax({
+            url: 'getPeriods',
+            //type:'json',
+            data: { id: data.Id },
+            success: function (res) {
+                const data = JSON.parse(res);
+                console.log(data);
+                $('#id1').val(data[0].Id);
+                $("#dateFrom1").val(data[0].DateFrom.substr(0,10));
+                $("#dateTo1").val(data[0].DateTo.substr(0,10));
+                $("#status1").val(data[0].status);
+            }
+        });
+        $('#crudForm').modal('show');
+    });
+    function addSubmit()
+    {
+        $.ajax({
+            url: 'createPeriod',
+            //type:'json',
+            data: {
+                DateFrom: $("#dateFrom0").val(),
+                DateTo: $("#dateTo0").val(),
+                status: $("#status0").val()
+            },
+            success: function (res) {
+                alert("success");
+            }
+        });
+    }
+    function editSubmit() {
+
+        $.ajax({
+            url: 'updatePeriod',
+            //type:'json',
+            data: {
+                Id: $('#id1').val(),
+                DateFrom: $("#dateFrom1").val(),
+                DateTo: $("#dateTo1").val(),
+                status: $("#status1").val()
+            },
+            success: function (res) {
+                alert("success");
+                window.location.reload();
+            }
+        });
+    }
+</script>
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
