@@ -15,6 +15,9 @@ namespace newHR.Models
         public string Date{set;get;}
         public float addition { set; get; }
         public float vaction { set; get; }
+        public string shiftId { set; get; }
+        public string color { set; get; }
+
 
     }
 }

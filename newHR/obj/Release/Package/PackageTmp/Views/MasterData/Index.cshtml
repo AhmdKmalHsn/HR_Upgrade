@@ -1,0 +1,222 @@
+﻿@using WebMatrix.Data;
+@{
+    ViewBag.Title = "Employees";
+    var db = Database.Open("CS");
+}
+    
+@if(Request.Cookies["Reports_Salary_Details"]==null)
+{
+Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>1){
+
+}else
+{
+   Response.Redirect("~/home/Index");
+}
+<style>
+.form-floating label{
+/*right:0;*/
+}
+fieldset
+{
+    /*border:1px black solid;*/
+}
+.update-form
+{
+    
+}
+</style>
+<h2>تقرير</h2>
+<hr>
+<button id="create" class="btn btn-info" onclick="dialogCrt.dialog('open')">انشاء</button>
+<hr>
+<div id="container" style="overflow-x:auto">
+    <table id="example" class="display" style="width:100%" dir="rtl">
+
+    </table>
+</div>
+<div id="empContainer" title="بيانات العمال">
+    <table id=empTable style="width:100%"></table>
+</div>
+<!--dialog edit-->
+<div id="update-form" class="update-form">
+    <div class="container-fluid " dir=rtl>
+        <fieldset>
+        <legend>البيانات الشخصية:</legend>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-floating mb-1 mt-1  ">
+                    <input id=fileNo type=number class="form-control" readonly>
+                    <label class="label" for=fileNo dir=rtl>رقم الملف </label>
+                </div>
+            </div>
+            <div class=col-6>
+                <div class=" form-floating mb-1 mt-1 ">
+                    <input id=Name type=text class="form-control" readonly>
+                    <label class="label " for=Name dir=rtl>الاسم</label>
+                </div>
+            </div>
+        </div>
+        </fieldset>
+    </div>
+</div>
+<!---->
+<!--dialog create-->
+<div id="create-form" class="create-form">
+    <div class="container-fluid " dir=rtl>
+        <fieldset>
+        <legend>البيانات الشخصية:</legend>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-floating mb-1 mt-1 input-group">
+                    <input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialogEmp.dialog('open')" />
+                    <input id=fileNo type=number class="form-control" readonly>
+                    <label class="label" for=fileNo dir=rtl>رقم الملف</label>
+                </div>
+            </div>
+            <div class=col-6>
+                <div class=" form-floating mb-1 mt-1 ">
+                    <input id=Name type=text class="form-control" readonly>
+                    <label class="label " for=Name dir=rtl>الاسم</label>
+                </div>
+            </div>
+        </div>
+        </fieldset>
+
+
+
+
+
+    </div>
+</div>
+<!---->
+<script>
+var sqlInsert,sqlUpdate,id;
+const sql1 = `select filenumber,knownas name,(select name from Departements where DepartementId=Id)dept 
+from employees e left join Personals p on e.PersonalId=p.Id left join BasicBayWorks b on e.id=b.EmployeeId 
+where b.id is null and p.StatusId=1`;
+var sqlRead=``;
+//console.log(q);
+var v=readSQL(sqlRead)
+//console.log(v);	   
+var columns =
+ [                  
+    {
+        "data": "Id",
+        "title": "رقم العامل",
+    },
+    {"defaultContent": "<button id='edt-btn' class='btn btn-success'>Edit</button>"}
+					
+];
+				  
+            console.log(columns);
+var tb = $('#example').dataTable({
+                stateSave: true,
+                "destroy": true,
+                "data": v.filter(w =>EMPS.includes(''+w.FileNumber)),
+                "columns": columns,
+                dom: 'Blfrtip',
+                buttons: [
+                  'copy', 'excel', 'print'
+                ],
+            });
+$('#example tbody').on('click', "#edt-btn", function() {
+         //var gdata=readSQL();
+        //$(this).closest('tr').find("td").eq(0).html()+`'`
+                  
+        console.log(gdata[0]);
+    
+ });
+			  
+var empTable = $("#empTable").dataTable({
+    data: readSQL(sql1),
+    columns: [
+        {
+    title: "filenumber",
+    data:"filenumber",
+},
+        {
+    title:"name",
+    data:"name",
+},
+        {
+    title: "choose",
+    data: "filenumber",
+    
+    render: function (a) {
+                return `<button class="btn btn-dark" onclick="$('#create-form #fileNo').val(${a}); $('#create-form #name').val($(this).closest('tr').find('td').eq(1).text());dialogEmp.dialog('close')" >choose</button>`
+}
+}
+]
+});
+var dialogEmp = $("#empContainer").dialog({
+    width: 500,
+    height: 600,
+    autoOpen: false
+});
+var dialogUpd = $( ".update-form" ).dialog({
+      autoOpen: false,
+      height: 850,
+      width: 850,
+      modal: true,
+      title: ' تعديل',
+      buttons: {
+        حفظ: function() {
+          update();
+          }
+      }
+    });
+var dialogCrt = $(".create-form" ).dialog({
+      autoOpen: false,
+      height: 850,
+      width: 850,
+      modal: true,
+      title: 'انشاء ',
+      buttons: {
+        حفظ: function() {
+          create();
+        }
+      }
+    });
+      $(".dt-button").addClass("btn btn-success") 
+      
+      
+	  
+function convertToNull(e)
+      {
+         return (e==''?'NULL':e)
+      }
+function convertToZero(e)
+      {
+         return (e==''?0:e)
+      }
+   
+
+function update(){
+    sqlUpdate=``;
+    console.log(sqlUpdate);
+    var res=excuteSQL(sqlUpdate);
+    console.log(res);
+    if(res==1)
+    {
+        alert("saved successfull!");
+        dialogUpd.dialog("close");
+    }else alert("error");
+}
+function create(){
+    sqlInsert=``;
+    console.log(sqlInsert);
+    var res=excuteSQL(sqlInsert);
+    console.log(res);
+    if(res==1)
+    {
+        alert("saved successfull!");
+        dialogCrt.dialog("close");
+    }else alert("error");
+}
+</script>
+
+
+
+

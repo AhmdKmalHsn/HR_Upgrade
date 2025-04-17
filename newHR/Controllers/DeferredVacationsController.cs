@@ -17,6 +17,80 @@ namespace newHR.Controllers
         {
             List<VacationsModel> lst = new List<VacationsModel>();
             string sql = @"
+SELECT     
+		   ISNULL(E.FileNumber,0)FileNumber,
+		   ISNULL(E.KnownAs,0) 'name',
+		   ISNULL(bb.EmployeeId,0)EmployeeId,
+		   d.Name'dept',
+		   ISNULL(AB.vacation,0)vacation,
+		   ISNULL(bb.NumberOfStageVacations,0) 'deferredVacation',
+		   bb.VacationDeferredDate   'deferredDate',
+		   ISNULL(dbo.Ak_Monthly_Balance(VacationDeferredDate),0)
+		   +ISNULL(bb.NumberOfStageVacations,0)'deferred',
+		   bb.deferred'olddeferred',
+		   ISNULL(dbo.Ak_Monthly_Balance(VacationDeferredDate),0)
+		   +ISNULL(bb.NumberOfStageVacations,0)
+		   -isnull(ab.vacation,0) 'availableVacation',
+		   bb.deferred-isnull(ab.vacation,0) 'oldavailableVacation'
+	FROM
+	(
+	select EmployeeId,
+		   VacationDeferredDate,
+		   NumberOfStageVacations,
+	ISNULL(NumberOfStageVacations,0) deferred
+	from BasicBayWorks 
+	)BB left join
+   (
+	select sum(
+	       case when a.DayPart>0 then a.DayPart else 
+	       cast(
+		   case when (timeFrom=null and timeto=null )or HoursNo=0 then 1
+		        when s.DailyHours<>0 then HoursNo/s.DailyHours
+			    else 0
+		   end as decimal(10,2))
+		   end
+		   )  vacation,
+		   FileNumber,
+		   a.EmployeeId
+	from Absences a join 
+	     BasicBayWorks b  on a.EmployeeId=b.EmployeeId join
+		 Shifts s on b.ShiftId=s.ShiftId join 
+		 Employees e on e.Id=a.EmployeeId
+	where (a.AbsenceTypeId=3 or a.AbsenceTypeId=7) --and Payment=1
+		  and a.DateFrom>=VacationDeferredDate and a.DateFrom<=getdate()
+	group by FileNumber,A.EmployeeId
+
+	)AB on ab.EmployeeId=bb.EmployeeId
+	join Employees E on bb.EmployeeId=E.id join Personals P on p.Id=e.PersonalId join Departements d on e.DepartementId=d.Id
+	where p.StatusId<>3 
+	order by cast(e.filenumber as int)
+	";
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                con.Open();
+                SqlCommand com = new SqlCommand(sql, con);
+                com.CommandType = CommandType.Text;
+                SqlDataReader rdr = com.ExecuteReader();
+                while (rdr.Read())
+                {
+                    lst.Add(new VacationsModel
+                    {
+                        fileNumber =  rdr["FileNumber"] != "" ? Convert.ToInt32(rdr["FileNumber"]) : 0,
+                        name = rdr["name"].ToString(),
+                        abcenceDays = rdr["vacation"] != "" ? Convert.ToDecimal(rdr["vacation"]) : 0,
+                        departmentId = rdr["Dept"].ToString(),
+                        availableDays = rdr["availableVacation"] != "" ? Convert.ToDecimal(rdr["availableVacation"]) : 0,
+                        deferredDate = rdr["deferredDate"].ToString(),
+                        deferredDays = rdr["deferredVacation"] != "" ? Convert.ToDecimal(rdr["deferredVacation"]) : 0
+                    });
+                }
+                return lst;
+            }
+        }
+        public List<VacationsModel> GetById(int Id)
+        {
+            List<VacationsModel> lst = new List<VacationsModel>();
+            string sql = @"
 SELECT ISNULL(AB.vacation,0)vacation,
 		   ISNULL(E.FileNumber,0)FileNumber,
 		   ISNULL(E.KnownAs,0) 'name',
@@ -61,12 +135,13 @@ SELECT ISNULL(AB.vacation,0)vacation,
 
 	)AB on ab.EmployeeId=bb.EmployeeId
 	join Employees E on bb.EmployeeId=E.id join Personals P on p.Id=e.PersonalId join Departements d on e.DepartementId=d.Id
-	where p.StatusId<>3 
+	where p.StatusId<>3 and e.filenumber=@FN 
 	";
             using (SqlConnection con = new SqlConnection(cs))
             {
                 con.Open();
                 SqlCommand com = new SqlCommand(sql, con);
+                com.Parameters.Add("@FN", SqlDbType.Int).Value = Id;
                 com.CommandType = CommandType.Text;
                 SqlDataReader rdr = com.ExecuteReader();
                 while (rdr.Read())

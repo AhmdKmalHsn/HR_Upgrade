@@ -1,0 +1,3066 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HrModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="C__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+    <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Absence">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DateFrom" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="TimeFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TimeTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HoursNo" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Payment" Type="Boolean" />
+    <Property Name="AbsenceTypeId" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="DayPart" Type="Double" />
+    <Property Name="Ref1" Type="DateTime" Precision="3" />
+    <Property Name="Ref2" Type="DateTime" Precision="3" />
+    <Property Name="isRemoveGap" Type="Byte" />
+  </EntityType>
+  <EntityType Name="AbsenceType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Accessibility">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AClog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FileNumber" Type="Int32" />
+    <Property Name="DateTime" Type="DateTime" Precision="3" />
+    <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AdditionApproval">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NoOfHour" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="NameOfPerson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="TimeOf" Type="Int32" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId" FromRole="AdditionApprovals" ToRole="Employees" />
+  </EntityType>
+  <EntityType Name="Address">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MobilePhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomePhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomeStreet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomeCityId" Type="Int32" />
+    <Property Name="HomeCountryId" Type="Int32" />
+    <Property Name="CountryOfBirthId" Type="Int32" />
+    <Property Name="CitizenshipId" Type="Int32" />
+    <Property Name="PlaceOfBirthId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="Ctizenship_Id" Type="Int32" />
+    <Property Name="employee_id" Type="Int32" />
+    <NavigationProperty Name="CountryOfBirth" Relationship="Self.FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId" FromRole="Addresses" ToRole="CountryOfBirths" />
+    <NavigationProperty Name="Ctizenship" Relationship="Self.FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id" FromRole="Addresses" ToRole="Ctizenships" />
+    <NavigationProperty Name="HomeCity" Relationship="Self.FK_dbo_Addresses_dbo_HomeCities_HomeCityId" FromRole="Addresses" ToRole="HomeCities" />
+    <NavigationProperty Name="HomeCountry" Relationship="Self.FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId" FromRole="Addresses" ToRole="HomeCountries" />
+    <NavigationProperty Name="PlaceOfBirth" Relationship="Self.FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId" FromRole="Addresses" ToRole="PlaceOfBirths" />
+  </EntityType>
+  <EntityType Name="Administration">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PreviousYearsOfExperience" Type="Int32" />
+    <Property Name="TotalYearsOfExperience" Type="Int32" />
+    <Property Name="ContractTypeId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="employee_id" Type="Int32" />
+    <NavigationProperty Name="ContractType" Relationship="Self.FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId" FromRole="Administrations" ToRole="ContractTypes" />
+  </EntityType>
+  <EntityType Name="AK_Employees">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeNo" Type="Int32" />
+    <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MidelName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="KnownAs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="FileNumber" Type="Int32" />
+    <Property Name="JobTitleId" Type="Int32" />
+    <Property Name="DepartementId" Type="Int32" />
+    <Property Name="TypeEmployeeId" Type="Int32" />
+    <Property Name="ClassId" Type="Int32" />
+    <Property Name="CompanyId" Type="Int32" />
+    <Property Name="LocationId" Type="Int32" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BankCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Int32" />
+    <Property Name="TimeShit" Type="Int32" />
+    <Property Name="EmployeeGroupId" Type="Int32" />
+    <Property Name="EmployeeSubGroupId" Type="Int32" />
+    <Property Name="PayllorAreaId" Type="Int32" />
+    <Property Name="JoiningDate" Type="DateTime" Precision="3" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+    <Property Name="MaritalStatus" Type="Int32" />
+    <Property Name="NumberOfChildren" Type="Int32" />
+    <Property Name="NumberOfSickDays" Type="Int32" />
+    <Property Name="StartSickDate" Type="DateTime" Precision="3" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="Division" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SubDivision" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NationalityId" Type="Int32" />
+    <Property Name="ReligionId" Type="Int32" />
+    <Property Name="CostCenterId" Type="Int32" />
+    <Property Name="PromotionHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IncreaseHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BonusHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CashOrBankId" Type="Int32" />
+    <Property Name="BankAccountId" Type="Int32" />
+    <Property Name="MedicalCoverId" Type="Int32" />
+    <Property Name="LiveCoverId" Type="Int32" />
+    <Property Name="EventTypeId" Type="Int32" />
+    <Property Name="ReasonForEventId" Type="Int32" />
+    <Property Name="EmployementStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SalaryCurrency" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IDNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LicenseNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="License_Termination_Date" Type="DateTime" Precision="3" />
+    <Property Name="License_Expired_Date" Type="DateTime" Precision="3" />
+    <Property Name="PassportNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PassportIssueDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PassportExiprationDate" Type="DateTime" Precision="3" />
+    <Property Name="TypeOfHealthInsuranceId" Type="Int32" />
+    <Property Name="SocialInsuranceNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EducationStatusId" Type="Int32" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TerminationDate" Type="DateTime" Precision="3" />
+    <Property Name="TerminationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HealthInsuranceCompanyNameId" Type="Int32" />
+    <Property Name="PreviousYearsOfExperience" Type="Int32" />
+    <Property Name="TotalYearsOfExperience" Type="Int32" />
+    <Property Name="ContractTypeId" Type="Int32" />
+    <Property Name="MobilePhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomePhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomeStreet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HomeCityId" Type="Int32" />
+    <Property Name="HomeCountryId" Type="Int32" />
+    <Property Name="CountryOfBirthId" Type="Int32" />
+    <Property Name="PlaceOfBirthId" Type="Int32" />
+    <Property Name="ShiftId" Type="Int32" />
+    <Property Name="GradeId" Type="Int32" />
+    <Property Name="LevelId" Type="Int32" />
+    <Property Name="MonthlyBasic" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AnnualBasic" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Overtime" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SkillIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExpensiveIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="RegularityIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ConstValue" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="DaysValue" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NumberOfVacation" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="InMonthOrInYear" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="VacationsBalance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ManagementIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="VacationsBalanceDate" Type="DateTime" Precision="0" />
+    <Property Name="DeferredType" Type="Int32" />
+    <Property Name="MaxDeferredVacation" Type="Int32" />
+    <Property Name="ProductivityDays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ProductivityFixed" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="JobDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="militaryStatusId" Type="Int32" />
+    <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="AK_events">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="dept" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="userName" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="AK_events_lines">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="filenumber" Type="Int32" Nullable="false" />
+    <Property Name="dateFrom" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="checked" Type="Byte" Nullable="false" />
+    <Property Name="DocNum" Type="Int32" />
+  </EntityType>
+  <EntityType Name="AK_Fields">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="label" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="html_or_html_partial" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="html" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="html_partial" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="sql_or_collection" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="sql" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="collection" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AK_Forms">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="module_Id" Type="Int32" Nullable="false" />
+    <Property Name="field_id" Type="Int32" Nullable="false" />
+    <Property Name="tab" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="table" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="active" Type="Int32" />
+    <Property Name="line_num" Type="Int32" />
+  </EntityType>
+  <EntityType Name="AK_Menu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="label" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="parent_id" Type="Int32" />
+    <Property Name="active" Type="Int32" />
+    <Property Name="link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="module_id" Type="Int32" />
+    <Property Name="line_num" Type="Int32" />
+  </EntityType>
+  <EntityType Name="AK_Modules">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ModuleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Header" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SQLSelect" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AK_Queries">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="query_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="query_sql" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="AK_Shifts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShiftName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ShiftType" Type="Int32" Nullable="false" />
+    <Property Name="Active" Type="Int32" />
+    <Property Name="WeekendType" Type="Int32" />
+    <Property Name="WeekendDays" Type="Int32" />
+    <Property Name="M_W_D" Type="Int32" />
+    <Property Name="WeekelyHours" Type="Int32" />
+    <Property Name="MonthlyHours" Type="Int32" />
+    <Property Name="WeekelyDays" Type="Int32" />
+    <Property Name="MonthlyDays" Type="Int32" />
+    <Property Name="MonthlyLateHours" Type="Int32" />
+    <Property Name="MonthlyLateCount" Type="Int32" />
+    <Property Name="MonthlyLeaveHours" Type="Int32" />
+    <Property Name="MonthlyLeaveCount" Type="Int32" />
+    <Property Name="TimesId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="AK_Simple">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="simple_id" Type="Int32" />
+    <Property Name="table_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="col_title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Col_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Col_Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="col_class" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="row_no" Type="Int32" />
+    <Property Name="is_select" Type="Boolean" />
+    <Property Name="table_select" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="col_select_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="col_select_value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="val_enum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="AK_work_periods">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="employee_id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="employee_id" Type="Int32" Nullable="false" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Precision="0" />
+    <Property Name="active" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="AllowanceGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Attachment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EmployeeId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_Attachments_dbo_Employees_EmployeeId" FromRole="Attachments" ToRole="Employees" />
+  </EntityType>
+  <EntityType Name="Attendance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DateFrom" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="TimeFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TimeTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HoursNo" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="AttendanceTypeId" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="Late" Type="Double" />
+    <Property Name="Leave" Type="Double" />
+    <Property Name="ShiftId" Type="Int32" />
+    <Property Name="AttValue" Type="Double" />
+    <Property Name="ShiftTempId" Type="Int32" />
+    <Property Name="isStrict" Type="Byte" />
+    <Property Name="event" Type="Boolean" />
+    <Property Name="weekend_cancel" Type="Int32" />
+    <NavigationProperty Name="AttendanceType" Relationship="Self.FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId" FromRole="Attendances" ToRole="AttendanceTypes" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_Attendances_dbo_Employees_EmployeeId" FromRole="Attendances" ToRole="Employees" />
+  </EntityType>
+  <EntityType Name="AttendanceType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Attendances" Relationship="Self.FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId" FromRole="AttendanceTypes" ToRole="Attendances" />
+  </EntityType>
+  <EntityType Name="AttTable">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SalarySheetId" Type="Int32" Nullable="false" />
+    <Property Name="Dayname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TimeFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TimeTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="abs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="att" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="dateDay" Type="DateTime" Precision="0" />
+    <Property Name="errand" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="lateHours" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="leaveHours" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="overTimeHour" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="vacDay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="weekend" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="special" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Authority">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="true" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BankAccount">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_BankAccounts_BankAccountId" FromRole="BankAccounts" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="BasicBayWorkLine">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="CurrencyId" Type="Int32" />
+    <Property Name="WageCodeId" Type="Int32" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Currency" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId" FromRole="BasicBayWorkLines" ToRole="Currencies" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId" FromRole="BasicBayWorkLines" ToRole="Employees" />
+    <NavigationProperty Name="WageCode" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId" FromRole="BasicBayWorkLines" ToRole="WageCodes" />
+  </EntityType>
+  <EntityType Name="BasicBayWork">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StartDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="ShiftId" Type="Int32" />
+    <Property Name="PayScaleAreaId" Type="Int32" />
+    <Property Name="PayScaleTypeId" Type="Int32" />
+    <Property Name="GradeId" Type="Int32" />
+    <Property Name="LevelId" Type="Int32" />
+    <Property Name="AllowanceGroupId" Type="Int32" />
+    <Property Name="MonthlyBasic" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AnnualBasic" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="TotalSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Overtime" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SkillIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExpensiveLivingConditons" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="RegularityIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="IncentiveIncentiveForAbsence" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ConstValue" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NumberOfDays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="IsRegularityIncetive" Type="Boolean" />
+    <Property Name="IsNumberDaysOnly" Type="Boolean" />
+    <Property Name="IsConstValueOnly" Type="Boolean" />
+    <Property Name="AreNumberAndConstValue" Type="Boolean" />
+    <Property Name="IsSkillIncetive" Type="Boolean" />
+    <Property Name="IsExpesiveLiving" Type="Boolean" />
+    <Property Name="NumberOfVacationInYear" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NumberOfVacationInManth" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NumberOfStageVacations" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SpareShiftId" Type="Int32" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Precision="0" />
+    <Property Name="ManagementIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="VacationDeferredDate" Type="DateTime" Precision="0" />
+    <Property Name="TempShiftId" Type="Int32" />
+    <Property Name="IsPrivate" Type="Boolean" />
+    <Property Name="updatedAt" Type="DateTime" Precision="3" />
+    <Property Name="dept" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MaxDeferredVacation" Type="Int32" />
+    <Property Name="ProductivityDays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ProductivityFixed" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="isProMonthly" Type="Boolean" />
+    <Property Name="isProWeekly" Type="Boolean" />
+    <Property Name="withinSalary" Type="Boolean" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Bonu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Describe" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Precision="0" />
+    <Property Name="Additive" Type="Int32" />
+    <Property Name="Taxable" Type="Int32" />
+    <Property Name="TypeOfValue" Type="Int32" />
+    <Property Name="Value" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="JobTitleId" Type="Int32" />
+    <Property Name="MaxValue" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="MinValue" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="PerformanceEvaluation" Type="Int32" />
+    <NavigationProperty Name="JobTitle" Relationship="Self.FK_Bonus_JobTitles" FromRole="Bonus" ToRole="JobTitles" />
+  </EntityType>
+  <EntityType Name="CashOrBank">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId" FromRole="CashOrBanks" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="changeLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="crud" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="timeDone" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="tableName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="singleValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="isSingleValue" Type="Byte" Nullable="false" />
+    <Property Name="report" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="isMasterData" Type="Byte" />
+    <Property Name="PostingDate1" Type="DateTime" Precision="0" />
+    <Property Name="PostingDate2" Type="DateTime" Precision="0" />
+    <Property Name="PostingTime1" Type="Time" Precision="7" />
+    <Property Name="PostingTime2" Type="Time" Precision="7" />
+    <Property Name="Vacation" Type="Double" />
+    <Property Name="Attendance" Type="Double" />
+    <Property Name="TempShift" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Late" Type="Double" />
+    <Property Name="Leave" Type="Double" />
+    <Property Name="Overtime" Type="Double" />
+    <NavigationProperty Name="ChangelogDetails" Relationship="Self.FK__Changelog__chang__75F77EB0" FromRole="changeLog" ToRole="ChangelogDetails" />
+  </EntityType>
+  <EntityType Name="ChangelogDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="columnName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Value1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Value2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="changeLogId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="changeLog" Relationship="Self.FK__Changelog__chang__75F77EB0" FromRole="ChangelogDetails" ToRole="changeLog" />
+  </EntityType>
+  <EntityType Name="Class">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Company">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="IsActive" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_dbo_Users_dbo_Companies_CompanyId" FromRole="Companies" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="CompanyDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CompanyName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CompanyLogo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ContractType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Administrations" Relationship="Self.FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId" FromRole="ContractTypes" ToRole="Administrations" />
+  </EntityType>
+  <EntityType Name="ContributionPeriod">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="SocialInsurances" Relationship="Self.FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId" FromRole="ContributionPeriods" ToRole="SocialInsurances" />
+  </EntityType>
+  <EntityType Name="CostCenter">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_CostCenters_CostCenterId" FromRole="CostCenters" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="CountryOfBirth">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId" FromRole="CountryOfBirths" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="Ctizenship">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id" FromRole="Ctizenships" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="Currency">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="BasicBayWorkLines" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId" FromRole="Currencies" ToRole="BasicBayWorkLines" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_dbo_Payments_dbo_Currencies_CurrencyId" FromRole="Currencies" ToRole="Payments" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DelayFromTo">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="From" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="To" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DelayId" Type="Int32" Nullable="false" />
+    <Property Name="DayPart" Type="Double" />
+    <NavigationProperty Name="Delay" Relationship="Self.FK_dbo_DelayFromToes_dbo_Delays_DelayId" FromRole="DelayFromToes" ToRole="Delays" />
+  </EntityType>
+  <EntityType Name="Delay">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShiftId" Type="Int32" Nullable="false" />
+    <Property Name="Shift_Id" Type="Int32" Nullable="false" />
+    <Property Name="ShiftName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Warning_From" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Warning_To" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Allowed_Delay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="DelayFromToes" Relationship="Self.FK_dbo_DelayFromToes_dbo_Delays_DelayId" FromRole="Delays" ToRole="DelayFromToes" />
+    <NavigationProperty Name="Shift" Relationship="Self.FK_dbo_Delays_dbo_Shifts_ShiftId" FromRole="Delays" ToRole="Shifts" />
+  </EntityType>
+  <EntityType Name="Departement">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="group" Type="Int32" />
+    <Property Name="groups" Type="Int32" />
+  </EntityType>
+  <EntityType Name="DeptAssign">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AssignId" Type="Int32" Nullable="false" />
+    <Property Name="DeptId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EducationalStatu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Generals" Relationship="Self.FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id" FromRole="EducationalStatus" ToRole="Generals" />
+  </EntityType>
+  <EntityType Name="EmpAssign">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AssignId" Type="Int32" Nullable="false" />
+    <Property Name="EmpId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EmployeeGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId" FromRole="EmployeeGroups" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeNo" Type="Int32" />
+    <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MidelName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="KnownAs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="FileNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RatioWorkerProfits" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="JobTitleId" Type="Int32" />
+    <Property Name="DepartementId" Type="Int32" />
+    <Property Name="TypeEmployeeId" Type="Int32" />
+    <Property Name="ClassId" Type="Int32" />
+    <Property Name="CompanyId" Type="Int32" />
+    <Property Name="LocationId" Type="Int32" />
+    <Property Name="PersonalId" Type="Int32" Nullable="false" />
+    <Property Name="FinanceId" Type="Int32" Nullable="false" />
+    <Property Name="AdministrationId" Type="Int32" Nullable="false" />
+    <Property Name="AddressId" Type="Int32" Nullable="false" />
+    <Property Name="GeneralId" Type="Int32" Nullable="false" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RemarkId" Type="Int32" Nullable="false" />
+    <Property Name="BankCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BankCode2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="color" Type="String" MaxLength="7" FixedLength="true" Unicode="true" />
+    <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AdditionApprovals" Relationship="Self.FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="AdditionApprovals" />
+    <NavigationProperty Name="Attachments" Relationship="Self.FK_dbo_Attachments_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="Attachments" />
+    <NavigationProperty Name="Attendances" Relationship="Self.FK_dbo_Attendances_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="Attendances" />
+    <NavigationProperty Name="BasicBayWorkLines" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="BasicBayWorkLines" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_dbo_Payments_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="Payments" />
+    <NavigationProperty Name="SocialInsurances" Relationship="Self.FK_dbo_SocialInsurances_dbo_Employees_EmployeeId" FromRole="Employees" ToRole="SocialInsurances" />
+  </EntityType>
+  <EntityType Name="EmployeeSubGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId" FromRole="EmployeeSubGroups" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="EmployeeTransfer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="DeptId" Type="Int32" Nullable="false" />
+    <Property Name="ShiftId" Type="Int32" Nullable="false" />
+    <Property Name="TotalSalary" Type="Double" />
+    <Property Name="Overtime" Type="Double" />
+    <Property Name="Skill" Type="Double" />
+    <Property Name="Expensive" Type="Double" />
+    <Property Name="Management" Type="Double" />
+    <Property Name="Regular" Type="Double" />
+    <Property Name="ConstValue" Type="Double" />
+    <Property Name="NumberOfDays" Type="Double" />
+    <Property Name="IsDays" Type="Boolean" />
+    <Property Name="IsConst" Type="Boolean" />
+    <Property Name="IsDaysAndConst" Type="Boolean" />
+    <Property Name="VacationsNo" Type="Double" />
+    <Property Name="VacationsDate" Type="DateTime" Precision="0" />
+    <Property Name="TempShiftId" Type="Int32" />
+    <Property Name="IsPrivate" Type="Boolean" />
+    <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="EventType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_EventTypes_EventTypeId" FromRole="EventTypes" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="Finance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PromotionHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IncreaseHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BonusHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TransferHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="GrossOrNet" Type="Int32" Nullable="false" />
+    <Property Name="CashOrBankId" Type="Int32" />
+    <Property Name="BankAccountId" Type="Int32" />
+    <Property Name="MedicalCoverId" Type="Int32" />
+    <Property Name="LiveCoverId" Type="Int32" />
+    <Property Name="OtherAllowanceId" Type="Int32" />
+    <Property Name="EventTypeId" Type="Int32" />
+    <Property Name="ReasonForEventId" Type="Int32" />
+    <Property Name="EmployementStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SalaryCurrency" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="employee_id" Type="Int32" />
+    <NavigationProperty Name="BankAccount" Relationship="Self.FK_dbo_Finances_dbo_BankAccounts_BankAccountId" FromRole="Finances" ToRole="BankAccounts" />
+    <NavigationProperty Name="CashOrBank" Relationship="Self.FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId" FromRole="Finances" ToRole="CashOrBanks" />
+    <NavigationProperty Name="EventType" Relationship="Self.FK_dbo_Finances_dbo_EventTypes_EventTypeId" FromRole="Finances" ToRole="EventTypes" />
+    <NavigationProperty Name="LiveCover" Relationship="Self.FK_dbo_Finances_dbo_LiveCovers_LiveCoverId" FromRole="Finances" ToRole="LiveCovers" />
+    <NavigationProperty Name="MedicalCover" Relationship="Self.FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId" FromRole="Finances" ToRole="MedicalCovers" />
+    <NavigationProperty Name="OtherAllowance" Relationship="Self.FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId" FromRole="Finances" ToRole="OtherAllowances" />
+    <NavigationProperty Name="ReasonForEvent" Relationship="Self.FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId" FromRole="Finances" ToRole="ReasonForEvents" />
+  </EntityType>
+  <EntityType Name="General">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdIssuedByAuthorities" Type="Int32" />
+    <Property Name="IDNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LicenseNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="License_Termination_Date" Type="DateTime" Precision="3" />
+    <Property Name="License_Expired_Date" Type="DateTime" Precision="3" />
+    <Property Name="PassportNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PassportIssueDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PassportExiprationDate" Type="DateTime" Precision="3" />
+    <Property Name="PreviousYear" Type="Int32" />
+    <Property Name="CurrentYear" Type="Int32" />
+    <Property Name="TypeOfHealthInsuranceId" Type="Int32" />
+    <Property Name="SocialInsuranceNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EducationStatusId" Type="Int32" />
+    <Property Name="FirstNameOfSpouse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LastNameOfSpouse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CrcNumber" Type="Int32" />
+    <Property Name="CrcState" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TerminationDate" Type="DateTime" Precision="3" />
+    <Property Name="TerminationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HealthInsuranceCompanyNameId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="EducationalStatus_Id" Type="Int32" />
+    <Property Name="employee_id" Type="Int32" />
+    <NavigationProperty Name="EducationalStatu" Relationship="Self.FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id" FromRole="Generals" ToRole="EducationalStatus" />
+    <NavigationProperty Name="HealthInsuranceCompanyName" Relationship="Self.FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId" FromRole="Generals" ToRole="HealthInsuranceCompanyNames" />
+    <NavigationProperty Name="TypeOfHealthInsurance" Relationship="Self.FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId" FromRole="Generals" ToRole="TypeOfHealthInsurances" />
+  </EntityType>
+  <EntityType Name="Grade">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="HealthInsuranceCompanyName">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Generals" Relationship="Self.FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId" FromRole="HealthInsuranceCompanyNames" ToRole="Generals" />
+  </EntityType>
+  <EntityType Name="HomeCity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_dbo_Addresses_dbo_HomeCities_HomeCityId" FromRole="HomeCities" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="HomeCountry">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId" FromRole="HomeCountries" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="Home">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_dbo_Users_dbo_Homes_Home_Id" FromRole="Homes" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Incentive">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Describe" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Precision="0" />
+    <Property Name="Taxable" Type="Int32" />
+    <Property Name="TypeOfValue" Type="Int32" />
+    <Property Name="Value" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="JobTitleId" Type="Int32" />
+    <Property Name="MaxValue" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="MinValue" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="PerformanceEvaluation" Type="Int32" />
+    <NavigationProperty Name="JobTitle" Relationship="Self.FK_Incentives_JobTitles" FromRole="Incentives" ToRole="JobTitles" />
+  </EntityType>
+  <EntityType Name="InsuranceAuthority">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="InsuranceDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeFixedSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CompanyFixedSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="EmplyeeVariableSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CompanyVariableSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="InsuranceNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="InsuranceAuthorityId" Type="Int32" />
+    <Property Name="Percentage" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="UpdateAt" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="InsurancePrecentage">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ofFixedSalartForEmployeeContrribution" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForEmployeeContrribution" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofFixedSalartForCompanyContrribution" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForCompanyContrribution" Type="Decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="InsuranceType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="SocialInsurances" Relationship="Self.FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId" FromRole="InsuranceTypes" ToRole="SocialInsurances" />
+  </EntityType>
+  <EntityType Name="JobHistory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="EmpolyeeId" Type="Int32" />
+    <Property Name="HistoryType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HistoryDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="JobTitle">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Bonus" Relationship="Self.FK_Bonus_JobTitles" FromRole="JobTitles" ToRole="Bonus" />
+    <NavigationProperty Name="Incentives" Relationship="Self.FK_Incentives_JobTitles" FromRole="JobTitles" ToRole="Incentives" />
+  </EntityType>
+  <EntityType Name="Level">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LevelName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="LiveCover">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_LiveCovers_LiveCoverId" FromRole="LiveCovers" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="MedicalCover">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId" FromRole="MedicalCovers" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="Message">
+    <Key>
+      <PropertyRef Name="MessageID" />
+    </Key>
+    <Property Name="MessageID" Type="Int32" Nullable="false" />
+    <Property Name="Message1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="EmptyMessage" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Date" Type="DateTime" Precision="0" />
+  </EntityType>
+  <EntityType Name="Month">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Start" Type="Int32" Nullable="false" />
+    <Property Name="End" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="MSpeer_conflictdetectionconfigrequest">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="publication" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sent_date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="timeout" Type="Int32" Nullable="false" />
+    <Property Name="modified_date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="progress_phase" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="phase_timed_out" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MSpeer_lsns">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="last_updated" Type="DateTime" Precision="3" />
+    <Property Name="originator" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_publication" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_publication_id" Type="Int32" />
+    <Property Name="originator_db_version" Type="Int32" />
+    <Property Name="originator_lsn" Type="Binary" MaxLength="16" FixedLength="false" />
+    <Property Name="originator_version" Type="Int32" />
+    <Property Name="originator_id" Type="Int32" />
+  </EntityType>
+  <EntityType Name="MyShift">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="ShiftId" Type="Int32" Nullable="false" />
+    <Property Name="ShiftName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ActiveDisactive" Type="Int32" />
+    <Property Name="WeekendFromDay" Type="Int32" />
+    <Property Name="WeekendToDay" Type="Int32" />
+    <Property Name="EmploymentPercent" Type="Int32" />
+    <Property Name="DailyHours" Type="Double" />
+    <Property Name="WeekelyDays" Type="Int32" />
+    <Property Name="WeekelyHours" Type="Int32" />
+    <Property Name="MonthlyHours" Type="Int32" />
+    <Property Name="MonthlyLeaveDays" Type="Int32" />
+    <Property Name="StartTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EndTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LateArrive" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EarlyLeave" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EarlyArrive" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="NoOfShifts" Type="Int32" Nullable="false" />
+    <Property Name="Shift2" Type="Int32" />
+    <Property Name="Shift3" Type="Int32" />
+    <Property Name="ReplaceShiftEvery" Type="Int32" />
+    <Property Name="IsFullTime" Type="Boolean" />
+    <Property Name="IsWeekend" Type="Boolean" />
+    <Property Name="IsLogin" Type="Boolean" />
+    <Property Name="IsOneShift" Type="Boolean" />
+    <Property Name="IsTwoShift" Type="Boolean" />
+    <Property Name="IsThreeShift" Type="Boolean" />
+    <Property Name="GroupShifts" Type="Int32" />
+    <Property Name="SearchOption" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Nationality">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_Nationalities_NationalityId" FromRole="Nationalities" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="OtherAllowance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId" FromRole="OtherAllowances" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="PayllorArea">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId" FromRole="PayllorAreas" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="PaymentDeduction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Role" Type="Int32" />
+    <Property Name="Mapping" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId" FromRole="PaymentDeductions" ToRole="Payments" />
+  </EntityType>
+  <EntityType Name="Payment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CurrencyId" Type="Int32" />
+    <Property Name="PaymentDeductionId" Type="Int32" />
+    <Property Name="WageCodeId" Type="Int32" />
+    <Property Name="RecurringOneTimeId" Type="Int32" />
+    <Property Name="TotalNet" Type="Int32" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="Remarkes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="DaysNumber" Type="Double" />
+    <Property Name="DeductionId" Type="Int32" />
+    <Property Name="Imposer" Type="Int32" />
+    <Property Name="reason" Type="Int32" />
+    <NavigationProperty Name="Currency" Relationship="Self.FK_dbo_Payments_dbo_Currencies_CurrencyId" FromRole="Payments" ToRole="Currencies" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_Payments_dbo_Employees_EmployeeId" FromRole="Payments" ToRole="Employees" />
+    <NavigationProperty Name="PaymentDeduction" Relationship="Self.FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId" FromRole="Payments" ToRole="PaymentDeductions" />
+    <NavigationProperty Name="RecurringOneTime" Relationship="Self.FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId" FromRole="Payments" ToRole="RecurringOneTimes" />
+    <NavigationProperty Name="WageCode" Relationship="Self.FK_dbo_Payments_dbo_WageCodes_WageCodeId" FromRole="Payments" ToRole="WageCodes" />
+  </EntityType>
+  <EntityType Name="PayScaleArea">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="PayScaleType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Personal">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Age" Type="Int32" />
+    <Property Name="Gender" Type="Int32" />
+    <Property Name="TimeShit" Type="Int32" />
+    <Property Name="EmployeeGroupId" Type="Int32" />
+    <Property Name="EmployeeSubGroupId" Type="Int32" />
+    <Property Name="PayllorAreaId" Type="Int32" />
+    <Property Name="JoiningDate" Type="DateTime" Precision="3" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+    <Property Name="MaritalStatus" Type="Int32" />
+    <Property Name="NumberOfChildren" Type="Int32" />
+    <Property Name="NumberOfSickDays" Type="Int32" />
+    <Property Name="StartSickDate" Type="DateTime" Precision="3" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="PersonalArea" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PersonalSubArea" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Division" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SubDivision" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StartDate" Type="DateTime" Precision="3" />
+    <Property Name="OffDate" Type="DateTime" Precision="3" />
+    <Property Name="NationalityId" Type="Int32" />
+    <Property Name="ReligionId" Type="Int32" />
+    <Property Name="XReligionId" Type="Int32" />
+    <Property Name="CostCenterId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="timestamp" Type="DateTime" Precision="3" />
+    <Property Name="TerminationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="employee_id" Type="Int32" />
+    <NavigationProperty Name="CostCenter" Relationship="Self.FK_dbo_Personals_dbo_CostCenters_CostCenterId" FromRole="Personals" ToRole="CostCenters" />
+    <NavigationProperty Name="EmployeeGroup" Relationship="Self.FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId" FromRole="Personals" ToRole="EmployeeGroups" />
+    <NavigationProperty Name="EmployeeSubGroup" Relationship="Self.FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId" FromRole="Personals" ToRole="EmployeeSubGroups" />
+    <NavigationProperty Name="Nationality" Relationship="Self.FK_dbo_Personals_dbo_Nationalities_NationalityId" FromRole="Personals" ToRole="Nationalities" />
+    <NavigationProperty Name="PayllorArea" Relationship="Self.FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId" FromRole="Personals" ToRole="PayllorAreas" />
+    <NavigationProperty Name="Religion" Relationship="Self.FK_dbo_Personals_dbo_Religions_ReligionId" FromRole="Personals" ToRole="Religions" />
+    <NavigationProperty Name="Status" Relationship="Self.FK_dbo_Personals_dbo_Status_StatusId" FromRole="Personals" ToRole="Status" />
+  </EntityType>
+  <EntityType Name="PlaceOfBirth">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId" FromRole="PlaceOfBirths" ToRole="Addresses" />
+  </EntityType>
+  <EntityType Name="PostingPeriod">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DateFrom" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Productivity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="week" Type="Int32" />
+    <Property Name="month" Type="Int32" />
+    <Property Name="year" Type="Int32" />
+    <Property Name="fileNumber" Type="Int32" />
+    <Property Name="effortPercentage" Type="Decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="Profit">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Year" Type="Int32" Nullable="false" />
+    <Property Name="Month" Type="Int32" Nullable="false" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ReasonForEvent">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Finances" Relationship="Self.FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId" FromRole="ReasonForEvents" ToRole="Finances" />
+  </EntityType>
+  <EntityType Name="RecurringOneTime">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId" FromRole="RecurringOneTimes" ToRole="Payments" />
+  </EntityType>
+  <EntityType Name="Religion">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_Religions_ReligionId" FromRole="Religions" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="Remark">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="JobDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="employee_id" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Request">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="requestType" Type="Int32" />
+    <Property Name="dateFrom" Type="DateTime" Precision="3" />
+    <Property Name="dateTo" Type="DateTime" Precision="3" />
+    <Property Name="daysNum" Type="Double" />
+    <Property Name="timeFrom" Type="Time" Precision="7" />
+    <Property Name="timeTo" Type="Time" Precision="7" />
+    <Property Name="overtime" Type="Double" />
+    <Property Name="active" Type="Boolean" />
+    <Property Name="employeeId" Type="Int32" />
+    <Property Name="userEmp" Type="Int32" />
+    <Property Name="statusEmp" Type="Int32" />
+    <Property Name="dateEmp" Type="DateTime" Precision="3" />
+    <Property Name="userMgr" Type="Int32" />
+    <Property Name="statusMgr" Type="Int32" />
+    <Property Name="dateMgr" Type="DateTime" Precision="3" />
+    <Property Name="userHR" Type="Int32" />
+    <Property Name="statusHR" Type="Int32" />
+    <Property Name="dateHR" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Employee" Type="Int32" Nullable="false" />
+    <Property Name="Basic_Bay_Work" Type="Int32" Nullable="false" />
+    <Property Name="Social_Insurance" Type="Int32" Nullable="false" />
+    <Property Name="Shift" Type="Int32" Nullable="false" />
+    <Property Name="Attendance" Type="Int32" Nullable="false" />
+    <Property Name="Absence" Type="Int32" Nullable="false" />
+    <Property Name="Salary_Sheet" Type="Int32" Nullable="false" />
+    <Property Name="Import_Master_Data" Type="Int32" Nullable="false" />
+    <Property Name="Import_Monthly_Attendances" Type="Int32" Nullable="false" />
+    <Property Name="Payment" Type="Int32" Nullable="false" />
+    <Property Name="Additional_Approval" Type="Int32" Nullable="false" />
+    <Property Name="Create_New_User" Type="Int32" Nullable="false" />
+    <Property Name="Settings" Type="Int32" Nullable="false" />
+    <Property Name="role1" Type="Int32" Nullable="false" />
+    <Property Name="Delay" Type="Int32" Nullable="false" />
+    <Property Name="Sanction" Type="Int32" Nullable="false" />
+    <Property Name="Vacation" Type="Int32" Nullable="false" />
+    <Property Name="Taxes" Type="Int32" Nullable="false" />
+    <Property Name="OverTime" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_dbo_Users_dbo_Roles_RoleId" FromRole="Roles" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Roles2">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Vacation" Type="Int32" Nullable="false" />
+    <Property Name="Mission" Type="Int32" Nullable="false" />
+    <Property Name="Attendance" Type="Int32" Nullable="false" />
+    <Property Name="OverTime" Type="Int32" Nullable="false" />
+    <Property Name="Salary" Type="Int32" Nullable="false" />
+    <Property Name="ClosingPeriod" Type="Int32" Nullable="false" />
+    <Property Name="FingerMachine" Type="Int32" Nullable="false" />
+    <Property Name="Reports_Abs" Type="Int32" Nullable="false" />
+    <Property Name="Reports_Salary_Details" Type="Int32" Nullable="false" />
+    <Property Name="Logs" Type="Int32" Nullable="false" />
+    <Property Name="TempShifts" Type="Int32" Nullable="false" />
+    <Property Name="Employee" Type="Int32" Nullable="false" />
+    <Property Name="BasicBayWorks" Type="Int32" Nullable="false" />
+    <Property Name="Insurance" Type="Int32" />
+  </EntityType>
+  <EntityType Name="SalarySheetGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="SalarySheets" Relationship="Self.FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId" FromRole="SalarySheetGroups" ToRole="SalarySheets" />
+  </EntityType>
+  <EntityType Name="SalarySheet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NoOfDateMorning" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NoOfDateVacation" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SalaryManth" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NumberOfDays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="RegularityIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Overtime" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="OvertimeRate" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="OvertimeValue" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SkillIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="expensiveLivingConditons" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="OutstandingSentence" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="BasicInsurance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="VariableInsurance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="H_Basic" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="H_Variable" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Loans" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AbsenceDiscount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SanctionsDiscount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="DiscountDelays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Candied" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="InterruptedSentence" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NetSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NotToBeAbsent" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SalarySheetGroupsId" Type="Int32" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="FileNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PrivateInsurancePremium" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Reward" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="HealthInsuranceStatement" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="AnnualLeaveAllowance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExtraIncentives" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExtraBonuses" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExtraBonusesAddToBasicSalary" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="SalarySheetGroup" Relationship="Self.FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId" FromRole="SalarySheets" ToRole="SalarySheetGroups" />
+  </EntityType>
+  <EntityType Name="Sanction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShiftId" Type="Int32" Nullable="false" />
+    <Property Name="Shift_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Shift_Id" Type="Int32" Nullable="false" />
+    <Property Name="First_Delay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Second_Delay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Third_Delay" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DaliyWorkHour" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Shift" Relationship="Self.FK_dbo_Sanctions_dbo_Shifts_ShiftId" FromRole="Sanctions" ToRole="Shifts" />
+  </EntityType>
+  <EntityType Name="sanctions_reasons">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="ShiftHoliday">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Shift">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShiftId" Type="Int32" Nullable="false" />
+    <Property Name="ShiftName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ActiveDisactive" Type="Int32" />
+    <Property Name="WeekendFromDay" Type="Int32" />
+    <Property Name="WeekendToDay" Type="Int32" />
+    <Property Name="EmploymentPercent" Type="Int32" />
+    <Property Name="DailyHours" Type="Double" />
+    <Property Name="WeekelyDays" Type="Int32" />
+    <Property Name="WeekelyHours" Type="Int32" />
+    <Property Name="MonthlyHours" Type="Int32" />
+    <Property Name="MonthlyLeaveDays" Type="Int32" />
+    <Property Name="StartTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EndTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LateArrive" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EarlyLeave" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EarlyArrive" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="NoOfShifts" Type="Int32" Nullable="false" />
+    <Property Name="Shift2" Type="Int32" />
+    <Property Name="Shift3" Type="Int32" />
+    <Property Name="ReplaceShiftEvery" Type="Int32" />
+    <Property Name="IsFullTime" Type="Boolean" />
+    <Property Name="IsWeekend" Type="Boolean" />
+    <Property Name="IsLogin" Type="Boolean" />
+    <Property Name="IsOneShift" Type="Boolean" />
+    <Property Name="IsTwoShift" Type="Boolean" />
+    <Property Name="IsThreeShift" Type="Boolean" />
+    <Property Name="DailyHrs" Type="Double" />
+    <Property Name="XDelayId" Type="Int32" />
+    <Property Name="XLeaveId" Type="Int32" />
+    <Property Name="InOffset" Type="Int32" />
+    <Property Name="OutOffset" Type="Int32" />
+    <NavigationProperty Name="Delays" Relationship="Self.FK_dbo_Delays_dbo_Shifts_ShiftId" FromRole="Shifts" ToRole="Delays" />
+    <NavigationProperty Name="Sanctions" Relationship="Self.FK_dbo_Sanctions_dbo_Shifts_ShiftId" FromRole="Shifts" ToRole="Sanctions" />
+  </EntityType>
+  <EntityType Name="SocialInsurance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DateOfEnrollment" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ofFixedSalartForEmployeeContrribution1" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForEmployeeContrribution1" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="EmployeeFixedSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofFixedSalartForCompanyContrribution1" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForCompanyContrribution1" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CompanyFixedSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Advance" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="ContributionPeriodId" Type="Int32" />
+    <Property Name="InsuranceTypeId" Type="Int32" />
+    <Property Name="ValidUpdto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ofFixedSalartForEmployeeContrribution2" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForEmployeeContrribution2" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="EmplyeeVariableSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofFixedSalartForCompanyContrribution2" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ofVariableSalartForCompanyContrribution2" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CompanyVariableSalary" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="ContributionPeriod" Relationship="Self.FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId" FromRole="SocialInsurances" ToRole="ContributionPeriods" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_dbo_SocialInsurances_dbo_Employees_EmployeeId" FromRole="SocialInsurances" ToRole="Employees" />
+    <NavigationProperty Name="InsuranceType" Relationship="Self.FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId" FromRole="SocialInsurances" ToRole="InsuranceTypes" />
+  </EntityType>
+  <EntityType Name="Status">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Personals" Relationship="Self.FK_dbo_Personals_dbo_Status_StatusId" FromRole="Status" ToRole="Personals" />
+  </EntityType>
+  <EntityType Name="sysreplserver">
+    <Key>
+      <PropertyRef Name="srvname" />
+    </Key>
+    <Property Name="srvname" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="srvid" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Tax">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameOfSlice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="AmountFrom" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="AmountTo" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="TaxRate" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="DiscountPercentage" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="AmountOfDiscount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="AmountOfTax" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TempShiftEntry">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fileNumber" Type="Int32" Nullable="false" />
+    <Property Name="tempShiftId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="tempshift">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DateTo" Type="DateTime" Precision="0" />
+    <Property Name="ShiftId" Type="Int32" />
+    <Property Name="ShiftFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="ShiftTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="ShiftHours" Type="Double" />
+    <Property Name="DepartmentId" Type="Int32" />
+    <Property Name="isPrivate" Type="Boolean" />
+    <Property Name="DelayId" Type="Int32" />
+    <Property Name="LeaveId" Type="Int32" />
+    <Property Name="shift2" Type="Int32" />
+    <Property Name="shift3" Type="Int32" />
+    <Property Name="shiftName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Transfer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeId" Type="Int32" />
+    <Property Name="FileNumber" Type="Int32" />
+    <Property Name="DateFrom" Type="DateTime" Precision="0" />
+    <Property Name="DeptFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DeptTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsCanceled" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="IsPromotion" Type="Boolean" />
+    <Property Name="JobFrom" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="JobTo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TypeEmployee">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+  </EntityType>
+  <EntityType Name="TypeOfHealthInsurance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="Generals" Relationship="Self.FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId" FromRole="TypeOfHealthInsurances" ToRole="Generals" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="SecondName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CompanyId" Type="Int32" Nullable="false" />
+    <Property Name="RoleId" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Int32" />
+    <Property Name="MaritalStatus" Type="Int32" />
+    <Property Name="BirthDate" Type="DateTime" Precision="3" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Home_Id" Type="Int32" />
+    <NavigationProperty Name="Company" Relationship="Self.FK_dbo_Users_dbo_Companies_CompanyId" FromRole="Users" ToRole="Companies" />
+    <NavigationProperty Name="Home" Relationship="Self.FK_dbo_Users_dbo_Homes_Home_Id" FromRole="Users" ToRole="Homes" />
+    <NavigationProperty Name="Role" Relationship="Self.FK_dbo_Users_dbo_Roles_RoleId" FromRole="Users" ToRole="Roles" />
+  </EntityType>
+  <EntityType Name="users_Authorities">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Vacation">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="AttendanceValue" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <Property Name="Active" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="WageCode">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Mapping" Type="Int32" />
+    <Property Name="Taxable" Type="Int32" />
+    <Property Name="IsCreated" Type="Int32" />
+    <Property Name="IsUpdated" Type="Int32" />
+    <NavigationProperty Name="BasicBayWorkLines" Relationship="Self.FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId" FromRole="WageCodes" ToRole="BasicBayWorkLines" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_dbo_Payments_dbo_WageCodes_WageCodeId" FromRole="WageCodes" ToRole="Payments" />
+  </EntityType>
+  <EntityType Name="Deduction">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Date" />
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CurrencyId" Type="Int32" />
+    <Property Name="PaymentDeductionId" Type="Int32" />
+    <Property Name="RecurringOneTimeId" Type="Int32" />
+    <Property Name="TotalNet" Type="Int32" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <Property Name="Remarkes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DaysNumber" Type="Double" />
+    <Property Name="Imposer" Type="Int32" />
+    <Property Name="Reason" Type="Int32" />
+  </EntityType>
+  <EntityType Name="LeaveFromTo">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DelayId" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="From" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="To" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DelayId" Type="Int32" Nullable="false" />
+    <Property Name="DayPart" Type="Double" />
+  </EntityType>
+  <EntityType Name="MSpeer_conflictdetectionconfigresponse">
+    <Key>
+      <PropertyRef Name="request_id" />
+      <PropertyRef Name="peer_node" />
+      <PropertyRef Name="peer_db" />
+      <PropertyRef Name="progress_phase" />
+    </Key>
+    <Property Name="request_id" Type="Int32" Nullable="false" />
+    <Property Name="peer_node" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="peer_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="peer_version" Type="Int32" />
+    <Property Name="peer_db_version" Type="Int32" />
+    <Property Name="is_peer" Type="Boolean" />
+    <Property Name="conflictdetection_enabled" Type="Boolean" />
+    <Property Name="originator_id" Type="Int32" />
+    <Property Name="peer_conflict_retention" Type="Int32" />
+    <Property Name="peer_continue_onconflict" Type="Boolean" />
+    <Property Name="peer_subscriptions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="progress_phase" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="modified_date" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MSpeer_originatorid_history">
+    <Key>
+      <PropertyRef Name="originator_publication" />
+      <PropertyRef Name="originator_id" />
+      <PropertyRef Name="originator_node" />
+      <PropertyRef Name="originator_db" />
+      <PropertyRef Name="originator_db_version" />
+      <PropertyRef Name="originator_version" />
+      <PropertyRef Name="inserted_date" />
+    </Key>
+    <Property Name="originator_publication" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_id" Type="Int32" Nullable="false" />
+    <Property Name="originator_node" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_db_version" Type="Int32" Nullable="false" />
+    <Property Name="originator_version" Type="Int32" Nullable="false" />
+    <Property Name="inserted_date" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="MSpeer_request">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="publication" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="publication" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sent_date" Type="DateTime" Precision="3" />
+    <Property Name="description" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MSpeer_response">
+    <Key>
+      <PropertyRef Name="peer" />
+      <PropertyRef Name="peer_db" />
+    </Key>
+    <Property Name="request_id" Type="Int32" />
+    <Property Name="peer" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="peer_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="received_date" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MSpeer_topologyrequest">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="publication" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="publication" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="sent_date" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MSpeer_topologyresponse">
+    <Key>
+      <PropertyRef Name="peer" />
+      <PropertyRef Name="peer_db" />
+    </Key>
+    <Property Name="request_id" Type="Int32" />
+    <Property Name="peer" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="peer_version" Type="Int32" />
+    <Property Name="peer_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="originator_id" Type="Int32" />
+    <Property Name="peer_conflict_retention" Type="Int32" />
+    <Property Name="received_date" Type="DateTime" Precision="3" />
+    <Property Name="connection_info" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="MSpub_identity_range">
+    <Key>
+      <PropertyRef Name="objid" />
+      <PropertyRef Name="range" />
+      <PropertyRef Name="pub_range" />
+      <PropertyRef Name="current_pub_range" />
+      <PropertyRef Name="threshold" />
+    </Key>
+    <Property Name="objid" Type="Int32" Nullable="false" />
+    <Property Name="range" Type="Int64" Nullable="false" />
+    <Property Name="pub_range" Type="Int64" Nullable="false" />
+    <Property Name="current_pub_range" Type="Int64" Nullable="false" />
+    <Property Name="threshold" Type="Int32" Nullable="false" />
+    <Property Name="last_seed" Type="Int64" />
+  </EntityType>
+  <EntityType Name="SalarySheet1">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="FileNumber" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FileNumber" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Attendance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Vacation" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Abcence" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SalaryMonth" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="DaysValue" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="RegularityIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Overtime" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="SkillIncentive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ExpensiveIncetive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Total1" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Insurance" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Loans" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ManagmentIncetive" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Sanctions_Delays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Deductions" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Clothes" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Delays" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Total2" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Total3" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Department" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Precision="0" />
+    <Property Name="Year" Type="Int32" />
+    <Property Name="Month" Type="Int32" />
+    <Property Name="User" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Days" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="attSum" Type="Double" />
+    <Property Name="absSum" Type="Double" />
+    <Property Name="vacSum" Type="Double" />
+    <Property Name="errandSum" Type="Double" />
+    <Property Name="sepcialSum" Type="Double" />
+    <Property Name="overtimeSum" Type="Double" />
+    <Property Name="lateSum" Type="Double" />
+    <Property Name="leaveSum" Type="Double" />
+    <Property Name="deductionSum" Type="Double" />
+  </EntityType>
+  <EntityType Name="sysarticlecolumn">
+    <Key>
+      <PropertyRef Name="artid" />
+      <PropertyRef Name="colid" />
+    </Key>
+    <Property Name="artid" Type="Int32" Nullable="false" />
+    <Property Name="colid" Type="Int32" Nullable="false" />
+    <Property Name="is_udt" Type="Boolean" />
+    <Property Name="is_xml" Type="Boolean" />
+    <Property Name="is_max" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="sysarticle">
+    <Key>
+      <PropertyRef Name="artid" />
+      <PropertyRef Name="dest_table" />
+      <PropertyRef Name="filter" />
+      <PropertyRef Name="name" />
+      <PropertyRef Name="objid" />
+      <PropertyRef Name="pubid" />
+      <PropertyRef Name="pre_creation_cmd" />
+      <PropertyRef Name="status" />
+      <PropertyRef Name="sync_objid" />
+      <PropertyRef Name="type" />
+      <PropertyRef Name="fire_triggers_on_snapshot" />
+    </Key>
+    <Property Name="artid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="creation_script" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="del_cmd" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="dest_table" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="filter" Type="Int32" Nullable="false" />
+    <Property Name="filter_clause" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ins_cmd" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="objid" Type="Int32" Nullable="false" />
+    <Property Name="pubid" Type="Int32" Nullable="false" />
+    <Property Name="pre_creation_cmd" Type="Byte" Nullable="false" />
+    <Property Name="status" Type="Byte" Nullable="false" />
+    <Property Name="sync_objid" Type="Int32" Nullable="false" />
+    <Property Name="type" Type="Byte" Nullable="false" />
+    <Property Name="upd_cmd" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="schema_option" Type="Binary" MaxLength="8" FixedLength="true" />
+    <Property Name="dest_owner" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="ins_scripting_proc" Type="Int32" />
+    <Property Name="del_scripting_proc" Type="Int32" />
+    <Property Name="upd_scripting_proc" Type="Int32" />
+    <Property Name="custom_script" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+    <Property Name="fire_triggers_on_snapshot" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysarticleupdate">
+    <Key>
+      <PropertyRef Name="artid" />
+      <PropertyRef Name="pubid" />
+      <PropertyRef Name="sync_ins_proc" />
+      <PropertyRef Name="sync_upd_proc" />
+      <PropertyRef Name="sync_del_proc" />
+      <PropertyRef Name="autogen" />
+      <PropertyRef Name="sync_upd_trig" />
+      <PropertyRef Name="identity_support" />
+    </Key>
+    <Property Name="artid" Type="Int32" Nullable="false" />
+    <Property Name="pubid" Type="Int32" Nullable="false" />
+    <Property Name="sync_ins_proc" Type="Int32" Nullable="false" />
+    <Property Name="sync_upd_proc" Type="Int32" Nullable="false" />
+    <Property Name="sync_del_proc" Type="Int32" Nullable="false" />
+    <Property Name="autogen" Type="Boolean" Nullable="false" />
+    <Property Name="sync_upd_trig" Type="Int32" Nullable="false" />
+    <Property Name="conflict_tableid" Type="Int32" />
+    <Property Name="ins_conflict_proc" Type="Int32" />
+    <Property Name="identity_support" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="syspublication">
+    <Key>
+      <PropertyRef Name="name" />
+      <PropertyRef Name="pubid" />
+      <PropertyRef Name="repl_freq" />
+      <PropertyRef Name="status" />
+      <PropertyRef Name="sync_method" />
+      <PropertyRef Name="independent_agent" />
+      <PropertyRef Name="immediate_sync" />
+      <PropertyRef Name="enabled_for_internet" />
+      <PropertyRef Name="allow_push" />
+      <PropertyRef Name="allow_pull" />
+      <PropertyRef Name="allow_anonymous" />
+      <PropertyRef Name="immediate_sync_ready" />
+      <PropertyRef Name="allow_sync_tran" />
+      <PropertyRef Name="autogen_sync_procs" />
+      <PropertyRef Name="allow_queued_tran" />
+      <PropertyRef Name="snapshot_in_defaultfolder" />
+      <PropertyRef Name="compress_snapshot" />
+      <PropertyRef Name="ftp_port" />
+      <PropertyRef Name="allow_dts" />
+      <PropertyRef Name="allow_subscription_copy" />
+      <PropertyRef Name="backward_comp_level" />
+      <PropertyRef Name="allow_initialize_from_backup" />
+      <PropertyRef Name="options" />
+    </Key>
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="pubid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="repl_freq" Type="Byte" Nullable="false" />
+    <Property Name="status" Type="Byte" Nullable="false" />
+    <Property Name="sync_method" Type="Byte" Nullable="false" />
+    <Property Name="snapshot_jobid" Type="Binary" MaxLength="16" FixedLength="true" />
+    <Property Name="independent_agent" Type="Boolean" Nullable="false" />
+    <Property Name="immediate_sync" Type="Boolean" Nullable="false" />
+    <Property Name="enabled_for_internet" Type="Boolean" Nullable="false" />
+    <Property Name="allow_push" Type="Boolean" Nullable="false" />
+    <Property Name="allow_pull" Type="Boolean" Nullable="false" />
+    <Property Name="allow_anonymous" Type="Boolean" Nullable="false" />
+    <Property Name="immediate_sync_ready" Type="Boolean" Nullable="false" />
+    <Property Name="allow_sync_tran" Type="Boolean" Nullable="false" />
+    <Property Name="autogen_sync_procs" Type="Boolean" Nullable="false" />
+    <Property Name="retention" Type="Int32" />
+    <Property Name="allow_queued_tran" Type="Boolean" Nullable="false" />
+    <Property Name="snapshot_in_defaultfolder" Type="Boolean" Nullable="false" />
+    <Property Name="alt_snapshot_folder" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="pre_snapshot_script" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="post_snapshot_script" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="compress_snapshot" Type="Boolean" Nullable="false" />
+    <Property Name="ftp_address" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="ftp_port" Type="Int32" Nullable="false" />
+    <Property Name="ftp_subdirectory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ftp_login" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="ftp_password" Type="String" MaxLength="524" FixedLength="false" Unicode="true" />
+    <Property Name="allow_dts" Type="Boolean" Nullable="false" />
+    <Property Name="allow_subscription_copy" Type="Boolean" Nullable="false" />
+    <Property Name="centralized_conflicts" Type="Boolean" />
+    <Property Name="conflict_retention" Type="Int32" />
+    <Property Name="conflict_policy" Type="Int32" />
+    <Property Name="queue_type" Type="Int32" />
+    <Property Name="ad_guidname" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="backward_comp_level" Type="Int32" Nullable="false" />
+    <Property Name="allow_initialize_from_backup" Type="Boolean" Nullable="false" />
+    <Property Name="min_autonosync_lsn" Type="Binary" MaxLength="10" FixedLength="true" />
+    <Property Name="replicate_ddl" Type="Int32" />
+    <Property Name="options" Type="Int32" Nullable="false" />
+    <Property Name="originator_id" Type="Int32" />
+  </EntityType>
+  <EntityType Name="sysschemaarticle">
+    <Key>
+      <PropertyRef Name="artid" />
+      <PropertyRef Name="dest_object" />
+      <PropertyRef Name="name" />
+      <PropertyRef Name="objid" />
+      <PropertyRef Name="pubid" />
+      <PropertyRef Name="pre_creation_cmd" />
+      <PropertyRef Name="status" />
+      <PropertyRef Name="type" />
+    </Key>
+    <Property Name="artid" Type="Int32" Nullable="false" />
+    <Property Name="creation_script" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="dest_object" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="objid" Type="Int32" Nullable="false" />
+    <Property Name="pubid" Type="Int32" Nullable="false" />
+    <Property Name="pre_creation_cmd" Type="Byte" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <Property Name="type" Type="Byte" Nullable="false" />
+    <Property Name="schema_option" Type="Binary" MaxLength="8" FixedLength="true" />
+    <Property Name="dest_owner" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="syssubscription">
+    <Key>
+      <PropertyRef Name="artid" />
+      <PropertyRef Name="srvid" />
+      <PropertyRef Name="dest_db" />
+      <PropertyRef Name="status" />
+      <PropertyRef Name="sync_type" />
+      <PropertyRef Name="login_name" />
+      <PropertyRef Name="subscription_type" />
+      <PropertyRef Name="timestamp" />
+      <PropertyRef Name="update_mode" />
+      <PropertyRef Name="loopback_detection" />
+      <PropertyRef Name="queued_reinit" />
+      <PropertyRef Name="nosync_type" />
+      <PropertyRef Name="srvname" />
+    </Key>
+    <Property Name="artid" Type="Int32" Nullable="false" />
+    <Property Name="srvid" Type="Int16" Nullable="false" />
+    <Property Name="dest_db" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="status" Type="Byte" Nullable="false" />
+    <Property Name="sync_type" Type="Byte" Nullable="false" />
+    <Property Name="login_name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="subscription_type" Type="Int32" Nullable="false" />
+    <Property Name="distribution_jobid" Type="Binary" MaxLength="16" FixedLength="true" />
+    <Property Name="timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="update_mode" Type="Byte" Nullable="false" />
+    <Property Name="loopback_detection" Type="Boolean" Nullable="false" />
+    <Property Name="queued_reinit" Type="Boolean" Nullable="false" />
+    <Property Name="nosync_type" Type="Byte" Nullable="false" />
+    <Property Name="srvname" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="systranschema">
+    <Key>
+      <PropertyRef Name="tabid" />
+      <PropertyRef Name="startlsn" />
+      <PropertyRef Name="endlsn" />
+      <PropertyRef Name="typeid" />
+    </Key>
+    <Property Name="tabid" Type="Int32" Nullable="false" />
+    <Property Name="startlsn" Type="Binary" MaxLength="10" FixedLength="true" Nullable="false" />
+    <Property Name="endlsn" Type="Binary" MaxLength="10" FixedLength="true" Nullable="false" />
+    <Property Name="typeid" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users2">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="UserName" />
+      <PropertyRef Name="Password" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RoleId" Type="Int32" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="All" Type="Int16" />
+    <Property Name="Departments" Type="Int16" />
+    <Property Name="Employees" Type="Int16" />
+    <Property Name="HaveApprove" Type="Boolean" />
+    <Property Name="ApproveId" Type="Int32" />
+    <Property Name="UserType" Type="Int32" />
+    <Property Name="Parent" Type="Int32" />
+    <Property Name="StageClass" Type="Int32" />
+    <Property Name="ip_restrict" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="active" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="XReligion">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AdditionApprovals" Type="Self.AdditionApproval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AdditionApprovals">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId">
+    <End Role="CountryOfBirths" Type="Self.CountryOfBirth" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CountryOfBirths">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="CountryOfBirthId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id">
+    <End Role="Ctizenships" Type="Self.Ctizenship" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ctizenships">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="Ctizenship_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Addresses_dbo_HomeCities_HomeCityId">
+    <End Role="HomeCities" Type="Self.HomeCity" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HomeCities">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="HomeCityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId">
+    <End Role="HomeCountries" Type="Self.HomeCountry" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HomeCountries">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="HomeCountryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId">
+    <End Role="PlaceOfBirths" Type="Self.PlaceOfBirth" Multiplicity="0..1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PlaceOfBirths">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="PlaceOfBirthId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId">
+    <End Role="ContractTypes" Type="Self.ContractType" Multiplicity="0..1" />
+    <End Role="Administrations" Type="Self.Administration" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ContractTypes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Administrations">
+        <PropertyRef Name="ContractTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Attachments_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="Attachments" Type="Self.Attachment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Attachments">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId">
+    <End Role="AttendanceTypes" Type="Self.AttendanceType" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Attendances" Type="Self.Attendance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AttendanceTypes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Attendances">
+        <PropertyRef Name="AttendanceTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Attendances_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Attendances" Type="Self.Attendance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Attendances">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_BankAccounts_BankAccountId">
+    <End Role="BankAccounts" Type="Self.BankAccount" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BankAccounts">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="BankAccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId">
+    <End Role="Currencies" Type="Self.Currency" Multiplicity="0..1" />
+    <End Role="BasicBayWorkLines" Type="Self.BasicBayWorkLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Currencies">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BasicBayWorkLines">
+        <PropertyRef Name="CurrencyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BasicBayWorkLines" Type="Self.BasicBayWorkLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BasicBayWorkLines">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId">
+    <End Role="WageCodes" Type="Self.WageCode" Multiplicity="0..1" />
+    <End Role="BasicBayWorkLines" Type="Self.BasicBayWorkLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WageCodes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BasicBayWorkLines">
+        <PropertyRef Name="WageCodeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bonus_JobTitles">
+    <End Role="JobTitles" Type="Self.JobTitle" Multiplicity="0..1" />
+    <End Role="Bonus" Type="Self.Bonu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JobTitles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Bonus">
+        <PropertyRef Name="JobTitleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId">
+    <End Role="CashOrBanks" Type="Self.CashOrBank" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CashOrBanks">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="CashOrBankId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Changelog__chang__75F77EB0">
+    <End Role="changeLog" Type="Self.changeLog" Multiplicity="1" />
+    <End Role="ChangelogDetails" Type="Self.ChangelogDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="changeLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ChangelogDetails">
+        <PropertyRef Name="changeLogId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Users_dbo_Companies_CompanyId">
+    <End Role="Companies" Type="Self.Company" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Users" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Companies">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId">
+    <End Role="ContributionPeriods" Type="Self.ContributionPeriod" Multiplicity="0..1" />
+    <End Role="SocialInsurances" Type="Self.SocialInsurance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ContributionPeriods">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SocialInsurances">
+        <PropertyRef Name="ContributionPeriodId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_CostCenters_CostCenterId">
+    <End Role="CostCenters" Type="Self.CostCenter" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CostCenters">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="CostCenterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Payments_dbo_Currencies_CurrencyId">
+    <End Role="Currencies" Type="Self.Currency" Multiplicity="0..1" />
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Currencies">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="CurrencyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_DelayFromToes_dbo_Delays_DelayId">
+    <End Role="Delays" Type="Self.Delay" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DelayFromToes" Type="Self.DelayFromTo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Delays">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DelayFromToes">
+        <PropertyRef Name="DelayId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Delays_dbo_Shifts_ShiftId">
+    <End Role="Shifts" Type="Self.Shift" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Delays" Type="Self.Delay" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shifts">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Delays">
+        <PropertyRef Name="ShiftId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id">
+    <End Role="EducationalStatus" Type="Self.EducationalStatu" Multiplicity="0..1" />
+    <End Role="Generals" Type="Self.General" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EducationalStatus">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Generals">
+        <PropertyRef Name="EducationalStatus_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId">
+    <End Role="EmployeeGroups" Type="Self.EmployeeGroup" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EmployeeGroups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="EmployeeGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Payments_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_SocialInsurances_dbo_Employees_EmployeeId">
+    <End Role="Employees" Type="Self.Employee" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="SocialInsurances" Type="Self.SocialInsurance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employees">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SocialInsurances">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId">
+    <End Role="EmployeeSubGroups" Type="Self.EmployeeSubGroup" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EmployeeSubGroups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="EmployeeSubGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_EventTypes_EventTypeId">
+    <End Role="EventTypes" Type="Self.EventType" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EventTypes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="EventTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_LiveCovers_LiveCoverId">
+    <End Role="LiveCovers" Type="Self.LiveCover" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LiveCovers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="LiveCoverId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId">
+    <End Role="MedicalCovers" Type="Self.MedicalCover" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MedicalCovers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="MedicalCoverId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId">
+    <End Role="OtherAllowances" Type="Self.OtherAllowance" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OtherAllowances">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="OtherAllowanceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId">
+    <End Role="ReasonForEvents" Type="Self.ReasonForEvent" Multiplicity="0..1" />
+    <End Role="Finances" Type="Self.Finance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReasonForEvents">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Finances">
+        <PropertyRef Name="ReasonForEventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId">
+    <End Role="HealthInsuranceCompanyNames" Type="Self.HealthInsuranceCompanyName" Multiplicity="0..1" />
+    <End Role="Generals" Type="Self.General" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HealthInsuranceCompanyNames">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Generals">
+        <PropertyRef Name="HealthInsuranceCompanyNameId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId">
+    <End Role="TypeOfHealthInsurances" Type="Self.TypeOfHealthInsurance" Multiplicity="0..1" />
+    <End Role="Generals" Type="Self.General" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TypeOfHealthInsurances">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Generals">
+        <PropertyRef Name="TypeOfHealthInsuranceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Users_dbo_Homes_Home_Id">
+    <End Role="Homes" Type="Self.Home" Multiplicity="0..1" />
+    <End Role="Users" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Homes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="Home_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Incentives_JobTitles">
+    <End Role="JobTitles" Type="Self.JobTitle" Multiplicity="0..1" />
+    <End Role="Incentives" Type="Self.Incentive" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JobTitles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Incentives">
+        <PropertyRef Name="JobTitleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId">
+    <End Role="InsuranceTypes" Type="Self.InsuranceType" Multiplicity="0..1" />
+    <End Role="SocialInsurances" Type="Self.SocialInsurance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="InsuranceTypes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SocialInsurances">
+        <PropertyRef Name="InsuranceTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_Nationalities_NationalityId">
+    <End Role="Nationalities" Type="Self.Nationality" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Nationalities">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="NationalityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId">
+    <End Role="PayllorAreas" Type="Self.PayllorArea" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PayllorAreas">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="PayllorAreaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId">
+    <End Role="PaymentDeductions" Type="Self.PaymentDeduction" Multiplicity="0..1" />
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaymentDeductions">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="PaymentDeductionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId">
+    <End Role="RecurringOneTimes" Type="Self.RecurringOneTime" Multiplicity="0..1" />
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RecurringOneTimes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="RecurringOneTimeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Payments_dbo_WageCodes_WageCodeId">
+    <End Role="WageCodes" Type="Self.WageCode" Multiplicity="0..1" />
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WageCodes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="WageCodeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_Religions_ReligionId">
+    <End Role="Religions" Type="Self.Religion" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Religions">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="ReligionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Personals_dbo_Status_StatusId">
+    <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+    <End Role="Personals" Type="Self.Personal" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Status">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Personals">
+        <PropertyRef Name="StatusId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Users_dbo_Roles_RoleId">
+    <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
+    <End Role="Users" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId">
+    <End Role="SalarySheetGroups" Type="Self.SalarySheetGroup" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="SalarySheets" Type="Self.SalarySheet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SalarySheetGroups">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SalarySheets">
+        <PropertyRef Name="SalarySheetGroupsId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Sanctions_dbo_Shifts_ShiftId">
+    <End Role="Shifts" Type="Self.Shift" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Sanctions" Type="Self.Sanction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shifts">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Sanctions">
+        <PropertyRef Name="ShiftId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HrEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+    <EntitySet Name="Absences" EntityType="Self.Absence" />
+    <EntitySet Name="AbsenceTypes" EntityType="Self.AbsenceType" />
+    <EntitySet Name="Accessibilities" EntityType="Self.Accessibility" />
+    <EntitySet Name="AClogs" EntityType="Self.AClog" />
+    <EntitySet Name="AdditionApprovals" EntityType="Self.AdditionApproval" />
+    <EntitySet Name="Addresses" EntityType="Self.Address" />
+    <EntitySet Name="Administrations" EntityType="Self.Administration" />
+    <EntitySet Name="AK_Employees" EntityType="Self.AK_Employees" />
+    <EntitySet Name="AK_events" EntityType="Self.AK_events" />
+    <EntitySet Name="AK_events_lines" EntityType="Self.AK_events_lines" />
+    <EntitySet Name="AK_Fields" EntityType="Self.AK_Fields" />
+    <EntitySet Name="AK_Forms" EntityType="Self.AK_Forms" />
+    <EntitySet Name="AK_Menu" EntityType="Self.AK_Menu" />
+    <EntitySet Name="AK_Modules" EntityType="Self.AK_Modules" />
+    <EntitySet Name="AK_Queries" EntityType="Self.AK_Queries" />
+    <EntitySet Name="AK_Shifts" EntityType="Self.AK_Shifts" />
+    <EntitySet Name="AK_Simple" EntityType="Self.AK_Simple" />
+    <EntitySet Name="AK_work_periods" EntityType="Self.AK_work_periods" />
+    <EntitySet Name="AllowanceGroups" EntityType="Self.AllowanceGroup" />
+    <EntitySet Name="Attachments" EntityType="Self.Attachment" />
+    <EntitySet Name="Attendances" EntityType="Self.Attendance" />
+    <EntitySet Name="AttendanceTypes" EntityType="Self.AttendanceType" />
+    <EntitySet Name="AttTables" EntityType="Self.AttTable" />
+    <EntitySet Name="Authorities" EntityType="Self.Authority" />
+    <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
+    <EntitySet Name="BasicBayWorkLines" EntityType="Self.BasicBayWorkLine" />
+    <EntitySet Name="BasicBayWorks" EntityType="Self.BasicBayWork" />
+    <EntitySet Name="Bonus" EntityType="Self.Bonu" />
+    <EntitySet Name="CashOrBanks" EntityType="Self.CashOrBank" />
+    <EntitySet Name="changeLogs" EntityType="Self.changeLog" />
+    <EntitySet Name="ChangelogDetails" EntityType="Self.ChangelogDetail" />
+    <EntitySet Name="Classes" EntityType="Self.Class" />
+    <EntitySet Name="Companies" EntityType="Self.Company" />
+    <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetail" />
+    <EntitySet Name="ContractTypes" EntityType="Self.ContractType" />
+    <EntitySet Name="ContributionPeriods" EntityType="Self.ContributionPeriod" />
+    <EntitySet Name="CostCenters" EntityType="Self.CostCenter" />
+    <EntitySet Name="CountryOfBirths" EntityType="Self.CountryOfBirth" />
+    <EntitySet Name="Ctizenships" EntityType="Self.Ctizenship" />
+    <EntitySet Name="Currencies" EntityType="Self.Currency" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="DelayFromToes" EntityType="Self.DelayFromTo" />
+    <EntitySet Name="Delays" EntityType="Self.Delay" />
+    <EntitySet Name="Departements" EntityType="Self.Departement" />
+    <EntitySet Name="DeptAssigns" EntityType="Self.DeptAssign" />
+    <EntitySet Name="EducationalStatus" EntityType="Self.EducationalStatu" />
+    <EntitySet Name="EmpAssigns" EntityType="Self.EmpAssign" />
+    <EntitySet Name="EmployeeGroups" EntityType="Self.EmployeeGroup" />
+    <EntitySet Name="Employees" EntityType="Self.Employee" />
+    <EntitySet Name="EmployeeSubGroups" EntityType="Self.EmployeeSubGroup" />
+    <EntitySet Name="EmployeeTransfers" EntityType="Self.EmployeeTransfer" />
+    <EntitySet Name="EventTypes" EntityType="Self.EventType" />
+    <EntitySet Name="Finances" EntityType="Self.Finance" />
+    <EntitySet Name="Generals" EntityType="Self.General" />
+    <EntitySet Name="Grades" EntityType="Self.Grade" />
+    <EntitySet Name="HealthInsuranceCompanyNames" EntityType="Self.HealthInsuranceCompanyName" />
+    <EntitySet Name="HomeCities" EntityType="Self.HomeCity" />
+    <EntitySet Name="HomeCountries" EntityType="Self.HomeCountry" />
+    <EntitySet Name="Homes" EntityType="Self.Home" />
+    <EntitySet Name="Incentives" EntityType="Self.Incentive" />
+    <EntitySet Name="InsuranceAuthorities" EntityType="Self.InsuranceAuthority" />
+    <EntitySet Name="InsuranceDetails" EntityType="Self.InsuranceDetail" />
+    <EntitySet Name="InsurancePrecentages" EntityType="Self.InsurancePrecentage" />
+    <EntitySet Name="InsuranceTypes" EntityType="Self.InsuranceType" />
+    <EntitySet Name="JobHistories" EntityType="Self.JobHistory" />
+    <EntitySet Name="JobTitles" EntityType="Self.JobTitle" />
+    <EntitySet Name="Levels" EntityType="Self.Level" />
+    <EntitySet Name="LiveCovers" EntityType="Self.LiveCover" />
+    <EntitySet Name="Locations" EntityType="Self.Location" />
+    <EntitySet Name="MedicalCovers" EntityType="Self.MedicalCover" />
+    <EntitySet Name="Messages" EntityType="Self.Message" />
+    <EntitySet Name="Months" EntityType="Self.Month" />
+    <EntitySet Name="MSpeer_conflictdetectionconfigrequest" EntityType="Self.MSpeer_conflictdetectionconfigrequest" />
+    <EntitySet Name="MSpeer_lsns" EntityType="Self.MSpeer_lsns" />
+    <EntitySet Name="MyShifts" EntityType="Self.MyShift" />
+    <EntitySet Name="Nationalities" EntityType="Self.Nationality" />
+    <EntitySet Name="OtherAllowances" EntityType="Self.OtherAllowance" />
+    <EntitySet Name="PayllorAreas" EntityType="Self.PayllorArea" />
+    <EntitySet Name="PaymentDeductions" EntityType="Self.PaymentDeduction" />
+    <EntitySet Name="Payments" EntityType="Self.Payment" />
+    <EntitySet Name="PayScaleAreas" EntityType="Self.PayScaleArea" />
+    <EntitySet Name="PayScaleTypes" EntityType="Self.PayScaleType" />
+    <EntitySet Name="Personals" EntityType="Self.Personal" />
+    <EntitySet Name="PlaceOfBirths" EntityType="Self.PlaceOfBirth" />
+    <EntitySet Name="PostingPeriods" EntityType="Self.PostingPeriod" />
+    <EntitySet Name="Productivities" EntityType="Self.Productivity" />
+    <EntitySet Name="Profits" EntityType="Self.Profit" />
+    <EntitySet Name="ReasonForEvents" EntityType="Self.ReasonForEvent" />
+    <EntitySet Name="RecurringOneTimes" EntityType="Self.RecurringOneTime" />
+    <EntitySet Name="Religions" EntityType="Self.Religion" />
+    <EntitySet Name="Remarks" EntityType="Self.Remark" />
+    <EntitySet Name="Requests" EntityType="Self.Request" />
+    <EntitySet Name="Roles" EntityType="Self.Role" />
+    <EntitySet Name="Roles2" EntityType="Self.Roles2" />
+    <EntitySet Name="SalarySheetGroups" EntityType="Self.SalarySheetGroup" />
+    <EntitySet Name="SalarySheets" EntityType="Self.SalarySheet" />
+    <EntitySet Name="Sanctions" EntityType="Self.Sanction" />
+    <EntitySet Name="sanctions_reasons" EntityType="Self.sanctions_reasons" />
+    <EntitySet Name="ShiftHolidays" EntityType="Self.ShiftHoliday" />
+    <EntitySet Name="Shifts" EntityType="Self.Shift" />
+    <EntitySet Name="SocialInsurances" EntityType="Self.SocialInsurance" />
+    <EntitySet Name="Status" EntityType="Self.Status" />
+    <EntitySet Name="sysreplservers" EntityType="Self.sysreplserver" />
+    <EntitySet Name="Taxes" EntityType="Self.Tax" />
+    <EntitySet Name="TempShiftEntries" EntityType="Self.TempShiftEntry" />
+    <EntitySet Name="tempshifts" EntityType="Self.tempshift" />
+    <EntitySet Name="Transfers" EntityType="Self.Transfer" />
+    <EntitySet Name="TypeEmployees" EntityType="Self.TypeEmployee" />
+    <EntitySet Name="TypeOfHealthInsurances" EntityType="Self.TypeOfHealthInsurance" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="users_Authorities" EntityType="Self.users_Authorities" />
+    <EntitySet Name="Vacations" EntityType="Self.Vacation" />
+    <EntitySet Name="WageCodes" EntityType="Self.WageCode" />
+    <EntitySet Name="Deductions" EntityType="Self.Deduction" />
+    <EntitySet Name="LeaveFromToes" EntityType="Self.LeaveFromTo" />
+    <EntitySet Name="MSpeer_conflictdetectionconfigresponse" EntityType="Self.MSpeer_conflictdetectionconfigresponse" />
+    <EntitySet Name="MSpeer_originatorid_history" EntityType="Self.MSpeer_originatorid_history" />
+    <EntitySet Name="MSpeer_request" EntityType="Self.MSpeer_request" />
+    <EntitySet Name="MSpeer_response" EntityType="Self.MSpeer_response" />
+    <EntitySet Name="MSpeer_topologyrequest" EntityType="Self.MSpeer_topologyrequest" />
+    <EntitySet Name="MSpeer_topologyresponse" EntityType="Self.MSpeer_topologyresponse" />
+    <EntitySet Name="MSpub_identity_range" EntityType="Self.MSpub_identity_range" />
+    <EntitySet Name="SalarySheets1" EntityType="Self.SalarySheet1" />
+    <EntitySet Name="sysarticlecolumns" EntityType="Self.sysarticlecolumn" />
+    <EntitySet Name="sysarticles" EntityType="Self.sysarticle" />
+    <EntitySet Name="sysarticleupdates" EntityType="Self.sysarticleupdate" />
+    <EntitySet Name="syspublications" EntityType="Self.syspublication" />
+    <EntitySet Name="sysschemaarticles" EntityType="Self.sysschemaarticle" />
+    <EntitySet Name="syssubscriptions" EntityType="Self.syssubscription" />
+    <EntitySet Name="systranschemas" EntityType="Self.systranschema" />
+    <EntitySet Name="Users2" EntityType="Self.Users2" />
+    <EntitySet Name="XReligions" EntityType="Self.XReligion" />
+    <AssociationSet Name="FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId" Association="Self.FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="AdditionApprovals" EntitySet="AdditionApprovals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId" Association="Self.FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId">
+      <End Role="CountryOfBirths" EntitySet="CountryOfBirths" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id" Association="Self.FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id">
+      <End Role="Ctizenships" EntitySet="Ctizenships" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Addresses_dbo_HomeCities_HomeCityId" Association="Self.FK_dbo_Addresses_dbo_HomeCities_HomeCityId">
+      <End Role="HomeCities" EntitySet="HomeCities" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId" Association="Self.FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId">
+      <End Role="HomeCountries" EntitySet="HomeCountries" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId" Association="Self.FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId">
+      <End Role="PlaceOfBirths" EntitySet="PlaceOfBirths" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId" Association="Self.FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId">
+      <End Role="ContractTypes" EntitySet="ContractTypes" />
+      <End Role="Administrations" EntitySet="Administrations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Attachments_dbo_Employees_EmployeeId" Association="Self.FK_dbo_Attachments_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="Attachments" EntitySet="Attachments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId" Association="Self.FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId">
+      <End Role="AttendanceTypes" EntitySet="AttendanceTypes" />
+      <End Role="Attendances" EntitySet="Attendances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Attendances_dbo_Employees_EmployeeId" Association="Self.FK_dbo_Attendances_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="Attendances" EntitySet="Attendances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_BankAccounts_BankAccountId" Association="Self.FK_dbo_Finances_dbo_BankAccounts_BankAccountId">
+      <End Role="BankAccounts" EntitySet="BankAccounts" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId" Association="Self.FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId">
+      <End Role="Currencies" EntitySet="Currencies" />
+      <End Role="BasicBayWorkLines" EntitySet="BasicBayWorkLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId" Association="Self.FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="BasicBayWorkLines" EntitySet="BasicBayWorkLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId" Association="Self.FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId">
+      <End Role="WageCodes" EntitySet="WageCodes" />
+      <End Role="BasicBayWorkLines" EntitySet="BasicBayWorkLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bonus_JobTitles" Association="Self.FK_Bonus_JobTitles">
+      <End Role="JobTitles" EntitySet="JobTitles" />
+      <End Role="Bonus" EntitySet="Bonus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId" Association="Self.FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId">
+      <End Role="CashOrBanks" EntitySet="CashOrBanks" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Changelog__chang__75F77EB0" Association="Self.FK__Changelog__chang__75F77EB0">
+      <End Role="changeLog" EntitySet="changeLogs" />
+      <End Role="ChangelogDetails" EntitySet="ChangelogDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Users_dbo_Companies_CompanyId" Association="Self.FK_dbo_Users_dbo_Companies_CompanyId">
+      <End Role="Companies" EntitySet="Companies" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId" Association="Self.FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId">
+      <End Role="ContributionPeriods" EntitySet="ContributionPeriods" />
+      <End Role="SocialInsurances" EntitySet="SocialInsurances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_CostCenters_CostCenterId" Association="Self.FK_dbo_Personals_dbo_CostCenters_CostCenterId">
+      <End Role="CostCenters" EntitySet="CostCenters" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Payments_dbo_Currencies_CurrencyId" Association="Self.FK_dbo_Payments_dbo_Currencies_CurrencyId">
+      <End Role="Currencies" EntitySet="Currencies" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_DelayFromToes_dbo_Delays_DelayId" Association="Self.FK_dbo_DelayFromToes_dbo_Delays_DelayId">
+      <End Role="Delays" EntitySet="Delays" />
+      <End Role="DelayFromToes" EntitySet="DelayFromToes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Delays_dbo_Shifts_ShiftId" Association="Self.FK_dbo_Delays_dbo_Shifts_ShiftId">
+      <End Role="Shifts" EntitySet="Shifts" />
+      <End Role="Delays" EntitySet="Delays" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id" Association="Self.FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id">
+      <End Role="EducationalStatus" EntitySet="EducationalStatus" />
+      <End Role="Generals" EntitySet="Generals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId" Association="Self.FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId">
+      <End Role="EmployeeGroups" EntitySet="EmployeeGroups" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Payments_dbo_Employees_EmployeeId" Association="Self.FK_dbo_Payments_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_SocialInsurances_dbo_Employees_EmployeeId" Association="Self.FK_dbo_SocialInsurances_dbo_Employees_EmployeeId">
+      <End Role="Employees" EntitySet="Employees" />
+      <End Role="SocialInsurances" EntitySet="SocialInsurances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId" Association="Self.FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId">
+      <End Role="EmployeeSubGroups" EntitySet="EmployeeSubGroups" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_EventTypes_EventTypeId" Association="Self.FK_dbo_Finances_dbo_EventTypes_EventTypeId">
+      <End Role="EventTypes" EntitySet="EventTypes" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_LiveCovers_LiveCoverId" Association="Self.FK_dbo_Finances_dbo_LiveCovers_LiveCoverId">
+      <End Role="LiveCovers" EntitySet="LiveCovers" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId" Association="Self.FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId">
+      <End Role="MedicalCovers" EntitySet="MedicalCovers" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId" Association="Self.FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId">
+      <End Role="OtherAllowances" EntitySet="OtherAllowances" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId" Association="Self.FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId">
+      <End Role="ReasonForEvents" EntitySet="ReasonForEvents" />
+      <End Role="Finances" EntitySet="Finances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId" Association="Self.FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId">
+      <End Role="HealthInsuranceCompanyNames" EntitySet="HealthInsuranceCompanyNames" />
+      <End Role="Generals" EntitySet="Generals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId" Association="Self.FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId">
+      <End Role="TypeOfHealthInsurances" EntitySet="TypeOfHealthInsurances" />
+      <End Role="Generals" EntitySet="Generals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Users_dbo_Homes_Home_Id" Association="Self.FK_dbo_Users_dbo_Homes_Home_Id">
+      <End Role="Homes" EntitySet="Homes" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Incentives_JobTitles" Association="Self.FK_Incentives_JobTitles">
+      <End Role="JobTitles" EntitySet="JobTitles" />
+      <End Role="Incentives" EntitySet="Incentives" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId" Association="Self.FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId">
+      <End Role="InsuranceTypes" EntitySet="InsuranceTypes" />
+      <End Role="SocialInsurances" EntitySet="SocialInsurances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_Nationalities_NationalityId" Association="Self.FK_dbo_Personals_dbo_Nationalities_NationalityId">
+      <End Role="Nationalities" EntitySet="Nationalities" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId" Association="Self.FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId">
+      <End Role="PayllorAreas" EntitySet="PayllorAreas" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId" Association="Self.FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId">
+      <End Role="PaymentDeductions" EntitySet="PaymentDeductions" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId" Association="Self.FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId">
+      <End Role="RecurringOneTimes" EntitySet="RecurringOneTimes" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Payments_dbo_WageCodes_WageCodeId" Association="Self.FK_dbo_Payments_dbo_WageCodes_WageCodeId">
+      <End Role="WageCodes" EntitySet="WageCodes" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_Religions_ReligionId" Association="Self.FK_dbo_Personals_dbo_Religions_ReligionId">
+      <End Role="Religions" EntitySet="Religions" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Personals_dbo_Status_StatusId" Association="Self.FK_dbo_Personals_dbo_Status_StatusId">
+      <End Role="Status" EntitySet="Status" />
+      <End Role="Personals" EntitySet="Personals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Users_dbo_Roles_RoleId" Association="Self.FK_dbo_Users_dbo_Roles_RoleId">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId" Association="Self.FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId">
+      <End Role="SalarySheetGroups" EntitySet="SalarySheetGroups" />
+      <End Role="SalarySheets" EntitySet="SalarySheets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Sanctions_dbo_Shifts_ShiftId" Association="Self.FK_dbo_Sanctions_dbo_Shifts_ShiftId">
+      <End Role="Shifts" EntitySet="Shifts" />
+      <End Role="Sanctions" EntitySet="Sanctions" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

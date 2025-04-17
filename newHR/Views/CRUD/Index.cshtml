@@ -1,0 +1,34 @@
+﻿<p>demo:</p>
+<script>
+    let sqlR = ``
+    let sqlC = ``
+    let sqlU = ``
+    let sqlD = ``;
+    let table = "id";
+    let columns = ["Id", "name"].map((col) => {
+        return col.toLowerCase()
+    });
+    var url = new URL(window.location.href);
+    var page = url.searchParams.get("page");
+
+    if (typeof page !== 'object')
+    {
+        console.log(page);
+    } else
+    {
+        console.err("page not set")
+    }
+    /************** helper function *****************/
+    function log(ex) { console.log(ex); }
+    function value(ex) { return ex !== null ? ex : ""; }
+    /***********************/
+    let types = readSQL(`SELECT column_name 'Column_Name', data_type 'Data_Type'
+            FROM information_schema.columns
+            WHERE table_name = '${table}'`)
+            //log(types);
+            function filter(t,c)
+            {
+                return types.filter(w=>c.includes(w.Column_Name.toLowerCase()))
+            }
+    log(filter(table, columns))
+</script>

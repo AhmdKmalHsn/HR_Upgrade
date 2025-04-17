@@ -1,0 +1,64 @@
+﻿@model newHR.Models.Departement
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Departement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsUpdated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsUpdated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.group)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.group)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.groups)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.groups)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

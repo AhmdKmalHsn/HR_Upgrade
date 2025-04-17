@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="newHR.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="sn" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="active" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="validTo" Type="System.DateTime" Scope="Application">
+      <Value Profile="(Default)">2023-09-10</Value>
+    </Setting>
+    <Setting Name="validMins" Type="System.UInt64" Scope="Application">
+      <Value Profile="(Default)">1620</Value>
+    </Setting>
+    <Setting Name="Setting" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

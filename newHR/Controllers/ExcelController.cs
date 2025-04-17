@@ -19,13 +19,16 @@ namespace newHR.Controllers
         {
             return View();
         }
-       
-       //   Actions
+        public ActionResult Excel()
+        {
+            return View();
+        }
+        //   Actions
         public ActionResult ImportData(HttpPostedFileBase excelFile)
         {  
             string conString = ConfigurationManager.ConnectionStrings["CS"].ConnectionString;
             string cmdText="";
-
+            Console.WriteLine("ahmd.kmal=>" + cmdText);
             FileInfo existingFile = new FileInfo(excelFile.FileName);
             //using (MemoryStream stream = new MemoryStream(existingFile))
             using (ExcelPackage excelPackage = new ExcelPackage(excelFile.InputStream))
@@ -46,18 +49,18 @@ namespace newHR.Controllers
                                     //excelData.Add(worksheet.Cells[i, j].Text.ToString());
                                     using (SqlConnection con = new SqlConnection(conString))
                                     {
-                                        cmdText = //worksheet.Cells[i, 5].Value.ToString();
-                "if(select count(*) from Attendances where DateFrom=cast('" + worksheet.Cells[i, 5].Value.ToString() + "' as date) and EmployeeId=(select id from Employees where FileNumber='" + worksheet.Cells[i, 1].Value.ToString() + "'))=0" +
-                "insert into Attendances(DateFrom, TimeFrom, TimeTo, Remarks, AttendanceTypeId, EmployeeId)" +
-                "values(cast('" +
-                worksheet.Cells[i, 5].Value.ToString() + "' as date),cast( '" +
+                                        cmdText = //worksheet.Cells[i, 1].Value.ToString(); //worksheet.Cells[i, 5].Value.ToString();
+                " if(select count(*) from Attendances where DateFrom=cast('" + worksheet.Cells[i, 5].Text.ToString() + "' as date) and EmployeeId=(select id from Employees where FileNumber='" + worksheet.Cells[i, 1].Value.ToString() + "'))=0" +
+                " insert into Attendances(DateFrom, TimeFrom, TimeTo, Remarks, AttendanceTypeId, EmployeeId)" +
+                " values(cast('" +
+                 worksheet.Cells[i, 5].Text.ToString() + "' as date),cast( '" +
                 (worksheet.Cells[i, 6].Text.ToString() == "" ? "" : worksheet.Cells[i, 6].Text.ToString()) + "' as time(0)),cast( '" +
                 (worksheet.Cells[i, 7].Text.ToString() == "" ? "" : worksheet.Cells[i, 7].Text.ToString())+ "' as time(0)), '" +
                 worksheet.Cells[i, 8].Value.ToString() + "', " +
-                "(select id from AttendanceTypes where name = '" + worksheet.Cells[i, 4].Value.ToString() + "')," +
-                "(select id from Employees where FileNumber = '" + worksheet.Cells[i, 1].Value.ToString() + "')" +
-                ")";
-
+                " (select id from AttendanceTypes where name = '" + worksheet.Cells[i, 4].Value.ToString() + "')," +
+                " (select id from Employees where FileNumber = '" + worksheet.Cells[i, 1].Value.ToString() + "')" +
+                " )";
+                                        Console.WriteLine("ahmd.kmal=>"+cmdText);
                                         try{
                                             SqlCommand sqlcom = new SqlCommand(cmdText, con);
                                             con.Open();
@@ -78,7 +81,7 @@ namespace newHR.Controllers
         {
             string conString = ConfigurationManager.ConnectionStrings["CS"].ConnectionString;
             string cmdText = "";
-
+            Console.WriteLine("ahmd.kmal2=>" + cmdText);
             FileInfo existingFile = new FileInfo(excelFile.FileName);
             //using (MemoryStream stream = new MemoryStream(existingFile))
             using (ExcelPackage excelPackage = new ExcelPackage(excelFile.InputStream))
@@ -100,11 +103,11 @@ namespace newHR.Controllers
                                     using (SqlConnection con = new SqlConnection(conString))
                                     {
                                         cmdText = 
-"if(select count(*) from Absences where DateFrom='" + worksheet.Cells[i, 5].Value.ToString() + "' and EmployeeId=(select id from Employees where FileNumber='" +
+"if(select count(*) from Absences where DateFrom='" + worksheet.Cells[i, 5].Text.ToString() + "' and EmployeeId=(select id from Employees where FileNumber='" +
 worksheet.Cells[i, 1].Value.ToString() + "'))=0 " +
-"insert into Absences(DateFrom, TimeFrom, TimeTo, Remarks, AbsenceTypeId, EmployeeId)" +
-"values(cast('" +
-worksheet.Cells[i, 5].Value.ToString() + "' as date), '" +
+" insert into Absences(DateFrom, TimeFrom, TimeTo, Remarks, AbsenceTypeId, EmployeeId)" +
+" values(cast('" +
+worksheet.Cells[i, 5].Text.ToString() + "' as date), '" +
 (worksheet.Cells[i, 6].Text.ToString() == "" ? "" : worksheet.Cells[i, 6].Text.ToString()) + "' ,'" +
 (worksheet.Cells[i, 7].Text.ToString() == "" ? "" : worksheet.Cells[i, 7].Text.ToString()) + "' ,'" +
 worksheet.Cells[i, 8].Value.ToString() + "', " +

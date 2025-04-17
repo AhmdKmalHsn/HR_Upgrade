@@ -1,0 +1,35 @@
+
+declare @d date=cast(DATEPART(year, getdate()) as varchar(4))+'-01-01'
+select(select count(*) from 
+(select	e.FileNumber,p.JoiningDate,g.TerminationDate ,p.StatusId,
+		case
+			when p.StatusId=1 then 'inside'
+			when p.JoiningDate>g.TerminationDate then 'inside'
+			when p.JoiningDate<=g.TerminationDate then 'outside'
+			else 'undefined'
+		end statu
+from	employees e join 
+		personals p on e.PersonalId=p.id join 
+		generals g on e.GeneralId=g.Id
+where	(p.JoiningDate<@d and g.TerminationDate between @d and cast(DATEPART(year, getdate()) as varchar(4))+'-12-31') 
+
+)q
+)*100/
+(select count(*)cntAll from 
+(select	e.FileNumber,p.JoiningDate,g.TerminationDate ,p.StatusId,
+		case
+			when p.StatusId=1 then 'inside'
+			when p.JoiningDate>g.TerminationDate then 'inside'
+			when p.JoiningDate<=g.TerminationDate then 'outside'
+			else 'undefined'
+		end statu
+from	employees e join 
+		personals p on e.PersonalId=p.id join 
+		generals g on e.GeneralId=g.Id
+where	(p.JoiningDate is not null) 
+
+)q
+where (q.statu<>'undefined' and StatusId=1  and @d > q.JoiningDate )
+     or(q.statu<>'undefined' and StatusId<>1 and @d between q.JoiningDate and q.TerminationDate )
+) 'percent'		
+	

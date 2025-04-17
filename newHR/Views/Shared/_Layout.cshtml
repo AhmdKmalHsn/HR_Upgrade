@@ -1,32 +1,47 @@
 ﻿<html lang="en" class="h-100">
 <head>
+    <meta http-equiv="Cache-Control" content="no-store" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/leaf.svg">
     <title>NassarHR</title>
-   <!--css-->
-	<link href="~/assets/css/bootstrap.css" rel="stylesheet">
+   <!--css--> 
     <link href="~/assets/css/main.css" rel="stylesheet">
+	<link href="~/assets/css/bootstrap.css" rel="stylesheet">
 	<link href="~/assets/jquery-ui/jquery-ui.css" rel="stylesheet">
     <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Assets/dataTable/searchBuilder.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Assets/dataTable/dataTables.dateTime.min.css" rel="stylesheet" />
 	<!--js-->
-    <script src="~/Assets/js/jquery-3.6.3.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
 	<script src="~/assets/jquery-ui/jquery-ui.js"></script>
 	<script src="~/Scripts/jquery.dataTables.min.js"></script>
 	<script src="~/assets/js/AK.js"></script>
-	<script src="~/assets/js/Chart.min.js"></script>
+	<!script src="~/assets/js/Chart.min.js"><!/script>
+    <script src="~/assets/js/Chart.umd.min.js"></script>
+	<!script src="~/assets/js/charts.js"><!/script>
 	<script src="~/assets/js/count-up.min.js"></script>
 	<script src="~/assets/js/switch.js"></script>
+    <script src="~/assets/datatable/dataTables.buttons.min.js"></script>
+    <script src="~/assets/datatable/dataTables.checkboxes.js"></script>
+    <script src="~/assets/datatable/dataTables.checkboxes.min.js"></script>
     <script src="~/assets/datatable/dataTables.buttons.min.js"></script>
     <script src="~/assets/datatable/jszip.min.js"></script>
     <script src="~/assets/datatable/pdfmake.min.js"></script>
     <script src="~/assets/datatable/vfs_fonts.js"></script>
     <script src="~/assets/datatable/buttons.html5.min.js"></script>
     <script src="~/assets/datatable/buttons.print.min.js"></script>
-    
+    <script src="~/assets/datatable/dataTables.fixedHeader.min.js"></script>
+    <script src="~/assets/datatable/dataTables.searchBuilder.min.js"></script>
+    <script src="~/assets/datatable/dataTables.dateTime.min.js"></script>
+
     <style>
+        #sidebar
+        {
+            display:none;
+        }
         .dropbtn {
             background-color: rgba(0, 0, 0 , 0);
             color: #aaa;
@@ -35,7 +50,6 @@
             border: none;
             cursor: pointer;
         }
-
 
         .dropdown {
             position: relative;
@@ -52,17 +66,17 @@
             z-index: 1;
         }
 
-            .dropdown-content a {
-                color: white;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-                text-align: right;
-            }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
 
-                .dropdown-content a:hover {
-                    background-color: #515151;
-                }
+        .dropdown-content a:hover {
+            background-color: #515151;
+        }
 
         .dropdown:hover .dropdown-content {
             display: block;
@@ -76,6 +90,30 @@
             font-size: 22px;
             font-weight: 500;
         }
+ 
+@* my update *@
+.updatecoler
+{
+  /* background: linear-gradient(to left, black, transparent) !important;*/
+  /*background: #7db4e3c2;*/
+}
+.upcolerli 
+{
+    color: blue !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    border-radius: 6px !important;
+}
+#sidebar ul li a 
+{    
+    font-size: 17px !important;
+    color: #671e1e;
+    text-decoration: none;
+}
+}
+.detail-subtitle {
+    color: gold !important;
+}
     </style>
 </head>
 <script>
@@ -92,26 +130,39 @@
 <script>
     var EMPS = [];
 	EMPS = EmpGet(@userId);
-	console.log(EMPS); 
+	//console.log(EMPS);
+    var sql=`
+    select e.FileNumber,a.* from Attendances a join Employees e on a.EmployeeId=e.id
+where (TimeFrom='' or TimeTo='') and DateFrom<dateadd(day,-3,GETDATE())
+and
+(
+    ( DATEPART(day,DateFrom)<26 and  datefrom>=cast(cast(DATEPART(YEAR,GETDATE())as varchar(4))+'-'+cast(DATEPART(MONTH,dateadd(month,-1,GETDATE())) as varchar(2))+'-'+'26' as datetime))
+    or
+    ( DATEPART(day,DateFrom)>=26 and  datefrom>=cast(cast(DATEPART(YEAR,GETDATE())as varchar(4))+'-'+cast(DATEPART(MONTH,GETDATE()) as varchar(2))+'-'+'26' as datetime))
+)
+`
+//console.log(sql)
+//var data=readSQL(sql);
+//console.log(data);
 </script>
 <body class="d-flex flex-column h-100">
-    <div id="page" style="display: block;">
+    <div id="page" style="display: block">
         <div class="wrapper">
-            <nav id="sidebar" class=""  style="display: none;">
-                <div style="display: flex;" class="sidebar-header text-center">
-                    <img src="~/assets/img/logo.jpg" alt="logo" class="app-logo" style="width: 80%;height: 20%;">
+            <nav id="sidebar" class="updatecoler">
+                <div style="display: flex;width: 108%;" class="sidebar-header text-center">
+                    <img src="~/assets/img/logo.jpg" alt="logo" class="app-logo" style="width: 81%;height: 83%;box-shadow: -1px 0px 15px 1px red;border-radius: 33%;">
                     <!--<h4 class="sidebar-title theme-item">AVNI</h4>-->
                 </div>
 
-                <ul class="list-unstyled components text-secondary">
+                <ul class="list-unstyled components text-secondary upcolerli">
                     <li><a href="~/home/index">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home data-feather theme-item"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> <span class="theme-item">Home</span></a>
                     </li>
 
-                @if(Request.Cookies["Salary"]!=null && Int32.Parse(Request.Cookies["Salary"].Value)>1){
-                    <li><a href="~/Truant/Attendance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">
+                    <li><a href="~/atttable/index"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">
                         جدول الحضور</span></a>
                     </li>
+                @if(Request.Cookies["Salary"]!=null && Int32.Parse(Request.Cookies["Salary"].Value)>1){
                
                     <li>
 					    <div class="sidebardropdown">
@@ -121,6 +172,8 @@
 									أنشاء المرتبات</span></a>
 								<a href="~/Truant/SalarySheet"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users data-feather theme-item"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> <span class="data-feather theme-item">
 									ارشيف المرتبات</span></a>
+                            </div>
+                        </div>
 				    </li>
                 }
                 @if(Request.Cookies["FingerMachine"]!=null && Int32.Parse(Request.Cookies["FingerMachine"].Value)>1){
@@ -146,19 +199,39 @@
                         </div>
                     </li>
                 }
+                
+                <li>
+                        <div class="sidebardropdown">
+                            <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">البيانات الاساسية </span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
+                            <div class="dropdown-container">
+                                <a href="~/MasterData/employees" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                         بيانات العمال
+                                    </span>
+                                </a>
+                                <a href="~/MasterData/BasicPayWorks" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                         مفردات المرتب
+                                    </span>
+                                </a>
+                                <a href="~/MasterData/jobHistory" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                       التاريخ الوظيفي
+                                    </span>
+                                </a>
+                                	
+                            </div>
+                        </div>
+                    </li>
+                    
                 @if(Request.Cookies["TempShifts"]!=null && Int32.Parse(Request.Cookies["TempShifts"].Value)>1){
                     <li>
                         <div class="sidebardropdown">
-                            <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item"> ورديات احتياطية</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
+                            <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item"> ضبط اوقات العمل</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
                             <div class="dropdown-container">
-                                <a href="~/TempShift/Index" class="text-center">
+                                    <a href="~/masterdata/shifts" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
                                         تعديل الورديات
-                                    </span>
-                                </a>
-								<a href="~/TempShift/PrivateShift" class="text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                      تسجيل اشخاص(ورية خاصة)
                                     </span>
                                 </a>
                                 <a href="~/TempShift/Entry" class="text-center">
@@ -166,66 +239,51 @@
                                        تسجيل ورديات للاشخاص
                                     </span>
                                 </a>
+                                <a href="~/delay/index" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                       تاخيرات
+                                    </span>
+                                </a>
+                                <a href="~/leave/index" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                       انصراف مبكر
+                                    </span>
+                                </a>
+                                <a href="~/masterdata/officialVacations" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                      أجازات رسمية
+                                    </span>
+                                </a>
                             </div>
                         </div>
                     </li>
                     }
-                    @if (Request.Cookies["TempShifts"] != null && Int32.Parse(Request.Cookies["TempShifts"].Value) > 1)
-                    {
-                        <li>
-                            <div class="sidebardropdown">
-                                <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">
-                                        أستقطاعات ومكافأت
-                                    </span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                                </a>
-                                <div class="dropdown-container">
-                                    <a href="~/Payments/Index" class="text-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                            الاستقطاعات
-                                        </span>
-                                    </a>
-
-                                </div>
-                            </div>
-                        </li>
-                    }
+                     @if(Request.Cookies["TempShifts"]!=null && Int32.Parse(Request.Cookies["TempShifts"].Value)>1){
                     <li>
                         <div class="sidebardropdown">
-                            <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">
-                                   ضبط اوقات العمل
-                                </span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            </a>
+                            <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">أستقطاعات
+							</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
                             <div class="dropdown-container">
-                                <a href="~/Delay/Index" class="text-center">
+                                <a href="~/Payments/Index" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                        التاخيرات
+                                       الاستقطاعات
                                     </span>
                                 </a>
-                                <a href="~/Leave/Index" class="text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                        الانصراف
-                                    </span>
-                                </a>
-                                <a href="~/Overtime/Index" class="text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                        الاضافي
-                                    </span>
-                                </a>
+								
                             </div>
                         </div>
                     </li>
-                 
+                    }
+
                     <li>
                         <div class="sidebardropdown">
                             <a href="javascript:void(0);" class="sidebar-dropdown-btn" id="dropdown-btn" onclick=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid data-feather theme-item"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> <span class="theme-item">تقارير </span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up sidenaviconopen float-end" id="sidenavicon"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
                             <div class="dropdown-container">
-                                <a href="~/reports/employees" class="text-center">
+                                <!--a href="~/reports/employees" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
                                         تقرير بيانات العمال
                                     </span>
-                                </a>
+                                </a-->
                                 <a href="~/DeferredVacations/index" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
                                         تقرير رصيد الاجازات
@@ -236,9 +294,9 @@
                                        تقرير الغياب
                                     </span>
                                 </a>
-                                <a href="~/reports/AttendanceTotal" class="text-center">
+                                <a href="~/reports/All" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
-                                       تقرير اجمالي الحضور  
+                                      المواظبة
                                     </span>
                                 </a>
                                 <a href="~/reports/Attendance" class="text-center">
@@ -246,11 +304,16 @@
                                        تقرير اضافي+اجازات 
                                     </span>
                                 </a>
-                                <a href="~/reports/report" class="text-center">
+                                <!--a href="~/reports/All" class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
+                                       تقرير حضور بأرقام الملفات 
+                                    </span>
+                                </a-->
+                                <!--a href="~/reports/report" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
                                         تقرير مفردات المرتب
                                     </span>
-                                </a>
+                                </a-->
 								<a href="~/reports/Payments" class="text-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file data-feather theme-item"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> <span class="data-feather theme-item">
                                         تقرير خصومات
@@ -300,9 +363,9 @@
                 </div>
             </nav>
             <div id="bodywrapper" class="container-fluid showhidetoggle">
-                <nav class="navbar navbar-expand-md navbar-white bg-white py-0 container-fluid" aria-label="navbarexample" id="navbar">
+                <nav style="background-color: rgba(120, 0, 0 , 0.5);"  class="navbar navbar-expand-md navbar-white bg-white py-0 container-fluid" aria-label="navbarexample" id="navbar">
                     <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse" onclick="/*$('#sidebar').toggle()*/" class="btn btn-light py-0" style="display: block;">
+                        <button type="button" id="sidebarCollapse" onclick="$('#sidebar').toggle()" class="btn btn-light py-0" style="display: block;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> <span></span>
                         </button>
                         
@@ -319,114 +382,35 @@
                                
                             
                                 </ul>
-
+                                
+                             <div class="alerts">
+                                <div class="nav-dropdown py-0">
+                                    <a href="/noti/index" class="position-relative nav-item nav-link dropdown-toggle text-secondary py-0" id="navbarDropdown4">
+                                        <img class="theme-item user-avatar" src="~/assets/img/Icon2.svg" alt="User image"> <!--<i class="theme-item" -->
+                                        <span id="noti" class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
                             <div class="usermenu">
                                 <div class="nav-dropdown py-0">
                                     <a href="#" class="nav-item nav-link dropdown-toggle text-secondary py-0" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img class="theme-item user-avatar" src="~/assets/img/earth.svg" alt="User image"> <!--<i class="theme-item" -->
-                                        <!--data-feather="user"></i> --> <span class="theme-item">
-                                            @{var userName=Request.Cookies["UserName"]==null?"":Request.Cookies["UserName"].Value;} @userName
-                                        </span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down theme-item"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <img class="theme-item user-avatar" src="~/assets/img/Icon29.svg" alt="User image"> <!--<i class="theme-item" -->
+                                        <!--data-feather="user"></i> --> 
+                                        @{var userName=Request.Cookies["UserName"]==null?"":Request.Cookies["UserName"].Value;} 
+                                        <span  id="userName" class="theme-item">@userName</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down theme-item"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown3">
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="navbarDropdown3">
                                         <li><a href="profile.html" class="dropdown-item mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user data-feather"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profile</a></li>
                                         <li><a href="#" class="dropdown-item mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail data-feather"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Messages</a></li>
-                                        <li><a href="#" class="dropdown-item mt-2" data-bs-toggle="modal" data-bs-target="#settingsModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings data-feather"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a></li>
-                                        <li><a href="~/home/logOut" class="dropdown-item mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out data-feather"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</a></li>
+                                        <li><a onclick="logOut()" class="dropdown-item mt-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out data-feather"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </nav>
-
-                <div class="settings">
-                    <div class="modal fade" id="settingsModal" aria-labelledby="settingsModalTitle" aria-hidden="true" tabindex="-1">
-                        <!-- 				 data-bs-backdrop="static" data-bs-keyboard="false" -->
-                        <div class="modal-dialog modal-dialog-settings">
-                            <div class="modal-content">
-                                <div class="modal-header text-center">
-                                    <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <section id="logincontent" class="shiftdown">
-                                        <div class="row g-3 mb-3 mt-3">
-                                            <div class="col-md-6">
-                                                <h6 class="text-muted">Select Color</h6>
-                                                <span onclick="changeColor('0')" class="btn btn-sm btn-primary rounded-circle"><span class="me-2"></span></span> <span onclick="changeColor('1')" class="btn btn-sm btn-success rounded-circle"><span class="me-2"></span></span> <span onclick="changeColor('2')" class="btn btn-sm btn-danger rounded-circle"><span class="me-2"></span></span> <span onclick="changeColor('3')" class="btn btn-sm btn-warning rounded-circle"><span class="me-2"></span></span> <span onclick="changeColor('4')" class="btn btn-sm btn-secondary rounded-circle"><span class="me-2"></span></span>
-                                                <div class="d-flex justify-content-between">
-                                                    <button onclick="removeColorCookie()">
-                                                        Reset to
-                                                        Default
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h6 class="text-muted">Preferences</h6>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"> <label class="form-check-label" for="flexSwitchCheckDefault">
-                                                        Switch
-                                                        option 1
-                                                    </label>
-                                                </div>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked=""> <label class="form-check-label" for="flexSwitchCheckChecked">
-                                                        Switch
-                                                        option 2
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row g-3 mb-3 mt-3">
-                                            <div class="col-md-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked=""> <label class="form-check-label" for="defaultCheck1">
-                                                        Checkbox 1
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2"> <label class="form-check-label" for="defaultCheck2">
-                                                        Checkbox 2
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h6 class="text-muted">View Size</h6>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioCompactView"> <label class="form-check-label" for="radioCompactView">
-                                                        Compact
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioFullView"> <label class="form-check-label" for="radioFullView">
-                                                        Full-screen
-                                                    </label>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <button onclick="removeViewSizeCookie()">
-                                                        Reset to
-                                                        Default
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <button class="btn btn-sm btn-danger" data-bs-dismiss="modal" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle mr-1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Ok
-                                        </button>
-                                    </section>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="sidebarOverlayNav" class="screen-overlay float-end">
-                    <a href="javascript:void(0)" class="closebtn" onclick="closeOverlayNav()">×</a>
-                    <div class="screen-overlay-content text-secondary">
-                        <a href="#" class="active">About</a> <a href="#">Services</a> <a href="#">Clients</a> <a href="#">Contact</a>
-                    </div>
-                </div>
 
                 <div class="content">
                     <center>
@@ -439,10 +423,10 @@
     <footer class="footer mt-auto py-1 mx-4">
         <div class="d-sm-flex justify-content-center justify-content-sm-between">
             <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
-                No
-                Copyright © Open Source
+                
+                Copyright © (I.T. Nassar Group) 2022
                 <script>
-					document.write(new Date().getFullYear())
+					//document.write(new Date().getFullYear())
                 </script>
             </span>
         </div>
@@ -451,17 +435,52 @@
     <button class="btn btn-sm btn-primary rounded-circle" onclick="scrollToTopFunction()" id="scrollToTop" title="Scroll to top" style="display: none;">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="16 12 12 8 8 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line></svg>
     </button>
-    <script src="~/assets/js/feather.min.js"></script>
+    <!--script src="~/assets/js/feather.min.js"></script-->
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="~/assets/js/script.js"></script>
+    <script src="~/assets/js/script.js?version=2.1"></script>
+    <script src="~/assets/js/anijs.js"></script>
+    <script src="~/assets/js/anijs-helper-scrollreveal.js"></script>
     <script type="text/javascript">
-        $('#sidebarCollapse').click();
-		document.addEventListener("DOMContentLoaded", function(event) {
-			feather.replace();
-			
-		});
-		
-		
+    //$('#sidebarCollapse').click();
+	document.addEventListener("DOMContentLoaded", function(event) {
+		//feather.replace();	
+        //console.log("old loaded");
+        $("#page").show()
+	});
+    function logOut()
+	{
+      EMPS=[];
+	  location.href="/home/logout";
+	}
+    /*
+    var source = new EventSource("/SSE/SSE_CNT");
+    source.onmessage = function (event) {
+        console.log(event.data);
+    }
+    source.onerror = function (event) {
+            console.log(event.data);
+        }
+        */
+         /*if (window.Worker) {
+            console.log('Your browser support web workers.');
+           const myWorker = new Worker("/assets/worker.js");
+                myWorker.onmessage = function (e) {
+                //console.log(e.data)
+                var v=JSON.parse(e.data).filter(e=>EMPS.includes(e.FileNumber))
+                console.log(v.length)
+
+                if(v.length==0){ $("#noti").hide()}
+                else{ 
+                    $("#noti").show();
+                    $("#noti").html(v.length)
+                    }
+                //console.log()
+                //console.log('Message received from worker');
+                
+            }
+        } else {
+            console.log('Your browser doesn\'t support web workers.');
+        }*/
     </script>
    
     @Scripts.Render("~/bundles/bootstrap")

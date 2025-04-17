@@ -1,0 +1,785 @@
+﻿
+@{
+        Layout = null;
+        string id = Session["login"].ToString();
+        var user = Services.UserService.GetById(int.Parse(id));
+        string name = user.FirstName + " " + user.SecondName;
+
+        if(user.RoleId == null)
+        {
+            var r = Services.RoleService.GetAll().OrderByDescending(ee => ee.Id).ToList().FirstOrDefault();
+
+            if (r == null)
+            {
+                r = new Role()
+                {
+                    Absence = RoleStatus.Full,
+                    Additional_Approval = RoleStatus.Full,
+                    Attendance = RoleStatus.Full,
+                    Basic_Bay_Work = RoleStatus.Full,
+                    Create_New_User = RoleStatus.Full,
+                    Employee = RoleStatus.Full,
+                    Import_Master_Data = RoleStatus.Full,
+                    Import_Monthly_Attendances = RoleStatus.Full,
+                    Name = "Created By Sestem",
+                    Payment = RoleStatus.Full,
+                    role = RoleStatus.Full,
+                    Salary_Sheet = RoleStatus.Full,
+                    Settings = RoleStatus.Full,
+                    Shift = RoleStatus.Full,
+                    Social_Insurance = RoleStatus.Full,
+                    Delay = RoleStatus.Full,
+                    Sanction = RoleStatus.Full,
+                    Taxes = RoleStatus.Full,
+                    Vacation = RoleStatus.Full
+            };
+
+            Services.RoleService.Add(r);
+        }
+
+        user.RoleId = r.Id;
+        Services.UserService.Edit(user);
+    }
+
+    var role = Services.RoleService.GetById(int.Parse(user.RoleId.ToString()));
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SBO HR</title>
+    <!-- HTML5 Shim and Respond.js IE9 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="#">
+    <meta name="keywords" content="flat ui, Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app">
+    <meta name="author" content="#">
+
+    <!-- Favicon icon -->
+    <link rel="icon" href="~/assets2/images/img/1-0١.png" type="image/x-icon">
+
+    <!-- Google font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Mada:300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" href="~/bower_components/bootstrap/css/bootstrap.min.css">
+    <!-- themify icon -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/icon/themify-icons/themify-icons.css">
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/icon/icofont/css/icofont.css">
+    <!-- flag icon framework css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/flag-icon/flag-icon.min.css">
+    <!--SVG Icons Animated-->
+    <link rel="stylesheet" type="text/css" href="~/assets2/icon/SVG-animated/svg-weather.css">
+    <!-- Menu-Search css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/menu-search/css/component.css">
+    <!-- Horizontal-Timeline css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/dashboard/horizontal-timeline/css/style.css">
+    <!-- amchart css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/dashboard/amchart/css/amchart.css">
+    <!-- Calender css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/widget/calender/pignose.calendar.min.css">
+    <!-- flag icon framework css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/pages/flag-icon/flag-icon.min.css">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" href="~/assets2/css/style.css">
+    <!--color css-->
+    <link rel="stylesheet" type="text/css" href="~/assets2/css/linearicons.css">
+    <link rel="stylesheet" type="text/css" href="~/assets2/css/simple-line-icons.css">
+    <link rel="stylesheet" type="text/css" href="~/assets2/css/ionicons.css">
+    <link rel="stylesheet" type="text/css" href="~/assets2/css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="~/bower_components/sweetalert/css/sweetalert.css" />
+    <link rel=" stylesheet" href="~/assets2/css/stylee.css">
+    <style>
+        .ti-menu:before {
+            content: "\e68e";
+            color: black;
+        }
+    </style>
+        <script src="~/Scripts/jquery-3.5.1.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div></div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+    <!-- Menu header start -->
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+            <nav class="navbar header-navbar pcoded-header iscollapsed" header-theme="theme1" pcoded-header-position="fixed">
+                <div class="navbar-wrapper">
+                    <div class="navbar-logo" data-navbar-theme="themelight1">
+                        <a class="mobile-menu" id="mobile-collapse" href="#!">
+                            <i class="ti-menu"></i>
+                        </a>
+                        <a class="mobile-search morphsearch-search" href="#">
+                            <i class="ti-search"></i>
+                        </a>
+                        <a href="/Home/Index">
+                            <img class="img-fluid" src="~/assets2/images/img/1-0١.png" style="width: 50%;" alt="Theme-Logo">
+                        </a>
+                        <a class="mobile-options">
+                            <i class="ti-more"></i>
+                        </a>
+                    </div>
+                    <div class="navbar-container container-fluid">
+                        <div>
+                            <ul class="nav-left">
+                                <li>
+                                    <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                                </li>
+                                <li>
+                                    <a href="/Home/Index">
+                                        <i class="fa fa-lg fa-home" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="#!" onclick="javascript:toggleFullScreen()">
+                                        <i class="ti-fullscreen"></i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                            <ul class="nav-right">
+
+
+                                <li class="user-profile header-notification">
+                                    <a href="/user/UserProfile">
+                                        @if (user.Image == null)
+                                        {
+                                            <img src="~/assets2/images/user-profile/avatar-blank.JPG" alt="User-Profile-Image" style="border-radius:50%">
+                                        }
+                                        else
+                                        {
+                                            <img src="@user.Image" alt="User-Profile-Image" style="border-radius:50%; margin-bottom:2px; margin-top:2px">
+                                        }
+                                        <span>@name</span>
+                                        <i class="ti-angle-down"></i>
+                                    </a>
+                                    <ul class="show-notification profile-notification">
+                                        <li>
+
+                                            <a href="/user/UserProfile">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                                Profile
+                                            </a>
+                                        </li>
+                                        <li>
+
+                                            <a href="/home/edit">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                                change Home picture
+                                            </a>
+                                        </li>
+
+
+                                        <li>
+
+                                            <a href="/User/Logout">
+                                                <i class="fa fa-sign-out-o" aria-hidden="true"></i>
+                                                Logout
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+                            <!-- search -->
+                            <div id="morphsearch" class="morphsearch">
+                                <form class="morphsearch-form">
+                                    <input class="morphsearch-input" type="search" placeholder="Search...">
+                                    <button class="morphsearch-submit" type="submit">Search</button>
+                                </form>
+                                <div class="morphsearch-content">
+                                    <div class="dummy-column">
+                                        <h2>People</h2>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img class="round" src="http://0.gravatar.com/avatar/81b58502541f9445253f30497e53c280?s=50&amp;d=identicon&amp;r=G" alt="Sara Soueidan">
+                                            <h3>Sara Soueidan</h3>
+                                        </a>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img class="round" src="http://1.gravatar.com/avatar/9bc7250110c667cd35c0826059b81b75?s=50&amp;d=identicon&amp;r=G" alt="Shaun Dona">
+                                            <h3>Shaun Dona</h3>
+                                        </a>
+                                    </div>
+                                    <div class="dummy-column">
+                                        <h2>Popular</h2>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img src="~/assets2/images/avatar-1.png" alt="PagePreloadingEffect">
+                                            <h3>Page Preloading Effect</h3>
+                                        </a>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img src="~/assets2/images/avatar-1.png" alt="DraggableDualViewSlideshow">
+                                            <h3>Draggable Dual-View Slideshow</h3>
+                                        </a>
+                                    </div>
+                                    <div class="dummy-column">
+                                        <h2>Recent</h2>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img src="~/assets2/images/avatar-1.png" alt="TooltipStylesInspiration">
+                                            <h3>Tooltip Styles Inspiration</h3>
+                                        </a>
+                                        <a class="dummy-media-object" href="#!">
+                                            <img src="~/assets2/images/avatar-1.png" alt="NotificationStyles">
+                                            <h3>Notification Styles Inspiration</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /morphsearch-content -->
+                                <span class="morphsearch-close"><i class="icofont icofont-search-alt-1"></i></span>
+                            </div>
+                            <!-- search end -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    <nav class="pcoded-navbar">
+                        <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+                        <div class="pcoded-inner-navbar main-menu">
+
+
+                            <ul class="pcoded-item pcoded-left-item">
+                                @if (role.Employee != RoleStatus.Not_Access || role.Basic_Bay_Work != RoleStatus.Not_Access || role.Taxes != RoleStatus.Not_Access || role.Shift != RoleStatus.Not_Access || role.Delay != RoleStatus.Not_Access || role.Sanction != RoleStatus.Not_Access || role.Vacation != RoleStatus.Not_Access || role.Absence != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+                                        <a href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
+                                            <span class="pcoded-mtext ">Master Data</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu" id="Master">
+                                            @if (role.Employee != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Employee/Index" data-i18n="nav.basic-components.alert">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext Employees">Employees</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (role.Basic_Bay_Work != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/BasicbayWork/index" data-i18n="nav.basic-components.breadcrumbs">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Basic bay Work Time</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.Shift != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Shifts/Index" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Shift</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (role.Vacation != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Vacation/Index" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Vacation</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (role.Delay != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Delay/Index" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Delay</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.Sanction != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Sanction/Index" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Delay Penatly Role</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.Taxes != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Taxes/Index" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Income Tax Leves</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (role.Absence != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/VacationStatus/Create" data-i18n="nav.basic-components.collapse–accordion">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Status Vaction</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                @if (role.Attendance != RoleStatus.Not_Access || role.Absence != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+                                        <a href="javascript:void(0)" data-i18n="nav.advance-components.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-user-times" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Attendance</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            @if (role.Attendance != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Attendance/Index" data-i18n="nav.advance-components.draggable">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Attendances</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.Absence != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Absence/Index" data-i18n="nav.advance-components.grid-stack">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Absences</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                                @if (role.Salary_Sheet != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+                                        <a href="javascript:void(0)" data-i18n="nav.extra-components.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-file-excel" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Salary Sheet</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li class=" ">
+                                                <a href="/SalarySheet/Index" data-i18n="nav.extra-components.session-timeout">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext">Salary Sheet Calculations</span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                }
+
+                                @if (role.Import_Master_Data != RoleStatus.Not_Access || role.Import_Monthly_Attendances != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+                                        <a href="javascript:void(0)" data-i18n="nav.icons.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Utilities</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            @if (role.Import_Master_Data != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/ImportMasterData/Index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Import Master Data</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (role.Import_Monthly_Attendances != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Employee/ImportData" data-i18n="nav.icons.themify">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Import Monthly Attendances</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+
+                                @if (role.Payment != RoleStatus.Not_Access || role.Additional_Approval != RoleStatus.Not_Access || role.OverTime != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+                                        <a href="javascript:void(0)" data-i18n="nav.icons.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-cogs" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Advanced</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+
+                                        <ul class="pcoded-submenu">
+                                            @if (role.Payment != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Payment/Index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Payment and Deductions</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.Additional_Approval != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/AdditionApproval/Index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">  Approved Overtime</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.OverTime != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/QweqOverTime/Create" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext"> Advanced Overtime</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+
+                                    </li>
+                                }
+
+                                @if (role.Create_New_User != RoleStatus.Not_Access || role.role != RoleStatus.Not_Access)
+                                {
+                                    <li class="pcoded-hasmenu">
+
+                                        <a href="#" data-i18n="nav.icons.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Administration</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            @if (role.Create_New_User != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/User/Index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Users</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (role.role != RoleStatus.Not_Access)
+                                            {
+                                                <li class=" ">
+                                                    <a href="/Role/Index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">Roles</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            <li class=" ">
+                                                <a href="/Settings/Index" data-i18n="nav.icons.font-awesome">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext">Setting Table</span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
+								<!--new section-->
+								
+                                    <li class="pcoded-hasmenu">
+
+                                        <a href="#" data-i18n="nav.icons.main">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Integrated</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            
+                                                <li class=" ">
+                                                    <a href="/it/Mac/MacUp" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">أجهزة البصمة</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            
+                                           
+                                                <li class=" ">
+                                                    <a href="/it/Truant/index" data-i18n="nav.icons.font-awesome">
+                                                        <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                        <span class="pcoded-mtext">تقرير الغياب</span>
+                                                        <span class="pcoded-mcaret"></span>
+                                                    </a>
+                                                </li>
+                                            
+                                            <li class=" ">
+                                                <a href="/it/reports/report" data-i18n="nav.icons.font-awesome">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext">مفردات المرتب </span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+											
+											<li class=" ">
+                                                <a href="/it/reports/loans" data-i18n="nav.icons.font-awesome">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext"> تقرير السلف</span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+											
+											<li class=" ">
+                                                <a href="/it/reports/Payments" data-i18n="nav.icons.font-awesome">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext">تقرير الجزاءات </span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+											
+										
+											
+											<li class=" ">
+                                                <a href="/it/Mac/MacReport" data-i18n="nav.icons.font-awesome">
+                                                    <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                                    <span class="pcoded-mtext">تقرير تحركات </span>
+                                                    <span class="pcoded-mcaret"></span>
+                                                </a>
+                                            </li>
+											
+											
+											
+                                        </ul>
+                                    </li>
+                                }
+								<!--end new section-->
+                            </ul>
+
+                        </div>
+                    </nav>
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @RenderBody()
+                                            </div>
+
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Older IE warning message -->
+    <!--[if lt IE 9]>
+    <div class="ie-warning">
+        <h1>Warning!!</h1>
+        <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web browsers to access this website.</p>
+        <div class="iew-container">
+            <ul class="iew-download">
+                <li>
+                    <a href="http://www.google.com/chrome/">
+                        <img src="~/assets2/images/browser/chrome.png" alt="Chrome">
+                        <div>Chrome</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.mozilla.org/en-US/firefox/new/">
+                        <img src="~/assets2/images/browser/firefox.png" alt="Firefox">
+                        <div>Firefox</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.opera.com">
+                        <img src="~/assets2/images/browser/opera.png" alt="Opera">
+                        <div>Opera</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.apple.com/safari/">
+                        <img src="~/assets2/images/browser/safari.png" alt="Safari">
+                        <div>Safari</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                        <img src="~/assets2/images/browser/ie.png" alt="">
+                        <div>IE (9 & above)</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <p>Sorry for the inconvenience!</p>
+    </div>
+    <![endif]-->
+    <!-- Warning Section Ends -->
+    <!-- Required Jqurey -->
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+    @*<script src="~/assets2/js/jquery-1.12.1.js"></script>*@
+    @*<script type="text/javascript" src="~/bower_components/jquery/js/jquery.min.js"></script>*@
+
+    <script src="~/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="~/bower_components/popper.js/js/popper.min.js"></script>
+    <script type="text/javascript" src="~/bower_components/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- jquery slimscroll js -->
+    <script type="text/javascript" src="~/bower_components/jquery-slimscroll/js/jquery.slimscroll.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>    <!-- modernizr js -->
+    <script type="text/javascript" src="~/bower_components/modernizr/js/modernizr.js"></script>
+    <script type="text/javascript" src="~/bower_components/modernizr/js/css-scrollbars.js"></script>
+    <!-- Calender js -->
+    <script type="text/javascript" src="~/bower_components/moment/js/moment.min.js"></script>
+    <script type="text/javascript" src="~/assets2/pages/widget/calender/pignose.calendar.min.js"></script>
+    <!-- classie js -->
+    <script type="text/javascript" src="~/bower_components/classie/js/classie.js"></script>
+    <!-- c3 chart js -->
+    <script src="~/bower_components/c3/js/c3.js"></script>
+    <!-- knob js -->
+    <script src="~/assets2/pages/chart/knob/jquery.knob.js"></script>
+    <script type="text/javascript" src="~/assets2/pages/widget/jquery.sparkline.js"></script>
+    <!-- Rickshow Chart js -->
+    <script src="~/bower_components/d3/js/d3.js"></script>
+    <script src="~/bower_components/rickshaw/js/rickshaw.js"></script>
+    <!-- Morris Chart js -->
+    <script src="~/bower_components/raphael/js/raphael.min.js"></script>
+    <script src="~/bower_components/morris.js/js/morris.js"></script>
+    <!-- Todo js -->
+    <script type="text/javascript" src="~/assets2/pages/todo/todo.js"></script>
+    <!-- Float Chart js -->
+    <script src="~/assets2/pages/chart/float/jquery.flot.js"></script>
+    <script src="~/assets2/pages/chart/float/jquery.flot.categories.js"></script>
+    <script src="~/assets2/pages/chart/float/jquery.flot.pie.js"></script>
+    <!-- echart js -->
+    <script src="~/assets2/pages/chart/echarts/js/echarts-all.js" type="text/javascript"></script>
+    <!-- Horizontal-Timeline js -->
+    <script type="text/javascript" src="~/assets2/pages/dashboard/horizontal-timeline/js/main.js"></script>
+    <!-- amchart js -->
+    <script type="text/javascript" src="~/assets2/pages/dashboard/amchart/js/amcharts.js"></script>
+    <script type="text/javascript" src="~/assets2/pages/dashboard/amchart/js/serial.js"></script>
+    <script type="text/javascript" src="~/assets2/pages/dashboard/amchart/js/light.js"></script>
+    <script type="text/javascript" src="~/assets2/pages/dashboard/amchart/js/custom-amchart.js"></script>
+    <!-- i18next.min.js -->
+    <script type="text/javascript" src="~/bower_components/i18next/js/i18next.min.js"></script>
+    <script type="text/javascript" src="~/bower_components/i18next-xhr-backend/js/i18nextXHRBackend.min.js"></script>
+    <script type="text/javascript" src="~/bower_components/i18next-browser-languagedetector/js/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="text/javascript" src="~/bower_components/jquery-i18next/js/jquery-i18next.min.js"></script>
+    <!-- Custom js -->
+    <script type="text/javascript" src="~/assets2/pages/dashboard/custom-dashboard.js"></script>
+    <script type="text/javascript" src="~/assets2/js/script.js"></script>
+    <!-- pcmenu js -->
+    @*<script type="text/javascript" src="~/assets2/pages/edit-table/editable.js"></script>
+        <script type="text/javascript" src="~/assets2/pages/edit-table/jquery.tabledit.js"></script>*@
+    <script src="~/assets2/js/pcoded.min.js"></script>
+    <script src="~/assets2/js/demo-12.js"></script>
+    <script src="~/assets2/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="~/assets2/js/jquery.mousewheel.min.js"></script>
+    <script src="~/assets2/js/min.js"></script>
+    @*<script src="~/assets2/js/jquery-1.12.1.js"></script>*@
+
+    @*<script>
+            var obj = JSON.parse('{ "name":"MasterData", "age":"Attendance", "Salary Sheet":"Salary Sheet":"Utilities","Utilities":"Advanced":"Advanced","Administration":"Administration" }');
+            $(document).ready(function () {
+                var arr = [
+                    'Employees',
+                    'basic by work',
+                    'shift',
+                    'vaction',
+                    'delay'
+                ];
+
+                for (var x = 0; x <= arr.length; x++) {
+                    var z = $('#Master');
+
+                    z.append(`<li class=" ">
+                        <a href="/Employee/Index" data-i18n="nav.basic-components.alert">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext Employees">`+ arr[x] +`</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>`)
+
+                }
+            })
+
+
+        </script>*@
+
+</body>
+
+</html>

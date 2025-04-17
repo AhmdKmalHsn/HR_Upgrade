@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="~/assets/css/home.css">
+    <link rel="stylesheet" href="~/assets/css/normalize.css">
+    <link rel="stylesheet" href="~/assets/css/all.min.css">
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/bootstrap-icons-1.10.3/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Work+Sans:wght@200;300;500;700;800&display=swap" rel="stylesheet">
+   <!--css-->
+	@* <link href="~/assets/css/bootstrap.css" rel="stylesheet"> *@
+    @* <link href="~/assets/css/main.css" rel="stylesheet"> *@
+	<link href="~/assets/jquery-ui/jquery-ui.css" rel="stylesheet">
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+	<!--js-->
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+	<script src="~/assets/jquery-ui/jquery-ui.js"></script>
+	<script src="~/Scripts/jquery.dataTables.min.js"></script>
+	<script src="~/assets/js/AK.js"></script>
+	<script src="~/assets/js/Chart.min.js"></script>
+	@* <!script src="~/assets/js/charts.js"><!/script> *@
+	<script src="~/assets/js/count-up.min.js"></script>
+	<script src="~/assets/js/switch.js"></script>
+    <script src="~/assets/datatable/dataTables.buttons.min.js"></script>
+    <script src="~/assets/datatable/jszip.min.js"></script>
+    <script src="~/assets/datatable/pdfmake.min.js"></script>
+    <script src="~/assets/datatable/vfs_fonts.js"></script>
+    <script src="~/assets/datatable/buttons.html5.min.js"></script>
+    <script src="~/assets/datatable/buttons.print.min.js"></script>
+    
+    <style>
+      
+      .nav_right
+       {
+          display:flex;
+          align-items:center ;
+       }
+      .dropbtn {
+            background-color: rgba(0, 0, 0 , 0);
+            color: #aaa;
+            padding: 10px;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        .dropdown {
+            position: relative;
+            display: inline;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            color: #d9d9d9;
+            background-color: #191919;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: white;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                text-align: right;
+            }
+
+                .dropdown-content a:hover {
+                    background-color: #515151;
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            color: #F1F1F1;
+        }
+
+        .navbar-nav > li {
+            font-size: 22px;
+            font-weight: 500;
+        }
+ 
+@* my update *@
+.updatecoler {
+   background: linear-gradient(to left, black, transparent) !important;
+}
+.upcolerli {
+    color: blue !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    border-radius: 6px !important;
+}
+#sidebar ul li a {
+    
+    font-size: 17px !important;
+}
+.detail-subtitle {
+    color: gold !important;
+}
+    </style>
+
+<style>
+  body{
+    background-color: black;
+  }
+</style>
+</head>
+<script>
+    var EMPS = [];
+	var s=null;
+</script>
+
+@{
+    Int32 userId=0; 
+}
+@if(Request.Cookies["UserId"]!=null){
+     userId=Int32.Parse(Request.Cookies["UserId"].Value);
+}
+<script>
+    var EMPS = [];
+	EMPS = EmpGet(@userId);
+	console.log(EMPS); 
+</script>
+<body >
+    <div class="header" >
+        <div class="container">
+                <div class="nav_right">
+                  <a href="~/home/index" class="logo"> logo
+                  <span class="span"></span>
+                </a>
+                <a class="nav-link" href="~/sse/index">
+                <i class="bi bi-bell-fill fa-2x" style="color: blue;" ></i>
+                                        <span id="navbar-badge" class="navbar-badge"
+                                         style="padding: 0 2px;
+                                              background-color: red;
+                                              color: white;
+                                              position: relative;
+                                              border: 1px solid red;
+                                              border-radius: 31px;
+                                              left: 8px;
+                                              top: -23px;
+                                              font-size: 18px;
+                                          ">
+
+                                        </span>
+                                    </a>
+                <div class="usermenu">
+                                <div class="nav-dropdown py-0">
+                                    <a href="#" class="nav-item nav-link dropdown-toggle text-secondary py-0" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img class="theme-item user-avatar" src="~/assets/img/earth.svg" alt="User image" width="35"> <!--<i class="theme-item" -->
+                                        <!--data-feather="user"></i> --> <span class="theme-item" id="userName">
+                                            @{var userName=Request.Cookies["UserName"]==null?"":Request.Cookies["UserName"].Value;} @userName
+                                        </span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down theme-item"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown3" style="background: border-box; text-align: center;background-color:antiquewhite;">
+                                        <li><a href="profile.html" class="dropdown-item mt-2" style=" font-weight: 700; "><svg xmlns="http://www.w3.org/2000/svg"      width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user data-feather"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profile</a></li>
+                                        <li><a href="#" class="dropdown-item mt-2"  style=" font-weight: 700;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail data-feather"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Messages</a></li>
+                                        <li><a href="#" class="dropdown-item mt-2"  style=" font-weight: 700;" data-bs-toggle="modal" data-bs-target="#settingsModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings data-feather"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a></li>
+                                        <li><a href="~/home/logOut" class="dropdown-item mt-2"  style=" font-weight: 700;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out data-feather"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                </div>
+                <ul class="main-nav" style="height: 56px;">
+                    <li><a href="~/home/index" style="font-size= 24;">الصفحه الرئيسيه</a></li>
+                    <li><a href="~/truant/attendance">جدول الحضور</a></li>
+                    <li><a href="~/atttable/index">(test)2جدول الحضور</a></li>
+
+@if(Request.Cookies["Salary"]!=null && Int32.Parse(Request.Cookies["Salary"].Value)>1){
+                    <li><a href="#articles">المرتبات</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/Truant/SalaryIndex"><i class="fas bi-cash-coin fa-2x"></i> انشاء المرتبات</a>
+                            </li>
+                            <li>
+                              <a href="~/Truant/SalarySheet"><i class="fas bi-cash-stack fa-2x"></i>  ارشيف المرتبات</a>
+                            </li>
+                          </ul>
+                          <div class="image">
+                            <img src="~/Assets/mg/salary.jpg" alt="logo">
+                        </div>
+                        </div>
+                    </li>
+}
+@if(Request.Cookies["FingerMachine"]!=null && Int32.Parse(Request.Cookies["FingerMachine"].Value)>1){
+                    <li><a href="javascript:void(0);">ماكينات البصمه</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/Mac/MacUp"><i class="far bi-fingerprint fa-2x"></i> سحب من المكينه</a>
+                            </li>
+                            <li>
+                              <a href="~/Mac/MacAtt" ><i class="fas bi-person-fill-check fa-2x"></i> رفع الحضور </a>
+                            </li>
+                            <li>
+                              <a href="~/Mac/MacReport"><i class="far bi-body-text  fa-2x"></i> تقرير تحركات </a>
+                            </li>
+                          </ul>
+                          <div class="image">
+                            <img src="~/Assets/mg/finger.jpg" alt="logo">
+                        </div>
+                        </div>
+                    </li>
+}
+@if(Request.Cookies["TempShifts"]!=null && Int32.Parse(Request.Cookies["TempShifts"].Value)>1){
+                    <li><a href="javascript:void(0);">ضبط اوقات العمل</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/TempShift/PrivateShift"><i class="fas bi-person-plus-fill fa-2x"></i> وردية مؤقتة اشخاص</a>
+                            </li>
+                            <li>
+                              <a href="~/TempShift/Index"><i class="far bi-pencil-square fa-2x"></i> تسجيل ورديات مؤقتة</a>
+                            </li>
+                            <li>
+                              <a href="~/Delay/Index"><i class="far bi-person-fill-gear  fa-2x"></i>التاخيرات</a>
+                            </li>
+                            <li>
+                              <a href="~/Leave/Index"><i class="far bi-person-fill-gear  fa-2x"></i>الانصراف</a>
+                            </li>
+                          </ul>
+                          <div class="image">
+                            <img src="~/Assets/mg/work-clock.jpg" alt="logo">
+                        </div>
+                        </div>
+                    </li>
+}
+<li><a href="javascript:void(0);">مؤثرات</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/Payments/Index"><i class="far bi-pencil-square fa-2x"></i>الاستقطاعات</a> 
+                            </li>
+                            <li>
+                              <a href=""></a>
+                            </li>
+                            <li>
+                              <a href=""><!--i class="far bi-person-fill-gear  fa-2x"></i--> </a>
+                            </li>
+                          </ul>
+                          <div class="image">
+                            <img src="~/Assets/mg/work-clock.jpg" alt="logo">
+                        </div>
+                        </div>
+                    </li>           
+
+
+                    <li><a href="javascript:void(0);">تقارير</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/reports/employees"><i class="far bi-journals fa-2x"></i> تقرير بيانات العمال</a>
+                            </li>
+                            <li>
+                              <a href="~/DeferredVacations/index"><i class="fas bi-journal-text fa-2x"></i>  تقرير رصيد الاجازات</a>
+                            </li>
+                            <li>
+                              <a href="~/Truant/index"><i class="far bi-journal-minus fa-2x"></i>  تقرير الغياب</a>
+                            </li>
+                            <li>
+                              <a href="~/reports/AttendanceTotal"><i class="far bi-journal-minus fa-2x"></i>  تقرير اجمالى الحضور</a>
+                            </li>
+                            <li>
+                              <a href="~/reports/Attendance"><i class="far bi-journal-bookmark-fill fa-2x"></i> تقرير اضافى + اجازات</a>
+                            </li>
+                           
+                          </ul>
+
+                          <ul class="links">
+                           
+                            <li>
+                              <a href="~/reports/All"><i class="fas bi-journal-arrow-up fa-2x"></i>تقرير حضور بأرقام الملفات </a>
+                            </li>
+                            <li>
+                              <a href="~/reports/report"><i class="far bi-journal-code fa-2x"></i>تقرير مفرادات المرتب</a>
+                            </li>
+                            <li>
+                              <a href="~/reports/Payments"><i class="far bi-journal-x fa-2x"></i>تقرير خصومات</a>
+                            </li>
+                            <li>
+                              <a href="~/reports/loans"><i class="far bi-journal-plus fa-2x"></i>تقرير سلف</a>
+                            </li>
+                          </ul>
+                          <div class="images">
+                            <img src="~/Assets/mg/re.jfif" alt="logo">
+                        </div>
+                        </div>
+                    </li>
+
+                    <li><a href="javascript:void(0);">ادأره</a>
+                      <div class="mega-menu">
+                          <ul class="links">
+                            <li>
+                              <a href="~/roles/usersindex"><i class="far bi-people-fill fa-2x"></i> مستخدمين</a>
+                            </li>
+                            <li>
+                              <a href="~/roles/index"><i class="fas bi-person-fill-slash fa-2x"></i> صلاحيات مستخدمين </a>
+                            </li>
+                            <li>
+                              <a href="~/changelog/index"><i class="far bi-person-bounding-box fa-2x"></i>مراقبه التغيرات </a>
+                            </li>
+                            <li>
+                              <a href="~/PostingPeriod/index"><i class="far bi-person-fill-lock fa-2x"></i> قفل العمليات</a>
+                            </li>
+                            
+                          </ul>
+                          <div class="image">
+                            <img src="~/Assets/mg/manage.jpg" alt="logo">
+                        </div>
+                        </div>
+                    </li>
+                    <li><a onclick="redirect()" href="#" style="font-size= 24; color:aqua;">شئون العاملين</a></li>
+
+                </ul>
+        </div>
+    </div>
+    <!-- end header -->
+    <center>
+	 @RenderBody()
+   </center>
+    <script src="~/Assets/js/jquery-3.6.3.min.js"></script>
+    <script src="~/Assets/js/popper.min.js"></script>
+    <script src="~/Assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function redirect()
+      {
+        location.replace("http://"+location.hostname+":1001");
+      }
+      if (typeof (EventSource) !== "undefined") {
+        var source = new EventSource(`/SSE/SSE?userid=@userName`);
+        source.onmessage = function (event) {
+
+          if (JSON.parse(event.data).result > 0) {
+            //document.getElementById("result").innerHTML += event.data + "<br>";
+            $("#navbar-badge").html(JSON.parse(event.data).result);
+            $("#navbar-badge").show();
+          } else {
+            $("#navbar-badge").html("");
+            $("#navbar-badge").hide();
+          }
+        };
+      } else {
+        console.log = "Sorry, your browser does not support server-sent events...";
+        $("#navbar-badge").hide();
+      }
+
+    </script>
+</body>
+</html>

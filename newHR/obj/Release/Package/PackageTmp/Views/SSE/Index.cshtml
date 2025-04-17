@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+
+    <h1>Getting server updates</h1>
+    <table class="table table-hover" id="result"></table>
+
+    <script>
+        // Request.Cookies["UserId"].Value
+        var x=$("#userName").text().trim();
+        console.log(x.length);
+        console.log(x);
+        function get(user) {
+        var sql = `select * from requests where (Auth1User ='${user}' and Auth1Status = 0) or (Auth2User ='${user}' and Auth2Status = 0 and Auth1Status = 1)`;
+       
+        var data = readSQL(sql);
+        console.log(data);
+       var key= data.length>0?Object.keys(data[0]):null;
+       var html = '';
+       for (var i = 0; i < data.length; i++) {
+           html += '<tr>';
+           for (var j = 0; j < key.length; j++) {
+               html += '<td>'+data[i][key[j]]+'</td>';
+           }
+           html += '</tr>';
+       }
+       $("#result").html(html);
+        }
+        get(x);
+    </script>
+
+</body>
+</html>

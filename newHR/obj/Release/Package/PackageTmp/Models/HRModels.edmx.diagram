@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="33bc45b61a844044b5da9141d51d6291" Name="Diagram1" ZoomLevel="82">
+        <EntityTypeShape EntityType="HrModel.C__MigrationHistory" Width="1.5" PointX="7.75" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Absence" Width="1.5" PointX="2.75" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AbsenceType" Width="1.5" PointX="7.75" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Accessibility" Width="1.5" PointX="7.75" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AClog" Width="1.5" PointX="2.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AdditionApproval" Width="1.5" PointX="10" PointY="22.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Address" Width="1.5" PointX="13" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Administration" Width="1.5" PointX="25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Employees" Width="1.5" PointX="2.75" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_events" Width="1.5" PointX="7.75" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_events_lines" Width="1.5" PointX="19.75" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Fields" Width="1.5" PointX="4.75" PointY="24.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Forms" Width="1.5" PointX="24.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Menu" Width="1.5" PointX="25.75" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Modules" Width="1.5" PointX="25.75" PointY="14.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Queries" Width="1.5" PointX="25.75" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Shifts" Width="1.5" PointX="25.75" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_Simple" Width="1.5" PointX="26.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AK_work_periods" Width="1.5" PointX="4.75" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AllowanceGroup" Width="1.5" PointX="27.75" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Attachment" Width="1.5" PointX="10" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Attendance" Width="1.5" PointX="13" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AttendanceType" Width="1.5" PointX="10.75" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.AttTable" Width="1.5" PointX="27.75" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Authority" Width="1.5" PointX="27.75" PointY="14.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.BankAccount" Width="1.5" PointX="5.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.BasicBayWorkLine" Width="1.5" PointX="13" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.BasicBayWork" Width="1.5" PointX="17.75" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Bonu" Width="1.5" PointX="23" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.CashOrBank" Width="1.5" PointX="5.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.changeLog" Width="1.5" PointX="23.75" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.ChangelogDetail" Width="1.5" PointX="26" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Class" Width="1.5" PointX="27.75" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Company" Width="1.5" PointX="12.75" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.CompanyDetail" Width="1.5" PointX="27.75" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.ContractType" Width="1.5" PointX="22.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.ContributionPeriod" Width="1.5" PointX="10.75" PointY="32.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.CostCenter" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.CountryOfBirth" Width="1.5" PointX="10.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Ctizenship" Width="1.5" PointX="10.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Currency" Width="1.5" PointX="10.75" PointY="17.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Customer" Width="1.5" PointX="27.75" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.DelayFromTo" Width="1.5" PointX="22.25" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Delay" Width="1.5" PointX="20" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Departement" Width="1.5" PointX="28.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.DeptAssign" Width="1.5" PointX="6.75" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EducationalStatu" Width="1.5" PointX="15.75" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EmpAssign" Width="1.5" PointX="28.75" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EmployeeGroup" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Employee" Width="1.5" PointX="7.75" PointY="21.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EmployeeSubGroup" Width="1.5" PointX="0.75" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EmployeeTransfer" Width="1.5" PointX="29.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.EventType" Width="1.5" PointX="5.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Finance" Width="1.5" PointX="8" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.General" Width="1.5" PointX="18" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Grade" Width="1.5" PointX="29.75" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.HealthInsuranceCompanyName" Width="1.5" PointX="15.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.HomeCity" Width="1.5" PointX="10.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.HomeCountry" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Home" Width="1.5" PointX="12.75" PointY="41.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Incentive" Width="1.5" PointX="23" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.InsuranceAuthority" Width="1.5" PointX="29.75" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.InsuranceDetail" Width="1.5" PointX="29.75" PointY="23.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.InsurancePrecentage" Width="1.5" PointX="29.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.InsuranceType" Width="1.5" PointX="10.75" PointY="35.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.JobHistory" Width="1.5" PointX="29.75" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.JobTitle" Width="1.5" PointX="20.75" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Level" Width="1.5" PointX="30.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.LiveCover" Width="1.5" PointX="5.75" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Location" Width="1.5" PointX="30.75" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MedicalCover" Width="1.5" PointX="5.75" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Message" Width="1.5" PointX="21.75" PointY="31.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Month" Width="1.5" PointX="23.75" PointY="31.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_conflictdetectionconfigrequest" Width="1.5" PointX="25.75" PointY="31.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_lsns" Width="1.5" PointX="27.75" PointY="31.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MyShift" Width="1.5" PointX="29.75" PointY="31.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Nationality" Width="1.5" PointX="0.75" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.OtherAllowance" Width="1.5" PointX="5.75" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PayllorArea" Width="1.5" PointX="0.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PaymentDeduction" Width="1.5" PointX="13.75" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Payment" Width="1.5" PointX="16" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PayScaleArea" Width="1.5" PointX="31.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PayScaleType" Width="1.5" PointX="4.75" PointY="32.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Personal" Width="1.5" PointX="3" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PlaceOfBirth" Width="1.5" PointX="10.75" PointY="38.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.PostingPeriod" Width="1.5" PointX="31.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Productivity" Width="1.5" PointX="6.75" PointY="32.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Profit" Width="1.5" PointX="31.75" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.ReasonForEvent" Width="1.5" PointX="5.75" PointY="21.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.RecurringOneTime" Width="1.5" PointX="13.75" PointY="34.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Religion" Width="1.5" PointX="0.75" PointY="20" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Remark" Width="1.5" PointX="31.75" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Request" Width="1.5" PointX="31.75" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Role" Width="1.5" PointX="12.75" PointY="44.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Roles2" Width="1.5" PointX="31.75" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.SalarySheetGroup" Width="1.5" PointX="18.75" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.SalarySheet" Width="1.5" PointX="21" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Sanction" Width="1.5" PointX="20" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sanctions_reasons" Width="1.5" PointX="31.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.ShiftHoliday" Width="1.5" PointX="32.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Shift" Width="1.5" PointX="17.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.SocialInsurance" Width="1.5" PointX="13" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Status" Width="1.5" PointX="0.75" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sysreplserver" Width="1.5" PointX="32.75" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Tax" Width="1.5" PointX="31.75" PointY="33.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.TempShiftEntry" Width="1.5" PointX="33.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.tempshift" Width="1.5" PointX="33.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Transfer" Width="1.5" PointX="33.75" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.TypeEmployee" Width="1.5" PointX="33.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.TypeOfHealthInsurance" Width="1.5" PointX="15.75" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.User" Width="1.5" PointX="15" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.users_Authorities" Width="1.5" PointX="19.75" PointY="34.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Vacation" Width="1.5" PointX="33.75" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.WageCode" Width="1.5" PointX="10.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Deduction" Width="1.5" PointX="21.75" PointY="34.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.LeaveFromTo" Width="1.5" PointX="33.75" PointY="26.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_conflictdetectionconfigresponse" Width="1.5" PointX="33.75" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_originatorid_history" Width="1.5" PointX="33.75" PointY="34.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_request" Width="1.5" PointX="34.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_response" Width="1.5" PointX="4.75" PointY="35.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_topologyrequest" Width="1.5" PointX="6.75" PointY="35.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpeer_topologyresponse" Width="1.5" PointX="23.75" PointY="35.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.MSpub_identity_range" Width="1.5" PointX="34.75" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.SalarySheet1" Width="1.5" PointX="25.75" PointY="35.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sysarticlecolumn" Width="1.5" PointX="35.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sysarticle" Width="1.5" PointX="35.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sysarticleupdate" Width="1.5" PointX="35.75" PointY="14.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.syspublication" Width="1.5" PointX="35.75" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.sysschemaarticle" Width="1.5" PointX="35.75" PointY="32.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.syssubscription" Width="1.5" PointX="14.75" PointY="37.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.systranschema" Width="1.5" PointX="36.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.Users2" Width="1.5" PointX="35.75" PointY="37.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HrModel.XReligion" Width="1.5" PointX="36.75" PointY="18.875" IsExpanded="true" />
+        <AssociationConnector Association="HrModel.FK_dbo_AdditionApprovals_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Addresses_dbo_CountryOfBirths_CountryOfBirthId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Addresses_dbo_Ctizenships_Ctizenship_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Addresses_dbo_HomeCities_HomeCityId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Addresses_dbo_HomeCountries_HomeCountryId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Addresses_dbo_PlaceOfBirths_PlaceOfBirthId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Administrations_dbo_ContractTypes_ContractTypeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Attachments_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Attendances_dbo_AttendanceTypes_AttendanceTypeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Attendances_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_BankAccounts_BankAccountId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_BasicBayWorkLines_dbo_Currencies_CurrencyId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_BasicBayWorkLines_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_BasicBayWorkLines_dbo_WageCodes_WageCodeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_Bonus_JobTitles" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_CashOrBanks_CashOrBankId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK__Changelog__chang__75F77EB0" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Users_dbo_Companies_CompanyId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_SocialInsurances_dbo_ContributionPeriods_ContributionPeriodId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_CostCenters_CostCenterId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Payments_dbo_Currencies_CurrencyId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_DelayFromToes_dbo_Delays_DelayId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Delays_dbo_Shifts_ShiftId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Generals_dbo_EducationalStatus_EducationalStatus_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_EmployeeGroups_EmployeeGroupId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Payments_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_SocialInsurances_dbo_Employees_EmployeeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_EmployeeSubGroups_EmployeeSubGroupId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_EventTypes_EventTypeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_LiveCovers_LiveCoverId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_MedicalCovers_MedicalCoverId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_OtherAllowances_OtherAllowanceId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Finances_dbo_ReasonForEvents_ReasonForEventId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Generals_dbo_HealthInsuranceCompanyNames_HealthInsuranceCompanyNameId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Generals_dbo_TypeOfHealthInsurances_TypeOfHealthInsuranceId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Users_dbo_Homes_Home_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_Incentives_JobTitles" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_SocialInsurances_dbo_InsuranceTypes_InsuranceTypeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_Nationalities_NationalityId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_PayllorAreas_PayllorAreaId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Payments_dbo_PaymentDeductions_PaymentDeductionId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Payments_dbo_RecurringOneTimes_RecurringOneTimeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Payments_dbo_WageCodes_WageCodeId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_Religions_ReligionId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Personals_dbo_Status_StatusId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Users_dbo_Roles_RoleId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_SalarySheets_dbo_SalarySheetGroups_SalarySheetGroupsId" ManuallyRouted="false" />
+        <AssociationConnector Association="HrModel.FK_dbo_Sanctions_dbo_Shifts_ShiftId" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

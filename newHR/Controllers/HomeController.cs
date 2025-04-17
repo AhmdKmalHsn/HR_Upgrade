@@ -8,6 +8,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using System.IO;
+
 
 namespace newHR.Controllers
 {
@@ -27,6 +29,7 @@ namespace newHR.Controllers
         HttpCookie Reports_Salary_Details = new HttpCookie("Reports_Salary_Details");
         HttpCookie Logs = new HttpCookie("Logs");
         HttpCookie TempShifts = new HttpCookie("TempShifts");
+
         public ActionResult Index()
         {
             return View();
@@ -166,6 +169,47 @@ select count(*)cnt, 'depts' name from Departements
                                                                   select count(*)cnt, 'mac' name from Mac
                                                                    ");
             return Json(db.toJSON(db.getData(cmd)), JsonRequestBehavior.AllowGet);
+        }
+
+        /* upload image */
+
+        [HttpPost]
+        public ActionResult UploadFiles()
+        {
+            // Checking no of files injected in Request object  
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fname = file.FileName;
+
+                        // Get the complete folder path and store the file inside it.  
+                        fname = Path.Combine(Server.MapPath("~/Uploads/"), fname);
+                        file.SaveAs(fname);
+                    }
+                    // Returns message that successfully uploaded  
+                    return Json("File Uploaded Successfully!");
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+        }
+        public ActionResult license() {
+            return View();
         }
     }
 }

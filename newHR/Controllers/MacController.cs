@@ -68,6 +68,18 @@ where cast(Datetime as date) >= @f and cast(Datetime as date) <= @t and A.FileNu
         {
             return Json(macDB.getMacAtt(F, T), JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetMacAttNew(DateTime F, DateTime T)
+        {
+            return Json(macDB.getMacAttNew(F, T), JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetMacAttNewFN(DateTime F, DateTime T,int FN)
+        {
+            return Json(macDB.getMacAttNewFN(F, T,FN), JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetMacAttNewDept(DateTime F, DateTime T,int dept)
+        {
+            return Json(macDB.getMacAttNewDept(F, T,dept), JsonRequestBehavior.AllowGet);
+        }
         public JsonResult SetMacAtt(int FN,string DT,string F, string T)
         {
             return Json(macDB.ATT_IT(FN,DT,F, T), JsonRequestBehavior.AllowGet);
@@ -195,7 +207,7 @@ from
 select CTE_Months.dates,
 case when cast(StartTime as time(0))<'04:00' then DATEADD(day,1,dates) else dates 
      end dates1,
-case when cast(EndTime as time(0))<cast(StartTime as time(0)) then DATEADD(day,1,dates) -- --else dates
+case when cast(EndTime as time(0))<cast(StartTime as time(0)) then DATEADD(day,1,dates)
      when cast(StartTime as time(0))<'04:00' then DATEADD(day,1,dates) else dates 
      end  dates2, 
 e.id,
@@ -212,7 +224,7 @@ case when s.NoOfShifts=0 then DailyHours/2*60-67
 end 'off1',
 case when s.NoOfShifts=0 then 7*60
      when s.NoOfShifts=1 and (s.ShiftId=18 or s.ShiftId=19) then 5*60
-	 when s.NoOfShifts=1 and not (s.ShiftId=18 or s.ShiftId=19) then 3.5*60
+	 when s.NoOfShifts=1 and not (s.ShiftId=18 or s.ShiftId=19) then 3*60
 	 when s.NoOfShifts=2 then 2*60
 end 'off2'
 
@@ -340,6 +352,273 @@ order by date
                     SqlCommand com = new SqlCommand(sql, con);
                     com.CommandType = CommandType.Text;
                     //com.Parameters.Add("@FN", SqlDbType.Int).Value = FN;
+                    com.Parameters.Add("@F", SqlDbType.Date).Value = F.Date;
+                    com.Parameters.Add("@T", SqlDbType.Date).Value = T.Date;
+                    SqlDataReader rdr = com.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        lst.Add(new Att
+                        {
+                            date = rdr["date"].ToString(),
+                            name = rdr["name"].ToString(),
+                            dept = rdr["dept"].ToString(),
+                            fileNumber = rdr["fileNumber"].ToString() == "" ? 0 : int.Parse(rdr["fileNumber"].ToString()),
+                            timeFrom = rdr["timeIN"].ToString(),
+                            timeTo = rdr["timeOUT"].ToString()
+                        });
+                    }
+                    return lst;
+                }
+            }
+            public List<Att> getMacAttNew(DateTime F, DateTime T)//very very  important رفع الحضور والانصراف من البصمة
+            {
+                List<Att> lst = new List<Att>();
+                string sql = @"with acIn as (select * from AClogs where Type='In' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t)),
+	 acOut as (select * from AClogs where Type='Out' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t))
+	,month_cte as
+( 
+select @f dateDay
+union All
+select dateadd(day,1,dateDay)
+from month_cte
+where dateDay<@t
+)
+/******************************real_code********************************/
+select 	final.FileNumber 'fileNumber',
+		dateDay 'date',
+		cast(inf as time(0)) 'timeIN',
+		cast(outf as time(0)) 'timeOUT',	
+		--worktime '',
+		e.dept,
+		e.name
+from
+(
+	select ROW_NUMBER() over(partition by filenumber,dateday order by worktime desc ) n,num.* 
+	from
+	(
+		select q.FileNumber,q.dateDay,q.Id,acIn.DateTime inf,acOut.DateTime outf,datediff(minute,acIn.DateTime,acOut.DateTime)worktime
+		from 
+			(select dateDay,
+					FileNumber,
+					Id,ShiftName,
+					inbound,
+					outbound,
+					DailyHrs,
+					dateadd(MINUTE,-1*60,inbound)inMin,
+					dateadd(MINUTE,3*dailyhrs/4*60,inbound)inMax,
+					dateadd(MINUTE,dailyhrs/4*60,inbound)outMin,
+					case 
+							when NoOfShifts=2  then dateadd(MINUTE,2*60,outbound) 
+							when NoOfShifts=1  then dateadd(MINUTE,3.5*60,outbound) 
+							else dateadd(MINUTE,5*60,outbound) 
+					end outMax
+			from
+			(
+				select  mon.dateDay,
+						FileNumber,
+						sh.Id,ShiftName,
+						dateadd(day,inoffset,cast(dateDay as  varchar(10))+' '+sh.StartTime)inbound,
+						dateadd(day,OutOffset,cast(dateDay as  varchar(10))+' '+sh.EndTime)outbound,
+						sh.DailyHrs,
+						sh.NoOfShifts
+				from month_cte mon,
+					 Employees e join 
+					 BasicBayWorks b on e.id=b.EmployeeId join 
+					 Shifts sh on b.ShiftId=sh.Id or sh.id=(select Shift2 from Shifts where id=b.ShiftId ) or sh.id=(select Shift3 from Shifts where id=b.ShiftId )
+				)bound
+			--where FileNumber=16107 --out
+		)q left join acIn on q.FileNumber=acIn.FileNumber and acin.DateTime between q.inMin and q.inMax 
+		   left join acOut on q.FileNumber=acOut.FileNumber and acOut.DateTime between q.outMin and q.outMax 
+	)num
+	
+)final join (select FileNumber,KnownAs'name',Departements.Name'dept' from Employees,Departements where Employees.DepartementId=Departements.Id )e on e.FileNumber=final.FileNumber
+where n=1 and not (inf is null and outf is null)
+";
+
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand(sql, con);
+                    com.CommandType = CommandType.Text;
+                    //com.Parameters.Add("@FN", SqlDbType.Int).Value = FN;
+                    com.Parameters.Add("@F", SqlDbType.Date).Value = F.Date;
+                    com.Parameters.Add("@T", SqlDbType.Date).Value = T.Date;
+                    SqlDataReader rdr = com.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        lst.Add(new Att
+                        {
+                            date = rdr["date"].ToString(),
+                            name = rdr["name"].ToString(),
+                            dept = rdr["dept"].ToString(),
+                            fileNumber = rdr["fileNumber"].ToString() == "" ? 0 : int.Parse(rdr["fileNumber"].ToString()),
+                            timeFrom = rdr["timeIN"].ToString(),
+                            timeTo = rdr["timeOUT"].ToString()
+                        });
+                    }
+                    return lst;
+                }
+            }
+            public List<Att> getMacAttNewFN(DateTime F, DateTime T,int FN)//very very  important رفع الحضور والانصراف من البصمة
+            {
+                List<Att> lst = new List<Att>();
+                string sql = @"with acIn as (select * from AClogs where Type='In' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t)),
+	 acOut as (select * from AClogs where Type='Out' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t))
+	,month_cte as
+( 
+select @f dateDay
+union All
+select dateadd(day,1,dateDay)
+from month_cte
+where dateDay<@t
+)
+/******************************real_code********************************/
+select 	final.FileNumber 'fileNumber',
+		dateDay 'date',
+		cast(inf as time(0))'timeIN',
+		cast(outf as time(0))'timeOUT',	
+		--worktime '',
+		e.dept,
+		e.name
+from
+(
+	select ROW_NUMBER() over(partition by filenumber,dateday order by worktime desc ) n,num.* 
+	from
+	(
+		select q.FileNumber,q.dateDay,q.Id,acIn.DateTime inf,acOut.DateTime outf,datediff(minute,acIn.DateTime,acOut.DateTime)worktime
+		from 
+			(select dateDay,
+					FileNumber,
+					Id,ShiftName,
+					inbound,
+					outbound,
+					DailyHrs,
+					dateadd(MINUTE,-1*60,inbound)inMin,
+					dateadd(MINUTE,3*dailyhrs/4*60,inbound)inMax,
+					dateadd(MINUTE,dailyhrs/4*60,inbound)outMin,
+					case 
+							when NoOfShifts=2  then dateadd(MINUTE,2*60,outbound) 
+							when NoOfShifts=1  then dateadd(MINUTE,3*60,outbound) 
+							else  dateadd(MINUTE,5*60,outbound) 
+					end outMax
+			from
+			(
+				select  mon.dateDay,
+						FileNumber,
+						sh.Id,ShiftName,
+						dateadd(day,inoffset,cast(dateDay as  varchar(10))+' '+sh.StartTime)inbound,
+						dateadd(day,OutOffset,cast(dateDay as  varchar(10))+' '+sh.EndTime)outbound,
+						sh.DailyHrs,
+						sh.NoOfShifts
+				from month_cte mon,
+					 Employees e join 
+					 BasicBayWorks b on e.id=b.EmployeeId join 
+					 Shifts sh on b.ShiftId=sh.Id or sh.id=(select Shift2 from Shifts where id=b.ShiftId ) or sh.id=(select Shift3 from Shifts where id=b.ShiftId )
+				)bound
+			where FileNumber=@FN --out
+		)q left join acIn on q.FileNumber=acIn.FileNumber and acin.DateTime between q.inMin and q.inMax 
+		   left join acOut on q.FileNumber=acOut.FileNumber and acOut.DateTime between q.outMin and q.outMax 
+	)num
+	
+)final join (select FileNumber,KnownAs'name',Departements.Name'dept' from Employees,Departements where Employees.DepartementId=Departements.Id )e on e.FileNumber=final.FileNumber
+where n=1 and not (inf is null and outf is null)
+";
+
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand(sql, con);
+                    com.CommandType = CommandType.Text;
+                    com.Parameters.Add("@FN", SqlDbType.Int).Value = FN;
+                    com.Parameters.Add("@F", SqlDbType.Date).Value = F.Date;
+                    com.Parameters.Add("@T", SqlDbType.Date).Value = T.Date;
+                    SqlDataReader rdr = com.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        lst.Add(new Att
+                        {
+                            date = rdr["date"].ToString(),
+                            name = rdr["name"].ToString(),
+                            dept = rdr["dept"].ToString(),
+                            fileNumber = rdr["fileNumber"].ToString() == "" ? 0 : int.Parse(rdr["fileNumber"].ToString()),
+                            timeFrom = rdr["timeIN"].ToString(),
+                            timeTo = rdr["timeOUT"].ToString()
+                        });
+                    }
+                    return lst;
+                }
+            }
+            public List<Att> getMacAttNewDept(DateTime F, DateTime T, int dept)//very very  important رفع الحضور والانصراف من البصمة
+            {
+                List<Att> lst = new List<Att>();
+                string sql = @"with acIn as (select * from AClogs where Type='In' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t)),
+	 acOut as (select * from AClogs where Type='Out' and  cast(datetime as date) >=@f and cast(datetime as date) <=dateadd(day,1,@t))
+	,month_cte as
+( 
+select @f dateDay
+union All
+select dateadd(day,1,dateDay)
+from month_cte
+where dateDay<@t
+)
+/******************************real_code********************************/
+select 	final.FileNumber 'fileNumber',
+		dateDay 'date',
+		cast(inf as time(0))'timeIN',
+		cast(outf as time(0))'timeOUT',	
+		--worktime '',
+		e.dept,
+		e.name
+from
+(
+	select ROW_NUMBER() over(partition by filenumber,dateday order by worktime desc ) n,num.* 
+	from
+	(
+		select q.FileNumber,q.dateDay,q.Id,acIn.DateTime inf,acOut.DateTime outf,datediff(minute,acIn.DateTime,acOut.DateTime)worktime
+		from 
+			(select dateDay,
+					FileNumber,
+					Id,ShiftName,
+					inbound,
+					outbound,
+					DailyHrs,
+					dateadd(MINUTE,-1*60,inbound)inMin,
+					dateadd(MINUTE,3*dailyhrs/4*60,inbound)inMax,
+					dateadd(MINUTE,dailyhrs/4*60,inbound)outMin,
+					case 
+							when NoOfShifts=2  then dateadd(MINUTE,2*60,outbound) 
+							when NoOfShifts=1  then dateadd(MINUTE,3*60,outbound) 
+							else  dateadd(MINUTE,5*60,outbound) 
+					end outMax
+			from
+			(
+				select  mon.dateDay,
+						FileNumber,
+						sh.Id,ShiftName,
+						dateadd(day,inoffset,cast(dateDay as  varchar(10))+' '+sh.StartTime)inbound,
+						dateadd(day,OutOffset,cast(dateDay as  varchar(10))+' '+sh.EndTime)outbound,
+						sh.DailyHrs,
+						sh.NoOfShifts
+				from month_cte mon,
+					 Employees e join 
+					 BasicBayWorks b on e.id=b.EmployeeId join 
+					 Shifts sh on b.ShiftId=sh.Id or sh.id=(select Shift2 from Shifts where id=b.ShiftId ) or sh.id=(select Shift3 from Shifts where id=b.ShiftId )
+				)bound
+			where FileNumber  in (select FileNumber from Employees where DepartementId=@dept) 
+		)q left join acIn on q.FileNumber=acIn.FileNumber and acin.DateTime between q.inMin and q.inMax 
+		   left join acOut on q.FileNumber=acOut.FileNumber and acOut.DateTime between q.outMin and q.outMax 
+	)num
+	
+)final join (select FileNumber,KnownAs'name',Departements.Name'dept' from Employees,Departements where Employees.DepartementId=Departements.Id )e on e.FileNumber=final.FileNumber
+where n=1 and not (inf is null and outf is null)
+";
+
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    con.Open();
+                    SqlCommand com = new SqlCommand(sql, con);
+                    com.CommandType = CommandType.Text;
+                    com.Parameters.Add("@dept", SqlDbType.Int).Value = dept;
                     com.Parameters.Add("@F", SqlDbType.Date).Value = F.Date;
                     com.Parameters.Add("@T", SqlDbType.Date).Value = T.Date;
                     SqlDataReader rdr = com.ExecuteReader();
@@ -519,7 +798,7 @@ update  A set
 	    A.TimeFrom=@from,
 	    A.TimeTo=@to,
 		A.AttendanceTypeId=2
-from Attendances A inner join Employees E on E.id=A.EmployeeId  
+from Attendances A join Employees E on E.id=A.EmployeeId  
 where FileNumber=@FN and A.DateFrom=@dt
 end
 ";

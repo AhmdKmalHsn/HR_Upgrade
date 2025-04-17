@@ -7,28 +7,69 @@ Response.Redirect("~/home/log");
     vertical-align: middle;
     max-height: 80px;
 }
+.color{
+    padding: 8px;
+    /*background: linear-gradient(to right, orange, tomato,red);
+    transform: perspective(700px) rotateY(45deg);*/
+    cursor: pointer;
+}
+.color:hover{
+    /*transform: perspective(400px) rotateY(1deg);
+    padding-left: 5%;*/
+}
+body{
+ /*background-color: cornsilk;*/
+
+}
+ @* my css update  *@
+.navbar{
+    background: linear-gradient(45deg, #007bff, skyblue);
+    border-radius: 10px !important;
+}
+
+ body {
+    background: linear-gradient(145deg, #ccc, #ccc);
+    /*background-color:gray ;*/
+}
+
+.sales{
+       border-radius: 10px;
+       box-shadow: 1px 1px 6px 1px black !important;
+
+}
+.card{
+    margin-bottom: 35px;
+}
+.card .content{
+    padding: 0px !important;
+}
+ .content .details{
+   /*background: linear-gradient(to right, #28a, transparent)!important;
+   background-color: #fff;
+   box-shadow: 1px 1px 6px 1px black !important;
+    border-radius: 6px !important;
+    */
+}
+.disapled{
+    display: none;
+}
+#EmployeesStatus
+{
+    /*background-color: white;*/
+}
 
 </style>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+  
+ <br>
 
 <div class="container-fluid">
 
-    <div class="row mt-2">
-        <div class="col-md-6 float-start">
-            <h4 class="m-0 text-dark text-muted"></h4>
-        </div>
-        <div class="col-md-6">
-            <ol class="breadcrumb float-end">
-                <li class="breadcrumb-item"><a href="#"> Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </div>
-    </div>
 
 
     <div class="row">
-        <div class="col-sm-6 col-md-6 col-lg-3">
-            <div class="card card-rounded" style="background-color:#007bff" >
+        <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
+            <div  class="card color card-rounded" style="background-color:#007bff" >
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -49,8 +90,8 @@ Response.Redirect("~/home/log");
             </div>
         </div>
         
-        <div class="col-sm-6 col-md-6 col-lg-3">
-            <div class="card card-rounded" style="background-color:#ef5350">
+        <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
+            <div class="card color card-rounded" style="background-color:#ef5350">
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -72,8 +113,8 @@ Response.Redirect("~/home/log");
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-6 col-lg-3">
-            <div class="card card-rounded" style="background-color:#66bb6a">
+        <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
+            <div class="card color card-rounded" style="background-color:#66bb6a">
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -94,8 +135,8 @@ Response.Redirect("~/home/log");
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-6 col-lg-3">
-            <div class="card card-rounded" style="background-color:#26cbda" >
+        <div class="col-sm-6 col-md-6 col-lg-3 anyotherclass" > 
+            <div class="card color card-rounded" style="background-color:#26cbda" >
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -113,13 +154,10 @@ Response.Redirect("~/home/log");
                     </div>
                 </div>
             </div>
-        </div>
-
-        
+        </div>        
     </div>
+    
 
-
-   
 </div>
 <div class="canvas-wrapper">
     <div class="row">
@@ -128,20 +166,66 @@ Response.Redirect("~/home/log");
                 <div class="col-md-6">
                     <div class="card">
                         <div class="content">
-                            <canvas id="EmployeesStatus" width="500" height="250"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="content">                        
-							<div class="detail" style="background-color:violet">
+                            <div class="detail details" style="background-color:#d52dd5">
                                 <p class="detail-subtitle" style="font-size: 31px;font-weight: 700;padding-top: 24px;">عدد المتواجدين حاليا</p>
                                 <span id="attendId" class="number" style="font-size:100px"></span>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">                        
+							<div class="detail details" style="background-color:#0a58ca">
+                                <p class="detail-subtitle" style="font-size: 31px;font-weight: 700;padding-top: 24px;">عدد الحضور امس</p>
+                                <span id="attendYesterdayId" class="number" style="font-size:100px"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card card-rounded" >
+              <div class="card-header" style="font-size: 31px;font-weight: 700;padding-top: 24px;">متوسط اعمار العمال</div>
+              <div class="card-body">
+                  <div id="avg_ages" style="font-size:100px"></div>
+              </div>
+            </div>
+        </div>
+         <div class="col-6">
+            <div class="card card-rounded">
+              <div class="card-header" style="font-size: 31px;font-weight: 700;padding-top: 24px;">متوسط سنوات العمل</div>
+              <div class="card-body">
+                  <div id="avg_years" style="font-size:100px"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">
+                            <canvas class="" id="EmployeesStatus"  ></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!--div class="col-md-6 ">
+                    <div class="card">
+                        <div class="content">                        
+							<div class="detail" style="background-color:violet">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div-->
             </div>
         </div>
     </div>
@@ -151,7 +235,7 @@ Response.Redirect("~/home/log");
                 <div class="col-md-12">
                     <div class="card">
                         <div class="content">                   
-                            <canvas id="sales" width="500" height="250"></canvas>
+                            <canvas class="sales" id="sales" width="250" height="250"></canvas>
                         </div>
                     </div>
                 </div>
@@ -162,18 +246,20 @@ Response.Redirect("~/home/log");
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
+                    <div  class="anyotherclass" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
                     <div class="card">
-                        <div class="card-header">in - out</div>
+                        <!--div class="card-header saless">in - out</div-->
                         <div class="content">
-                            <canvas id="in_out" width="500" height="250"></canvas>
+                            <canvas class="sales" id="in_out" width="500" height="250"></canvas>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
  </div>
-    
+    <!--div id="test" style="border:1px green solid;">SSSSS</div-->
     <script>
 var pieOptions = {
   title: {
@@ -186,7 +272,7 @@ var pieOptions = {
     easing: "easeOutQuart",
     onComplete: function () {
       var ctx = this.chart.ctx;
-      ctx.font = Chart.helpers.fontString("16", "Bold", Chart.defaults.global.defaultFontFamily);
+      ctx.font = Chart.helpers.fontString("25", "Bold", Chart.defaults.global.defaultFontFamily);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
 
@@ -214,7 +300,7 @@ var pieOptions = {
           if(val != 0) {
             ctx.fillText(dataset.data[i], model.x + x, model.y + y);
             // Display percent in another line, line break doesn't work for fillText
-            ctx.fillText(percent, model.x + x, model.y + y + 15);
+            ctx.fillText(percent, model.x + x, model.y + y + 25);
           }
         }
       });               
@@ -243,7 +329,7 @@ var data1 = readSQL(sql1);
 			ydata1.push(Object.values(data1[i])[1]);
 		}
 var myChart2 = new Chart(document.getElementById("EmployeesStatus"), {
-			type: 'pie',
+			type: 'doughnut',
 			data: {
 				labels: xdata1,
 				datasets: [{
@@ -253,7 +339,8 @@ var myChart2 = new Chart(document.getElementById("EmployeesStatus"), {
 					data: ydata1
 				}]
 			},
-		    options: pieOptions
+           
+		    //options: pieOptions
 		});
             
        
@@ -263,7 +350,7 @@ var sql2= `select d.Name,
             from Employees E left join Departements d on e.DepartementId=d.Id
             left join Personals P on e.PersonalId=p.Id
             left join Generals g on e.GeneralId=g.id
-            where StatusId =1 and d.[group]=0 and e.DepartementId<1008
+            where StatusId =1 and d.[group]=0 --and e.DepartementId<1008
             group by  d.Name`;
             
                 var data2 = readSQL(sql2);
@@ -273,20 +360,21 @@ var sql2= `select d.Name,
                     xdata2.push(Object.values(data2[i])[0]);
                     ydata2.push(Object.values(data2[i])[1]);
                 }
- var myChart2 = new Chart(document.getElementById("sales"), {
+ var myChart2 = new Chart(document.getElementById("sales"), {//خاصة باعداد العمال 
                     type: 'bar',
                     data: {
                         labels: xdata2 ,
                         datasets: [{
                             label: 'الاقسام',
-                            backgroundColor: "rgba(76, 175, 80, 0.5)",
-                            borderColor: "rgba(76, 175, 80, 0.5)",
-                            borderWidth: 1,
-                            borderRadius: "25",
+                            //backgroundColor: "rgba(76, 175, 80, 0.5)",
+                            //borderColor: "rgba(76, 175, 80, 0.5)",
+                            //borderWidth: 1,
+                            //borderRadius: "25",
                             data: ydata2,
                         }]
                     },
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         title: {
                             display: true,
@@ -414,9 +502,11 @@ var pieOptions = {
 
 var pieChartCanvas = $("#pieChart");
 var pieChart = new Chart(pieChartCanvas, {
-  type: 'pie', // or doughnut
+  type: 'doughnut', // or doughnut
   data: data,
-  options: pieOptions
+  options: {
+        indexAxis: 'y'
+    }
 });
     </script>
 
@@ -457,6 +547,7 @@ var pieChart = new Chart(pieChartCanvas, {
 <script>
 sql3="select count(*) as cnt from Attendances where cast(DateFrom as date)=cast(GETDATE() as date) and TimeTo=''";
 $("#attendId").html(readSQL(sql3)[0].cnt);
+$("#attendYesterdayId").html(readSQL("select count(*) as cnt from Attendances where cast(DateFrom as date)=cast(dateadd(day,-1,GETDATE()) as date)")[0].cnt);
 </script>
 <script>
     sqlInOut = `select qin.*,qout.cnt 'cnt2' from
@@ -482,7 +573,8 @@ order by  qin.yer,qin.mon`;
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [{
+            datasets: [
+            {
                 label: 'مستجد',
                 data: data,
                 backgroundColor: 'rgba(0, 255, 105, 0.3)'
@@ -497,4 +589,44 @@ order by  qin.yer,qin.mon`;
     };
 
     var chart = new Chart(document.getElementById("in_out"), config);
+    
+    $(window).scroll(function(){
+        //var x=$("#test").position();
+        /*var y= document.querySelector("#test").getBoundingClientRect();
+         var options = {};
+        //console.log(); // );
+        console.log(y.bottom);
+        if(y.bottom<window.innerHeight && y.top>0 )
+        {
+            console.log("true");
+            $("#test").fadeIn(1000); 
+            //$("#test").show( "Drop", options, 500, callback );
+        }
+        else
+        {
+            console.log("false");
+            $("#test").fadeOut();
+            //$("p").fadeIn(1000);
+        }
+        /*function callback() {
+      setTimeout(function() {
+        $( "#test:visible" ).removeAttr( "style" ).fadeOut();
+      }, 1000 );
+      };*/
+        /*console.log(self.innerHeight);
+        console.log(parent.innerHeight);
+        console.log(top.innerHeight);*/
+    });
+    var avg=readSQL(`
+     select sum(datediff(day,DateOfBirth,getdate())/365.25)/count(*) avg_ages,sum(datediff(day,JoiningDate,getdate())/365.25)/count(*) avg_years
+ from Employees emp join personals  per on per.id=emp.PersonalId
+                    join Finances fin on fin.id=emp.FinanceId
+                    join Administrations adm on adm.id=emp.AdministrationId	
+                    join Addresses adr on adr.id=emp.AddressId	
+                    join Generals gen on gen.id=emp.GeneralId
+where per.StatusId=1 and  DepartementId<>351
+    `);
+
+    $("#avg_ages").html(avg[0].avg_ages.toFixed(2))
+    $("#avg_years").html(avg[0].avg_years.toFixed(2))
 </script>

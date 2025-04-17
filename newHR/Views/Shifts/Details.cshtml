@@ -1,0 +1,154 @@
+﻿@model Model.Shift
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Shift</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ShiftId)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ShiftId)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ShiftName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ShiftName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.FullTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.FullTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Weekend)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Weekend)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.LoginLogoutTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.LoginLogoutTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EmploymentPercent)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EmploymentPercent)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DailyHours)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DailyHours)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.WeekelyDays)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.WeekelyDays)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.WeekelyHours)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.WeekelyHours)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.MonthlyHours)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.MonthlyHours)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.MonthlyLeaveDays)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.MonthlyLeaveDays)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.StartTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EndTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.LateArrive)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.LateArrive)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EarlyLeave)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EarlyLeave)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EarlyArrive)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EarlyArrive)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

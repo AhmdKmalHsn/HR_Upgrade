@@ -1,0 +1,158 @@
+﻿@model IEnumerable<Model.Shift>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string Id = Session["login"].ToString();
+    var User = Services.UserService.GetById(int.Parse(Id));
+    var role = Services.RoleService.GetById(int.Parse(User.RoleId.ToString()));
+}
+Master Data /Shift 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Material tab card start -->
+
+<div class="card">
+    <div class="row container">
+        <div class="col-md-9 mt-4">
+            @if (role.Shift == RoleStatus.Full || role.Shift == RoleStatus.Add)
+            {
+                @Html.ActionLink("Create new shift", "Create", "Shifts", htmlAttributes: new { @class = "btn btn-primary" })
+            }
+        </div>
+        <div style="text-align:right !important" class="col-md-3">
+            <input class="mt-4  ml-2 form-control input-sm w-100" onkeyup="myFunction()" id="myInput" type="search" placeholder="search...." aria-controls="add-row-table">
+            <br />
+        </div>
+    </div>
+    <div class="">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="example-1">
+                <thead>
+                    <tr>
+                        <th style="display: none;">#</th>
+                        <th style="text-align:center">#</th>
+                        <th style="text-align:center">
+                            Shift ID
+
+                            <input class="form-control" id="Shift" type="text" placeholder="Search..">
+
+                        </th>
+                        
+                        <th style="text-align:center">
+                            Active\In Active
+
+                            <input class="form-control" id="Active" type="text" placeholder="Search..">
+
+                        </th>
+                        <th style="text-align:center">
+                            Shift Name
+                            <input class="form-control" id="ShiftName" type="text" placeholder="Search..">
+
+                        </th>
+
+                        @if (role.Shift == RoleStatus.Full || role.Shift == RoleStatus.Edit)
+                        {
+                            <th style="text-align:center">Edit</th>
+                        }
+
+                        @*<th style="text-align:center"></th>*@
+
+                    </tr>
+                </thead>
+                <tbody id="myTable">
+                    @{ int count = 1;}
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+
+                        <td style="text-align:center">@(count)</td>
+                        <td style="text-align:center">@Html.DisplayFor(ww => item.ShiftId)</td>
+                        <td style="text-align:center">@Html.DisplayFor(ww => item.ActiveDisactive)</td>
+                        <td style="text-align:center">@Html.DisplayFor(ww => item.ShiftName)</td>
+
+                        @if (role.Shift == RoleStatus.Full || role.Shift == RoleStatus.Edit)
+                        {
+                            <td style="text-align:center">
+
+                                @Html.ActionLink("Edit", "Edit2", "Shifts", routeValues: new { id = item.Id }, htmlAttributes: new { @class = "btn btn-primary" })
+                            </td>
+                        }
+                    </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Material tab card end -->
+<script>
+
+
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        ////
+        $("#Shift").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#File").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#Active").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#Employee").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#ShiftName").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript" src="~/bower_components/jquery/js/jquery.min.js"></script>
+<script>
+    let t = document.title;
+
+    document.title = t + " - " + "Index Shift";
+</script>
+
+<script>
+    $(function () {
+        var lenght = $('#myTable tr').length;
+        console.log(lenght);
+        if (lenght > 10) {
+            $('.table-responsive').css('overflow', "scroll");
+            $('.table-responsive').css('height', "700px")
+
+        }
+        else {
+            $('.table-responsive').css('overflow', "hidden");
+
+        }
+
+    })
+</script>

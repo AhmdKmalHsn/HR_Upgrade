@@ -27,5 +27,10 @@ namespace newHR.Controllers
             SqlCommand com = new SqlCommand(sql);
             return Json(db.toJSON(db.getData(com)), JsonRequestBehavior.AllowGet);
         }
+        public JsonResult ReadSQL(string sql)
+        {
+            SqlCommand com = new SqlCommand(sql);
+            return new JsonResult() { Data = db.toJSON(db.getData(com)), JsonRequestBehavior = JsonRequestBehavior.AllowGet,MaxJsonLength=Int32.MaxValue };
+        }
     }
 }

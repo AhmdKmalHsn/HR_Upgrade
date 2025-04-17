@@ -1,0 +1,42 @@
+declare @Y varchar(4)='2024',@M varchar(2)='2',@fno int ='41'
+declare @f date ,@t date,@empId int,
+@jn date,@tr date --edit 
+set @f=
+(
+select 
+case when start <15 then 
+cast((@y+'-'+@m+'-'+cast(Start as varchar)) as date) 
+else
+dateadd(month,-1,cast((@y+'-'+@m+'-'+cast(Start as varchar)) as date))
+end
+from Months
+)
+set @t=(select dateadd(day,-1,dateadd(month,1,@f)));
+set @empId=(select id from Employees where FileNumber=@fno);
+set @jn =(select JoiningDate from Personals where id=(select personalid from Employees where FileNumber=@fno));--edit
+set @tr =(select TerminationDate from Generals where id=(select GeneralId from Employees where FileNumber=@fno));--edit
+with month_cte as
+( 
+select @f dateDay
+union All
+select dateadd(day,1,dateDay)
+from month_cte
+where dateDay<@t
+)
+/************real code*************/
+select *,@jn joining,@tr terminate, 
+		case when @tr is null then
+									case when dateday>=@jn then 'active'
+									     else 'inactive'
+									end
+			 when @tr is not null and @jn<@tr then 
+									case when dateday>=@jn  and dateDay<@tr then 'active'
+									     else 'inactive'
+									end
+			 when @tr is not null and @jn>@tr then
+									case when dateday>=@tr  and dateDay<@jn then 'inactive'
+									     else 'active'
+									end
+												
+	    end 'indcator' --edit
+from month_cte

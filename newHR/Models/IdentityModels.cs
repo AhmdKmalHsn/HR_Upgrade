@@ -29,5 +29,7 @@ namespace newHR.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<newHR.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

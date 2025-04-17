@@ -1,0 +1,33 @@
+﻿
+<div id=myDiv>
+    <table id="myTable" width="100%" class="display">
+
+    </table>
+</div>
+<script>
+    fetch("/noti/InOutNoti")
+     .then((x) => x.json())
+     .then((y) => {
+         y=JSON.parse(y);
+        console.log(y) 
+        setTable(y)
+     }); 
+     function setTable(e)
+     {
+         $("#myTable").DataTable
+         (
+            {
+                data:e.filter(w=>EMPS.includes(w.FileNumber)),
+                columns:[
+                {title:"Date From",data:"dateFrom",render:function(e){return e.substr(0,10)}},
+                //{title:"Employee Id",data:"EmployeeId"},
+                {title:"File Number",data:"FileNumber"},
+                {title:"Department",data:"dept"},
+                {title:"Name",data:"name"},
+                {title:"Time From",data:"timeFrom"},
+                {title:"Time To", data: "timeTo" },
+                ]
+            }
+         );
+     }
+</script>

@@ -56,81 +56,116 @@ namespace newHR.Controllers.db
         {
             List<Attend> lst = new List<Attend>();
             string sql = @"
-     if(@dept>0)
+-- declare @f date='2023-10-26',@dept int=0
+	 if(@dept>0)
  begin
- select e.date,
-        e.FileNumber'fileNo',
-		e.KnownAs 'name',
-		e.deptName,
-		q.TIMEFROM,
-		q.TIMETO,
-		 v.DayPart,
-	     ad.hrs
- from
- (
- select @f'date',Employees.* ,d.Name'deptName'
-       from employees join Personals on employees.PersonalId = Personals.Id  
-	   left join Departements d on Employees.DepartementId=d.Id
-	   where StatusId=1 and DepartementId=@dept
- )e 
- left join 
- (
- select distinct ak.date,
-       ak.name,
-	   ak.FNO'fileNo',
-	   AK.TIMEFROM,
-	   AK.TIMETO
-       from AK_3STAGES_V4 ak 
-	   where ak.date=@f and ak.dept=@dept
-  )q on e.FileNumber=q.fileNo 
-  left join
-  (
-  select employeeId,sum(noofhour)hrs,Date from AdditionApprovals aa group by date,EmployeeId
-  ) ad on (ad.EmployeeId=e.ID and ad.Date=e.date)
-  left join 
-  (
-   select sum(DayPart) DayPart,EmployeeId,DateFrom from Absences where AbsenceTypeId<>4
-  group by EmployeeId,DateFrom
-  )v on (v.EmployeeId=e.ID and v.DateFrom=e.date)
+	 select e.date,
+			e.FileNumber'fileNo',
+			e.KnownAs 'name',
+			e.deptName,
+			e.DepartementId,
+            e.color,
+			--q.ShiftId,
+			q.TIMEFROM,
+			q.TIMETO,
+			v.DayPart,
+			ad.hrs
+	 from
+	  (
+	 select @f date,
+			Employees.* ,
+			d.Name'deptName'
+			from employees left join Personals on employees.PersonalId = Personals.Id  
+			left join Departements d on Employees.DepartementId=d.Id
+			where StatusId=1 and DepartementId=@dept
+	 )e left join
+	 (	 
+			select EmployeeId,
+				    Q.DateFrom date,
+					min(Q.TimeFrom)timefrom,
+					max(Q.TimeTo)timeto
+			from 
+				(
+					select DateFrom,
+							case when TimeFrom='' then NULL else TimeFrom end TimeFrom ,
+							case when TimeTo='' then NULL else TimeTo end TimeTo,
+							HoursNo,Remarks,AttendanceTypeId,EmployeeId 
+					from Attendances 
+					where DateFrom=@f
+						union
+					select DateFrom,
+							case when TimeFrom='' then NULL else TimeFrom end TimeFrom ,
+							case when TimeTo='' then NULL else TimeTo end TimeTo,
+							HoursNo,Remarks,AbsenceTypeId,EmployeeId 
+					from Absences 
+					where datefrom=@f and  AbsenceTypeId=4
+				)Q
+				group by EmployeeId,DateFrom
+		
+	  )q on e.id=q.EmployeeId left join 
+	 (
+	  select employeeId,sum(noofhour)hrs,Date from AdditionApprovals aa group by date,EmployeeId
+	  ) ad on (ad.EmployeeId=e.ID and ad.Date=q.date)
+	  left join 
+	  (
+	   select sum(DayPart) DayPart,EmployeeId,DateFrom from Absences where AbsenceTypeId not in (4,11)
+	  group by EmployeeId,DateFrom
+	  )v on (v.EmployeeId=e.ID and v.DateFrom=q.date)
  end
   else
   begin
-  select e.date,
-        e.FileNumber'fileNo',
-		e.KnownAs 'name',
-		e.deptName,
-		q.TIMEFROM,
-		q.TIMETO,
-		 v.DayPart,
-	     ad.hrs
- from
- (
- select @f'date',Employees.* ,d.Name'deptName'
-       from employees left join Personals on employees.PersonalId = Personals.Id  
-	   left join Departements d on Employees.DepartementId=d.Id
-	   where StatusId=1 
- )e 
- left join 
- (
- select distinct ak.date,
-       ak.name,
-	   ak.FNO'fileNo',
-	   AK.TIMEFROM,
-	   AK.TIMETO
-       from AK_3STAGES_V4 ak 
-	   where ak.date=@f 
-  )q on e.FileNumber=q.fileNo 
-  left join
-  (
-  select employeeId,sum(noofhour)hrs,Date from AdditionApprovals aa group by date,EmployeeId
-  )ad on (ad.EmployeeId=e.ID and ad.Date=e.date)
-  left join 
-  (
-   select sum(DayPart) DayPart,EmployeeId,DateFrom from Absences where AbsenceTypeId<>4
-  group by EmployeeId,DateFrom
-  )v on (v.EmployeeId=e.ID and v.DateFrom=e.date)
+  	 select e.date,
+			e.FileNumber'fileNo',
+			e.KnownAs 'name',
+			e.deptName,
+			e.DepartementId,
+            e.color,
+			--q.ShiftId,
+			q.TIMEFROM,
+			q.TIMETO,
+			v.DayPart,
+			ad.hrs
+	 from
+	 (select @f date, 
+			Employees.* ,
+			d.Name'deptName'
+			from employees left join Personals on employees.PersonalId = Personals.Id  
+			left join Departements d on Employees.DepartementId=d.Id
+			where StatusId=1 --and DepartementId=@dept
+	 )e left join
+	 (	 
+			select EmployeeId,
+				    Q.DateFrom date,
+					min(Q.TimeFrom)timefrom,
+					max(Q.TimeTo)timeto
+			from 
+				(
+					select DateFrom,
+							case when TimeFrom='' then NULL else TimeFrom end TimeFrom ,
+							case when TimeTo='' then NULL else TimeTo end TimeTo,
+							HoursNo,Remarks,AttendanceTypeId,EmployeeId 
+					from Attendances 
+					where DateFrom=@f
+						union
+					select DateFrom,
+							case when TimeFrom='' then NULL else TimeFrom end TimeFrom ,
+							case when TimeTo='' then NULL else TimeTo end TimeTo,
+							HoursNo,Remarks,AbsenceTypeId,EmployeeId 
+					from Absences 
+					where datefrom=@f and  AbsenceTypeId=4
+				)Q
+				group by EmployeeId,DateFrom
+		
+	  )q on e.id=q.EmployeeId left join 
+	 (
+	  select employeeId,sum(noofhour)hrs,Date from AdditionApprovals aa group by date,EmployeeId
+	  ) ad on (ad.EmployeeId=e.ID and ad.Date=q.date)
+	  left join 
+	  (
+	   select sum(DayPart) DayPart,EmployeeId,DateFrom from Absences where AbsenceTypeId not in (4,11)
+	  group by EmployeeId,DateFrom
+	  )v on (v.EmployeeId=e.ID and v.DateFrom=q.date)
   end
- 
        ";
             using (SqlConnection con = new SqlConnection(cs))
             {
@@ -147,7 +182,9 @@ namespace newHR.Controllers.db
                         fileNo = Convert.ToInt32(rdr["fileNo"]),
                         name = rdr["name"].ToString(),
                         Date = rdr["date"].ToString().Substring(0,10),
-                        deptName= rdr["deptName"].ToString(),
+                        color=rdr["color"].ToString(),
+                        //shiftId = rdr["shiftId"].ToString(),
+                        deptName = rdr["deptName"].ToString(),
                         timeFrom = rdr["TIMEFROM"].ToString(),
                         timeTo = rdr["TIMETO"].ToString(),
                         addition = rdr["hrs"].ToString() == "" ? 0 : float.Parse(rdr["hrs"].ToString()),

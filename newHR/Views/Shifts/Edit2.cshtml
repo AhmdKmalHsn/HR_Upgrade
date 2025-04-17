@@ -1,0 +1,1559 @@
+﻿@model Model.Shift
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .ui-dialog-titlebar-close {
+        visibility: hidden;
+    }
+</style>
+
+ Master Data/ Shift / Update Shift No @Model.Id
+
+<div class="card">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="container">
+            <div class="card-header row" style="  padding-left: 0;padding-right: 0;">
+                <div class="col-md-6" style="padding-left:0">
+                    <h5 class="text-capitalize btn">Shifts</h5>
+                </div>
+                <div class="col-md-6" style="text-align:right; padding-right:0">
+                    <a class="btn btn-primary" href="/Shifts/Index?Length=8" style="border-radius: 0px 0px 2px 30px;">Back to index</a>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <form>
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row" hidden>
+                            <label for="colFormLabel" class="col-sm-4 col-form-label">Shift ID</label>
+                            <div class="col-sm-8">
+                                @Html.EditorFor(s => s.ShiftId, new { htmlAttributes = new { @class = "form-control", Placeholder = "Shift ID" } })
+                                @Html.ValidationMessageFor(s => s.ShiftId, "", htmlAttributes: new { @class = "text-danger" })
+                                @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-4 col-form-label">Shift Name</label>
+                            <div class="col-sm-8">
+                                @Html.EditorFor(s => s.ShiftName, new { htmlAttributes = new { @class = "form-control", Placeholder = "Shift Name" } })
+                                @Html.ValidationMessageFor(s => s.ShiftName, "", htmlAttributes: new { @class = "text-danger" })
+                                @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-4 col-form-label-sm">
+                                Active / Deactive</label>
+                                <div class="col-sm-8">
+                                    @Html.EnumDropDownListFor(s => s.ActiveDisactive, "Select status", new { @class = "form-control" })
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class=" form-group row">
+                            <label class=" col-sm-4 col-form-label-sm" for="exampleCheck1">Weekend</label>
+                            <div class="col-sm-1">
+
+                                @*@Html.CheckBoxFor(s => s.Weekend)*@
+                                @if (Model.IsWeekend == false)
+                                {
+                                    <input type="checkbox" class="form-check-input form-control WeekendCheck" id="" /> @*id="WeekendCheck" onclick="ShowHideWeekendDiv(this)">*@
+                                }
+
+                                else
+                                {
+                                    <input type="checkbox" id="weekend" class="form-check-input form-control WeekendCheck" checked /> @*id="WeekendCheck" onclick="ShowHideWeekendDiv(this)">*@
+                                }
+                            </div>
+                        </div>
+                        @if (Model.IsWeekend == true)
+                        {
+                            <div class="form-group row">
+                                @*id="dvWeekend" style="display: none"*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label-sm">From Day</label>
+                                <div class="col-sm-8">
+                                    @*@Html.DropDownListFor(model => model., new SelectList(Enum.GetValues(typeof(gender))), new { @class = "form-control" })*@
+                                    @Html.EnumDropDownListFor(s => s.WeekendFromDay, "Select Weekend Days", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                @*id="dvWeekend" style="display: none"*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label-sm">From Day</label>
+                                <div class="col-sm-8">
+                                    @*@Html.DropDownListFor(model => model., new SelectList(Enum.GetValues(typeof(gender))), new { @class = "form-control" })*@
+                                    @Html.EnumDropDownListFor(s => s.WeekendFromDay, "Select Weekend Days", new { @class = "form-control", disabled = "true"})
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group row" hidden>
+                            <div class="col-sm-8">
+                                @Html.EditorFor(ww => ww.IsCreated)
+                            </div>
+                        </div>
+
+                        @if (Model.IsWeekend == true)
+                        {
+                            <div class="form-group row">
+                                @*id="dvWeekend" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label-sm">To Day</label>
+                                <div class="col-sm-8">
+
+                                    @Html.EnumDropDownListFor(s => s.WeekendToDay, "Select Weekend Days", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                @*id="dvWeekend" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label-sm">To Day</label>
+                                <div class="col-sm-8">
+
+                                    @Html.EnumDropDownListFor(s => s.WeekendToDay, "Select Weekend Days", new { @class = "form-control", disabled = "true"})
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class=" form-group row">
+                            <label class=" col-sm-4 col-form-label-sm" for="exampleCheck1">Full Time</label>
+                            <div class="col-sm-1">
+                                @*@Html.CheckBox("HasPassport", false)*@
+                                @if (Model.IsFullTime == true)
+                                {
+                                    <input type="checkbox" class="form-check-input form-control  FullCheck" id="FullCheck" checked/> @*id="FullCheck" onclick="ShowHideFullTime(this)" />*@ @*id="LoginCheck" onclick="ShowHideLoginDiv(this)"/>*@
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="form-check-input form-control FullCheck" id="" />
+                                }
+                            </div>
+                        </div>
+                        @if (Model.IsFullTime == true)
+                        {
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Employment Percent</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.EmploymentPercent, new { htmlAttributes = new { @class = "form-control", Placeholder = "Employment Percent" } })
+
+                                    @Html.ValidationMessageFor(s => s.EmploymentPercent, " ", htmlAttributes: new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Daliy Work Hours</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.DailyHours, new { htmlAttributes = new { @class = "form-control", Placeholder = "Daliy Work Hours" } })
+                                    @Html.ValidationMessageFor(s => s.DailyHours, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Weekly Work Days</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.WeekelyDays, new { htmlAttributes = new { @class = "form-control", Placeholder = "Weekly Work Days" } })
+                                    @Html.ValidationMessageFor(s => s.WeekelyDays, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Weekly Work Hours</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.WeekelyHours, new { htmlAttributes = new { @class = "form-control", Placeholder = "Weekly Work Hours" } })
+                                    @Html.ValidationMessageFor(s => s.WeekelyHours, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Employment Percent</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.EmploymentPercent, new { htmlAttributes = new { @class = "form-control", Placeholder = "Employment Percent", disabled = "true" } })
+
+                                    @Html.ValidationMessageFor(s => s.EmploymentPercent, " ", htmlAttributes: new { @class = "text-danger" })
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Daliy Work Hours</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.DailyHours, new { htmlAttributes = new { @class = "form-control", Placeholder = "Daliy Work Hours", disabled = "true" } })
+                                    @Html.ValidationMessageFor(s => s.DailyHours, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Weekly Work Days</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.WeekelyDays, new { htmlAttributes = new { @class = "form-control", Placeholder = "Weekly Work Days", disabled = "true" } })
+                                    @Html.ValidationMessageFor(s => s.WeekelyDays, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvFullTime" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Weekly Work Hours</label>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(s => s.WeekelyHours, new { htmlAttributes = new { @class = "form-control", Placeholder = "Weekly Work Hours", disabled = "true" } })
+                                    @Html.ValidationMessageFor(s => s.WeekelyHours, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class=" form-group row">
+                            <label class=" col-sm-4 col-form-label-sm" for="exampleCheck1">Login/LogOut Time</label>
+                            <div class="col-sm-1">
+                                @if (Model.IsLogin == true)
+                                {
+                                    <input type="checkbox" id="" class="form-check-input form-control StatusCheck" checked/>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="" class="form-check-input form-control StatusCheck" />
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @*id="dvLogin" style="display: none">*@
+                            <label for="colFormLabel" class="col-sm-4 col-form-label">Start Time</label>
+                            <div class="col-sm-8">
+                                <input type="time" name="StartTime" id="" value="@Model.StartTime" class="form-control form-control-sm" required />
+                                @*@Html.EditorFor(s => s.StartTime, new { htmlAttributes = new { @class = "form-control", Placeholder = "Start Time" } })*@
+                                @Html.ValidationMessageFor(s => s.StartTime, "", htmlAttributes: new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @*id="dvLogin" style="display: none">*@
+                            <label for="colFormLabel" class="col-sm-4 col-form-label">End Time</label>
+                            <div class="col-sm-8">
+                                <input type="time" name="EndTime" id="" value="@Model.EndTime" class="form-control form-control-sm" required />
+                                @*@Html.EditorFor(s => s.EndTime, new { htmlAttributes = new { @class = "form-control", Placeholder = "End Time" } })*@
+                                @Html.ValidationMessageFor(s => s.EndTime, "", htmlAttributes: new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @if (Model.IsLogin == true)
+                        {
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Late Arrive</label>
+                                <div class="col-sm-8">
+                                    <input type="time" name="LateArrive" id="LateArrive" value="@Model.LateArrive" class="form-control form-control-sm" />
+                                    @*@Html.EditorFor(s => s.LateArrive, new { htmlAttributes = new { @class = "form-control", Placeholder = "Late Arrive" } })*@
+                                    @Html.ValidationMessageFor(s => s.LateArrive, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Early Leave</label>
+                                <div class="col-sm-8">
+                                    <input type="time" name="EarlyLeave" id="EarlyLeave" value="@Model.EarlyLeave" class="form-control form-control-sm" />
+                                    @*@Html.EditorFor(s => s.EarlyLeave, new { htmlAttributes = new { @class = "form-control", Placeholder = "Early Leave" } })*@
+                                    @Html.ValidationMessageFor(s => s.EarlyLeave, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Early arrive</label>
+                                <div class="col-sm-8">
+                                    <input type="time" name="EarlyArrive" id="EarlyArrive" value="@Model.EarlyArrive" class="form-control form-control-sm" />
+                                    @*@Html.EditorFor(s => s.EarlyArrive, new { htmlAttributes = new { @class = "form-control", Placeholder = "Early arrive" } })*@
+                                    @Html.ValidationMessageFor(s => s.EarlyArrive, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Late Arrive</label>
+                                <div class="col-sm-8">
+                                    <input type="time" name="LateArrive" id="LateArrive" value="@Model.LateArrive" class="form-control form-control-sm"/>
+                                    @*@Html.EditorFor(s => s.LateArrive, new { htmlAttributes = new { @class = "form-control", Placeholder = "Late Arrive" } })*@
+                                    @Html.ValidationMessageFor(s => s.LateArrive, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Early Leave</label>
+                                <div class="col-sm-8">
+                                    @if (Model.EarlyLeave == null || Model.EarlyLeave == "")
+                                    {
+                                        <input type="time" name="EarlyLeave" id="EarlyLeave" value="@Model.EarlyLeave" disabled class="form-control form-control-sm" />
+                                    }
+                                    else
+                                    {
+                                        <input type="time" name="EarlyLeave" id="EarlyLeave" value="@Model.EarlyLeave" class="form-control form-control-sm" />
+                                    }
+                                    @*@Html.EditorFor(s => s.EarlyLeave, new { htmlAttributes = new { @class = "form-control", Placeholder = "Early Leave" } })*@
+                                    @Html.ValidationMessageFor(s => s.EarlyLeave, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*id="dvLogin" style="display: none">*@
+                                <label for="colFormLabel" class="col-sm-4 col-form-label">Early arrive</label>
+                                <div class="col-sm-8">
+                                    @if (Model.EarlyArrive == null || Model.EarlyArrive == "")
+                                    {
+                                        <input type="time" name="EarlyArrive" id="EarlyArrive" value="@Model.EarlyArrive" disabled class="form-control form-control-sm" />
+                                    }
+                                    else
+                                    {
+                                        <input type="time" name="EarlyArrive" id="EarlyArrive" value="@Model.EarlyArrive" class="form-control form-control-sm" />
+                                    }
+                                    @*@Html.EditorFor(s => s.EarlyArrive, new { htmlAttributes = new { @class = "form-control", Placeholder = "Early arrive" } })*@
+                                    @Html.ValidationMessageFor(s => s.EarlyArrive, "", htmlAttributes: new { @class = "text-danger" })
+                                    @*<input type="text" class="form-control" id="colFormLabel" placeholder="col-form-label">*@
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class=" row ">
+                    <div class="col-md-6">
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                @if (Model.NoOfShifts != NoOfShifts.Two && Model.NoOfShifts != NoOfShifts.Three)
+                                {
+                                    <input type="radio" class="one" value="one" name="sim_type" checked/>
+                                }
+                                else
+                                {
+                                    <input type="radio" class="one" value="one" name="sim_type" />
+
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span>One Shift</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" mt-3">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @if (Model.NoOfShifts == NoOfShifts.Two)
+                                    {
+                                        <input type="radio" class="two" value="two" name="sim_type" checked /><br />
+                                    }
+                                    else
+                                    {
+                                        <input type="radio" class="two" value="two" name="sim_type" /><br />
+
+                                    }
+
+                                </div>
+                                <div class="col-md-8">
+                                    <span>Two Shift</span>
+
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class="mt-2 col-form-label">Every</label><br />
+
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="">
+                                        <div class="form-group row">
+                                            <div class="col-sm-10">
+                                                @*<input placeholder="Shift Name" class="form-control text-box Everytwo single-line" data-val="true" data-val-required="this is required" id="ShiftName" name="ShiftName" type="text" value="">*@
+                                                @if (Model.NoOfShifts == NoOfShifts.Two)
+                                                {
+                                                    <input placeholder="Replace Shift Every" value="@Model.ReplaceShiftEvery" class="form-control text-box Everytwo single-line" data-val="true" data-val-required="this is required" id="ValueOfNo1" name="ReplaceShiftEvery" type="number">
+                                                }
+                                                else
+                                                {
+                                                    <input placeholder="Replace Shift Every" class="form-control text-box Everytwo single-line" data-val="true" data-val-required="this is required" id="ValueOfNo1" name="ReplaceShiftEvery" type="number" disabled>
+
+                                                }
+                                            </div>
+
+                                            <label for="colFormLabel" class="col-sm-2 col-form-label">Day</label>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Shift ID</label><br />
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift2 != null && Model.NoOfShifts == NoOfShifts.Two)
+                                    {
+                                        @*<input type="number" name="EmployeeNo" class="form-control shufto shiftItwo" id="colFormLabel" readonly="" placeholder="Select Value..."><span class="ion-navicon-round aa" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>*@
+                                        <input type="number" value="@Services.ShiftService.GetById(int.Parse(Model.Shift2.ToString())).ShiftId" name="Shift2" class="form-control shufto shiftItwo" id="Shift2" readonly="" placeholder="Select Value..."><span class="ion-navicon-round aa" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+                                    }
+                                    else
+                                    {
+                                        <input type="number" name="Shift2" class="form-control shufto shiftItwo" id="Shift2" readonly="" placeholder="Select Value..."><span class="ion-navicon-round aa" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+
+                                    }
+                                </div>
+
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class="col-form-label">Shift Name</label>
+
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift2 != null && Model.NoOfShifts == NoOfShifts.Two)
+                                    {
+                                        @*<input placeholder="Shift Name" class="form-control text-box single-line shiftOtwo" data-val="true" data-val-required="this is required" id="ShiftName" name="ShiftName" type="text" value="">*@
+                                        <input placeholder="Shift Name" value="@Services.ShiftService.GetById(int.Parse(Model.Shift2.ToString())).ShiftName" class="form-control text-box single-line shiftOtwo" data-val="true" data-val-required="this is required" id="Shift2Name" name="Shift2Name" type="text" disabled>
+                                    }
+                                    else
+                                    {
+                                        <input placeholder="Shift Name" class="form-control text-box single-line shiftOtwo" data-val="true" data-val-required="this is required" id="Shift2Name" name="Shift2Name" type="text" disabled>
+
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                    <div class="col-md-6">
+
+
+                        <div class="">
+                            <div class="row ">
+                                <div class="col-md-4">
+                                    @if (Model.NoOfShifts == NoOfShifts.Three)
+                                    {
+                                        <input type="radio" class="three" value="three" name="sim_type" checked />
+                                    }
+                                    else
+                                    {
+                                        <input type="radio" class="three" value="three" name="sim_type"/>
+                                    }
+                                </div>
+                                <div class="col-md-8">
+                                    <span>Three Shift</span>
+
+                                </div>
+                            </div>
+
+
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Every</label>
+
+                                </div>
+
+                                <div class="col-md-8 mt-2">
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            @if (Model.NoOfShifts == NoOfShifts.Three)
+                                            {
+                                                @*<input placeholder="Shift Name" class="form-control text-box single-line Everythree" data-val="true" data-val-required="this is required" id="ShiftName" name="ShiftName" type="text" value="">*@
+                                                <input placeholder="Replace Shift Every" value="@Model.ReplaceShiftEvery" class="form-control text-box single-line Everythree" data-val="true" data-val-required="this is required" id="ValueOfNo1" name="ReplaceShiftEvery" type="number">
+                                            }
+                                            else
+                                            {
+                                                <input placeholder="Replace Shift Every" class="form-control text-box single-line Everythree" data-val="true" data-val-required="this is required" id="ValueOfNo1" name="ReplaceShiftEvery" type="number" disabled>
+
+                                            }
+                                        </div>
+
+                                        <label for="colFormLabel" class="col-md-2 col-form-label">Day</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Shift 2 ID</label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift2 != null && Model.NoOfShifts == NoOfShifts.Three)
+                                    {
+                                        <input type="number" value="@Services.ShiftService.GetById(int.Parse(Model.Shift2.ToString())).ShiftId" name="Shift2" class="form-control shiftt shiftIthree" id="Shift2" readonly="" placeholder="Select Value..."><span class="ion-navicon-round zz" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+                                        @* <input type="number" name="Shift2" class="form-control shiftt shiftIthree" id="Shift2" readonly="" placeholder="Select Value..."><span class="ion-navicon-round zz" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>*@
+                                    }
+                                    else
+                                    {
+                                        <input type="number" name="Shift2" class="form-control shiftt shiftIthree" id="Shift2" readonly="" placeholder="Select Value..."><span class="ion-navicon-round zz" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Shift 2 Name</label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift2 != null && Model.NoOfShifts == NoOfShifts.Three)
+                                    {
+                                        <input placeholder="Shift Name" value="@Services.ShiftService.GetById(int.Parse(Model.Shift2.ToString())).ShiftName" class="form-control text-box single-line shiftOthree" data-val="true" data-val-required="this is required" id="Shift2Name2" name="Shift2Name2" type="text" value="" disabled>
+                                        @* <input placeholder="Shift Name" class="form-control text-box single-line shiftOthree" data-val="true" data-val-required="this is required" id="Shift2Name2" name="Shift2Name2" type="text" value="">*@
+                                    }
+                                    else
+                                    {
+                                        <input placeholder="Shift Name" class="form-control text-box single-line shiftOthree" data-val="true" data-val-required="this is required" id="Shift2Name2" name="Shift2Name2" type="text" value="" disabled>
+
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Shift 3 ID </label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift3 != null && Model.NoOfShifts == NoOfShifts.Three)
+                                    {
+                                        <input type="number" value="@Services.ShiftService.GetById(int.Parse(Model.Shift3.ToString())).ShiftId" name="Shift3" class="form-control shiftthree shiftIfour" id="Shift3" readonly="" placeholder="Select Value..."><span class="ion-navicon-round mm" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+                                    }
+                                    else
+                                    {
+                                        <input type="number" name="Shift3" class="form-control shiftthree shiftIfour" id="Shift3" readonly="" placeholder="Select Value..."><span class="ion-navicon-round mm" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>
+
+                                    }
+                                    @*<input type="number" name="Shift3" class="form-control shiftthree shiftIfour" id="Shift3" readonly="" placeholder="Select Value..."><span class="ion-navicon-round mm" style="position: absolute;right:22px;top:6px; cursor: pointer;"></span>*@
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <label for="colFormLabel" class=" col-form-label">Shift 3 Name</label>
+
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.Shift3 != null && Model.NoOfShifts == NoOfShifts.Three)
+                                    {
+                                        <input placeholder="Shift Name" value="@Services.ShiftService.GetById(int.Parse(Model.Shift3.ToString())).ShiftName" class="form-control text-box single-line shiftOfour" data-val="true" data-val-required="this is required" id="Shift3Name" name="Shift3Name" type="text" value="" disabled>
+                                        @*<input placeholder="Shift Name" class="form-control text-box single-line shiftOfour" data-val="true" data-val-required="this is required" id="Shift3Name" name="Shift3Name" type="text" value="">*@
+                                    }
+                                    else
+                                    {
+                                        <input placeholder="Shift Name" class="form-control text-box single-line shiftOfour" data-val="true" data-val-required="this is required" id="Shift3Name" name="Shift3Name" type="text" value="" disabled>
+
+                                    }
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="">
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary">Update</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    }
+</div>
+@*one*@
+<div class="card cardee ff" style="display: none;border:4px solid #7FB9D4" id="dialog">
+    <div class="card-block ff scrolltop">
+
+        <div class="row ">
+            <div class="col-md-9">
+                <input class="mt-4  ml-0 form-control input-sm w-50" onkeyup="myFunction()" id="myInput" type="search" placeholder="search...." aria-controls="add-row-table">
+                <br />
+
+            </div>
+            <div style="text-align:right !important; cursor:pointer" class="col-md-3">
+                <i class="fa fa-times-circle fa-2x closee" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shiftone " id="">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Shift Name</th>
+                        <th>Choose</th>
+
+                    </tr>
+                </thead>
+                <tbody id="myTable" class="kk">
+                    @foreach (var item in ViewBag.shifts)
+                    {
+                        <tr>
+                            <th class="idd">@item.ShiftId</th>
+                            <td>@item.ShiftName</td>
+                            <td class="tabledit-view-mode hh">
+                                <button class="btn btn-primary choose btnSelect"> choose</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+@*two*@
+<div class="card cardee ff" style="display: none;border:4px solid #7FB9D4" id="dialogg">
+    <div class="card-block ff scrolltop">
+
+        <div class="row ">
+            <div class="col-md-9">
+                <input class="mt-4  ml-0 form-control input-sm w-50" onkeyup="myFunction()" id="myInputtwo" type="search" placeholder="search...." aria-controls="add-row-table">
+                <br />
+
+            </div>
+            <div style="text-align:right !important; cursor:pointer" class="col-md-3">
+                <i class="fa fa-times-circle fa-2x closee" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shifttwo" id="">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Shift Name</th>
+                        <th>Choose</th>
+
+                    </tr>
+                </thead>
+                <tbody id="shifttwosearck" class="kk">
+
+                    @foreach (var item in ViewBag.shifts)
+                    {
+                        <tr>
+                            <th class="idd">@item.ShiftId</th>
+                            <td>@item.ShiftName</td>
+                            <td class="tabledit-view-mode hh">
+                                <button class="btn btn-primary choose btnSelect"> choose</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+@*three*@
+<div class="card cardee ff" style="display: none;border:4px solid #7FB9D4" id="dialoggg">
+    <div class="card-block ff scrolltop">
+
+        <div class="row ">
+            <div class="col-md-9">
+                <input class="mt-4  ml-0 form-control input-sm w-50" onkeyup="myFunction()" id="myInputThree" type="search" placeholder="search...." aria-controls="add-row-table">
+                <br />
+
+            </div>
+            <div style="text-align:right !important; cursor:pointer" class="col-md-3">
+                <i class="fa fa-times-circle fa-2x closee" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shifttt" id="">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Shift Name</th>
+                        <th>Choose</th>
+
+                    </tr>
+                </thead>
+                <tbody id="shiftthreesearck" class="kk">
+                    @foreach (var item in ViewBag.shifts)
+                    {
+                        <tr>
+                            <th class="idd">@item.ShiftId</th>
+                            <td>@item.ShiftName</td>
+                            <td class="tabledit-view-mode hh">
+                                <button class="btn btn-primary choose btnSelect"> choose</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="~/bower_components/jquery/js/jquery.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    var xhr = new XMLHttpRequest();
+    console.log(xhr.readyState);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && hr.status == 200) {
+            updateUI(xhr.responseText);
+        } else if (xhr.readyState == 4 && hr.status == 404) {
+            alert("page not found")
+        } else if (xhr.readyState == 4 && hr.status == 501) {
+            alert("something went worng")
+        }
+
+    }
+    document.getElementById('demo').onmouseover = function () {
+        xhr.open("get", "index.html", true);
+        xhr.send()
+    }
+
+    function updateUI() {
+        document.getElementById("demo").textContent = text
+    }
+
+    $(function () {
+        
+    //    $(".FullCheck").change(function () {
+     
+    //        //   alert();
+    //        if (this.checked) {
+    //            $("#EmploymentPercent").removeAttr("disabled");
+    //            $("#DailyHours").removeAttr("disabled");
+    //            $("#WeekelyDays").removeAttr("disabled");
+    //            $("#WeekelyHours").removeAttr("disabled");
+    //            $("#MonthlyLeaveDays").removeAttr("disabled");
+    //            $("#ShiftHoliday").removeAttr("disabled");
+    //        }
+    //        else {
+            
+              
+    //            $("#EmploymentPercent").attr("disabled", "");
+    //            $("#DailyHours").attr("disabled", "");
+    //            $("#WeekelyDays").attr("disabled", "");
+    //            $("#WeekelyHours").attr("disabled", "");
+    //            $("#MonthlyLeaveDays").attr("disabled", "");
+    //            $("#ShiftHoliday").attr("disabled", "");
+    //        }
+    //    });
+    //});
+    //$(function () {
+
+    //    $(".FullCheck").change(function () {
+
+    //        //   alert();
+    //        if (this.checked==true) {
+    //            $("#EmploymentPercent").removeAttr("disabled");
+    //            $("#DailyHours").removeAttr("disabled");
+    //            $("#WeekelyDays").removeAttr("disabled");
+    //            $("#WeekelyHours").removeAttr("disabled");
+    //            $("#MonthlyLeaveDays").removeAttr("disabled");
+    //            $("#ShiftHoliday").removeAttr("disabled");
+    //        }
+    //        else {
+
+
+    //            $("#EmploymentPercent").attr("disabled", "");
+    //            $("#DailyHours").attr("disabled", "");
+    //            $("#WeekelyDays").attr("disabled", "");
+    //            $("#WeekelyHours").attr("disabled", "");
+    //            $("#MonthlyLeaveDays").attr("disabled", "");
+    //            $("#ShiftHoliday").attr("disabled", "");
+    //        }
+    //    });
+    //});
+    //$(function () {
+    //    $("#WeekendCheck").change(function () {
+    //        //   alert();
+    //        if (this.checked) {
+    //            $("#WeekendFromDay").removeAttr("disabled");
+    //            $("#WeekendToDay").removeAttr("disabled");
+
+    //        }
+    //        else {
+    //            $("#WeekendFromDay").attr("disabled", "");
+    //            $("#WeekendToDay").attr("disabled", "");
+
+    //        }
+    //    });
+    //});
+    //$(function () {
+    //    $("#WeekendCheck").change(function () {
+    //        //   alert();
+    //        if (this.checked==true) {
+    //            $("#WeekendFromDay").removeAttr("disabled");
+    //            $("#WeekendToDay").removeAttr("disabled");
+
+    //        }
+    //        else {
+    //            $("#WeekendFromDay").attr("disabled", "");
+    //            $("#WeekendToDay").attr("disabled", "");
+
+    //        }
+    //    });
+    //});
+    //$(function () {
+    //    $(".StatusCheck").change(function () {
+    //        //   alert();
+    //        if (this.checked) {
+    //            $("#StartTime").removeAttr("disabled");
+    //            $("#EndTime").removeAttr("disabled");
+    //            $("#LateArrive").removeAttr("disabled");
+    //            $("#EarlyLeave").removeAttr("disabled");
+    //            $("#EarlyArrive").removeAttr("disabled");
+    //        } else {
+    //            $("#StartTime").attr("disabled", "");
+    //            $("#EndTime").attr("disabled", "");
+    //            $("#LateArrive").attr("disabled", "");
+    //            $("#EarlyLeave").attr("disabled", "");
+    //            $("#EarlyArrive").attr("disabled", "");
+
+    //        }
+    //    });
+    //});
+</script>
+<script>
+    let t = document.title;
+
+    document.title = t + " - " + "Edit Shift";
+</script>
+<script>
+    //Min.js
+    $(document).ready(function () {
+
+        $('.alert').fadeOut(8000),
+            $('.close').click(function () {
+                $('.alert').hide()
+            })
+        //two
+        $('.zz').on('click', function () {
+            $(function () {
+                $("#dialogg").dialog({
+                    width: 700,
+                    height: 500,
+
+                    /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                });
+
+
+            });
+        });
+        //one
+        $('.aa').on('click', function () {
+            $(function () {
+                $("#dialog").dialog({
+                    width: 700,
+                    height: 500,
+
+                    /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                });
+
+
+            });
+        });
+        $('.mm').on('click', function () {
+            $(function () {
+                $("#dialoggg").dialog({
+                    width: 700,
+                    height: 500,
+
+                    /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                });
+
+
+            });
+        });
+        $('#dropdownList').on('change', function () {
+            //var optionValue = $(this).val();
+            //var optionText = $('#dropdownList option[value="'+optionValue+'"]').text();
+            var optionText = $("#dropdownList option:selected").val();
+            alert("Selected Option Text: " + optionText);
+            $('.gg').val(optionText)
+        });
+        $('#dropdownList').on('change', function () {
+            //var optionValue = $(this).val();
+            //var optionText = $('#dropdownList option[value="'+optionValue+'"]').text();
+            var optionText = $("#dropdownList option:selected").val();
+            alert("Selected Option Text: " + optionText);
+            $('.gg').val(optionText)
+        });
+        //shift id 1
+        $(".shiftone").on('click', '.btnSelect', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+            var data = col1;
+
+
+            // alert(data);
+
+            // alert(data);
+            $('.shufto').val(data);
+            $('#dialog').hide()
+
+            if ($('#Shift2').val() != 'Select Value...') {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetShiftData")',
+                    dataType: 'json',
+                    data: { id: data },
+                    success: function (mems) {
+                        if (mems != null)
+                            $('#Shift2Name').val(mems.ShiftName);
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve states.' + ex);
+                    }
+                });
+            }
+
+        });
+        //shift id 2
+        $(".shifttwo").on('click', '.btnSelect', function () {
+            debugger;
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+            var data = col1;
+
+
+            // alert(data);
+
+            // alert(data);
+            $('.shiftt').val(data);
+            $('#dialogg').hide()
+
+            if ($('#Shift2').val() != 'Select Value...') {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetShiftData")',
+                    dataType: 'json',
+                    data: { id: data },
+                    success: function (mems) {
+                        if (mems != null)
+                            $('#Shift2Name2').val(mems.ShiftName);
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve states.' + ex);
+                    }
+                });
+            }
+
+        });
+        //shift id 3
+        $(".shifttt").on('click', '.btnSelect', function () {
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+            var data = col1;
+
+
+            // alert(data);
+
+            // alert(data);
+            $('.shiftthree').val(data);
+            $('#dialoggg').hide()
+
+            if ($('#Shift3').val() != 'Select Value...') {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetShiftData")',
+                    dataType: 'json',
+                    data: { id: data },
+                    success: function (mems) {
+                        if (mems != null)
+                            $('#Shift3Name').val(mems.ShiftName);
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve states.' + ex);
+                    }
+                });
+            }
+
+        });
+
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $("#myInputtwo").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#shifttwosearck tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $("#myInputThree").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#shiftthreesearck tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('.alert').fadeOut(8000),
+            $('.close').click(function () {
+                $('.alert').hide()
+            })
+        $('.closee').click(function () {
+            $('.cardee').hide()
+        })
+    });
+</script>
+@* disable *@
+@*<script>
+    $(function () {
+        $(".one").change(function () {
+            //   alert();
+            $(".Everytwo").attr("disabled", "");
+
+            $(".shiftItwo").attr("disabled", "");
+            $(".shiftOtwo").attr("disabled", "");
+            $(".Everythree").attr("disabled", "");
+
+            $(".shiftIthree").attr("disabled", "");
+            $(".shiftOthree").attr("disabled", "");
+
+            $(".shiftIfour").attr("disabled", "");
+            $(".shiftOfour").attr("disabled", "");
+        });
+        $(".two").change(function () {
+            //   alert();
+            $(".Everytwo").removeAttr("disabled", "");
+
+            $(".shiftItwo").removeAttr("disabled", "");
+            $(".shiftOtwo").removeAttr("disabled", "");
+            $(".Everythree").attr("disabled", "");
+
+            $(".shiftIthree").attr("disabled", "");
+            $(".shiftOthree").attr("disabled", "");
+            $(".shiftIfour").attr("disabled", "");
+            $(".shiftOfour").attr("disabled", "");
+
+        });
+        $(".three").change(function () {
+            //   alert();
+            $(".Everythree").removeAttr("disabled", "");
+
+            $(".shiftIthree").removeAttr("disabled", "");
+            $(".shiftOthree").removeAttr("disabled", "");
+
+            $(".Everytwo").attr("disabled", "");
+
+            $(".shiftItwo").attr("disabled", "");
+            $(".shiftOtwo").attr("disabled", "");
+            $(".shiftIfour").removeAttr("disabled", "");
+            $(".shiftOfour").removeAttr("disabled", "");
+        });
+
+
+    })
+</script>*@
+<script>
+    $(function () {
+        $('.mm').click(function () {
+            var tr = $('.kk ').find('tr').length;
+            console.log(tr)
+
+            if (tr >= 6) {
+
+                $('.table-responsive').css('overflow-y', "scroll");
+                $('.table-responsive').css('height', "340px")
+            }
+            else {
+                $('.table-responsive').css('overflow', "hidden");
+
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $('.aa').click(function () {
+            var tr = $('.kk ').find('tr').length;
+            console.log(tr)
+
+            if (tr >= 6) {
+                $('.table-responsive').css('overflow-y', "scroll");
+                $('.table-responsive').css('height', "340px")
+            }
+            else {
+                $('.table-responsive').css('overflow', "hidden");
+
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $('.zz').click(function () {
+            var tr = $('.kk ').find('tr').length;
+            console.log(tr)
+
+            if (tr >= 6) {
+
+                $('.table-responsive').css('overflow-y', "scroll");
+                $('.table-responsive').css('height', "340px")
+            }
+            else {
+                $('.table-responsive').css('overflow', "hidden");
+
+            }
+        })
+    })
+</script>
+
+<script>
+            let t = document.title;
+
+            document.title = t + " - " + "Edit Shift"
+        </script>
+        <script>
+            //Min.js
+            $(document).ready(function () {
+
+                $('.alert').fadeOut(8000),
+                    $('.close').click(function () {
+                        $('.alert').hide()
+                    })
+                //two
+                $('.zz').on('click', function () {
+                    $(function () {
+                        $("#dialogg").dialog({
+                            width: 700,
+                            height: 500,
+
+
+
+                            /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                        });
+
+
+                    });
+                });
+                //one
+                $('.aa').on('click', function () {
+                    $(function () {
+                        $("#dialog").dialog({
+                            width: 700,
+                            height: 500,
+
+
+
+                            /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                        });
+
+
+                    });
+                });
+                $('.mm').on('click', function () {
+                    $(function () {
+                        $("#dialoggg").dialog({
+                            width: 700,
+                            height: 500,
+
+
+
+
+                            /*appendTo: '<div class="card-header"><h5>Edit With Button</h5><span>Click on buttons to perform actions</span><div class="card-header-right"><i class="icofont icofont-rounded-down"></i><i class="icofont icofont-refresh"></i><i class="icofont icofont-close-circled"></i></div></div><div class="card-block"><div class="table-responsive"><table class="table table-striped table-bordered" id="example-2"><thead><tr><th>emp ID</th><th>First name</th><th>Last name</th><th>Choose</th></tr></thead><tbody><tr><th scope="row" class=""><input id="idd"></th><td>Islam</td><td>Ahmed</td><td class="tabledit-view-mode hh"><!-- <select id="dropdownList"><option value="1">Option 1</option> <option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option><option value="5">Option 5</option></select>--><button class="btn btn-primary" id="choose"> choose</button></td></tr></tbody></table></div></div>'*/
+                        });
+
+
+                    });
+                });
+                $('#dropdownList').on('change', function () {
+                    //var optionValue = $(this).val();
+                    //var optionText = $('#dropdownList option[value="'+optionValue+'"]').text();
+                    var optionText = $("#dropdownList option:selected").val();
+                    alert("Selected Option Text: " + optionText);
+                    $('.gg').val(optionText)
+                });
+                $('#dropdownList').on('change', function () {
+                    //var optionValue = $(this).val();
+                    //var optionText = $('#dropdownList option[value="'+optionValue+'"]').text();
+                    var optionText = $("#dropdownList option:selected").val();
+                    alert("Selected Option Text: " + optionText);
+                    $('.gg').val(optionText)
+                });
+                //shift id 1
+                $(".shiftone").on('click', '.btnSelect', function () {
+                    // get the current row
+                    var currentRow = $(this).closest("tr");
+
+                    var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+                    var data = col1;
+
+
+                    // alert(data);
+
+                    // alert(data);
+                    $('.shufto').val(data);
+                    $('#dialog').hide()
+
+
+
+                });
+                //shift id 2
+                $(".shifttwo").on('click', '.btnSelect', function () {
+                    // get the current row
+                    var currentRow = $(this).closest("tr");
+
+                    var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+                    var data = col1;
+
+
+                    // alert(data);
+
+                    // alert(data);
+                    $('.shiftt').val(data);
+                    $('#dialogg').hide()
+
+
+
+                });
+                //shift id 3
+                $(".shiftt").on('click', '.btnSelect', function () {
+                    // get the current row
+                    var currentRow = $(this).closest("tr");
+
+                    var col1 = currentRow.find("th:eq(0)").text(); // get current row 1st TD value
+
+                    var data = col1;
+
+
+                    // alert(data);
+
+                    // alert(data);
+                    $('.shiftthree').val(data);
+                    $('#dialoggg').hide()
+
+
+
+                });
+
+                $("#myInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#myTable tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+                $("#myInputtwo").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#shifttwosearck tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+            });
+            $("#myInputthree").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#shiftthreesearck tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('.alert').fadeOut(8000),
+                    $('.close').click(function () {
+                        $('.alert').hide()
+                    })
+                $('.closee').click(function () {
+                    $('.cardee').hide()
+                })
+            });
+        </script>
+
+    <script>
+        $(function () {
+            $(".one").change(function () {
+                //   alert();
+                $(".Everytwo").attr("disabled", "");
+
+                $(".shiftItwo").attr("disabled", "");
+                $(".shiftOtwo").attr("disabled", "");
+                $(".Everythree").attr("disabled", "");
+
+                $(".shiftIthree").attr("disabled", "");
+                $(".shiftOthree").attr("disabled", "");
+
+                $(".shiftIfour").attr("disabled", "");
+                $(".shiftOfour").attr("disabled", "");
+
+            });
+            $(".two").change(function () {
+                //   alert();
+                $(".Everytwo").removeAttr("disabled", "");
+
+                $(".shiftItwo").removeAttr("disabled", "");
+                $(".shiftOtwo").removeAttr("disabled", "");
+                $(".Everythree").attr("disabled", "");
+
+                $(".shiftIthree").attr("disabled", "");
+                $(".shiftOthree").attr("disabled", "");
+                $(".shiftIfour").attr("disabled", "");
+                $(".shiftOfour").attr("disabled", "");
+
+            });
+            $(".three").change(function () {
+                //   alert();
+                $(".Everythree").removeAttr("disabled", "");
+
+                $(".shiftIthree").removeAttr("disabled", "");
+                $(".shiftOthree").removeAttr("disabled", "");
+
+                $(".Everytwo").attr("disabled", "");
+
+                $(".shiftItwo").attr("disabled", "");
+                $(".shiftOtwo").attr("disabled", "");
+                $(".shiftIfour").removeAttr("disabled", "");
+                $(".shiftOfour").removeAttr("disabled", "");
+            });
+
+
+        })
+    </script>
+    <script>
+        $(function () {
+            $('.mm').click(function () {
+                var tr = $('.kk ').find('tr').length;
+                console.log(tr)
+
+                if (tr >= 6) {
+
+                    $('.scrolltop').css("overflow-y", "scroll")
+
+                }
+                else {
+                    $('.scrolltop').css("overflow-y", "hidden")
+
+                }
+            })
+        })
+    </script>
+    <script>
+        $(function () {
+            $('.aa').click(function () {
+                var tr = $('.kk ').find('tr').length;
+                console.log(tr)
+
+                if (tr >= 6) {
+
+                    $('.scrolltop').css("overflow-y", "scroll")
+
+                }
+                else {
+                    $('.scrolltop').css("overflow-y", "hidden")
+
+                }
+            })
+        })
+    </script>
+    <script>
+        $(function () {
+            $('.zz').click(function () {
+                var tr = $('.kk ').find('tr').length;
+                console.log(tr)
+
+                if (tr >= 6) {
+
+                    $('.scrolltop').css("overflow-y", "scroll")
+
+                }
+                else {
+                    $('.scrolltop').css("overflow-y", "hidden")
+
+                }
+            })
+        })
+    </script>
+<script>
+        $(function () {
+
+        $(".FullCheck").change(function () {
+
+            //   alert();
+            if (this.checked) {
+                $("#EmploymentPercent").removeAttr("disabled");
+                $("#DailyHours").removeAttr("disabled");
+                $("#WeekelyDays").removeAttr("disabled");
+                $("#WeekelyHours").removeAttr("disabled");
+                $("#MonthlyLeaveDays").removeAttr("disabled");
+                $("#ShiftHoliday").removeAttr("disabled");
+            }
+            else {
+
+
+                $("#EmploymentPercent").attr("disabled", "");
+                $("#DailyHours").attr("disabled", "");
+                $("#WeekelyDays").attr("disabled", "");
+                $("#WeekelyHours").attr("disabled", "");
+                $("#MonthlyLeaveDays").attr("disabled", "");
+                $("#ShiftHoliday").attr("disabled", "");
+            }
+        });
+        });
+        $(function () {
+
+            $(".FullCheck").change(function () {
+
+                //   alert();
+                if (this.checked == true) {
+                    $("#EmploymentPercent").removeAttr("disabled");
+                    $("#DailyHours").removeAttr("disabled");
+                    $("#WeekelyDays").removeAttr("disabled");
+                    $("#WeekelyHours").removeAttr("disabled");
+                    $("#MonthlyLeaveDays").removeAttr("disabled");
+                    $("#ShiftHoliday").removeAttr("disabled");
+                }
+                else {
+
+
+                    $("#EmploymentPercent").attr("disabled", "");
+                    $("#DailyHours").attr("disabled", "");
+                    $("#WeekelyDays").attr("disabled", "");
+                    $("#WeekelyHours").attr("disabled", "");
+                    $("#MonthlyLeaveDays").attr("disabled", "");
+                    $("#ShiftHoliday").attr("disabled", "");
+                }
+            });
+        });
+    $(function () {
+        $(".WeekendCheck").change(function () {
+            //   alert();
+            if (this.checked == false) {
+                $("#WeekendFromDay").removeAttr("disabled");
+                $("#WeekendToDay").removeAttr("disabled");
+
+              
+
+            }
+            else {
+           
+
+                $("#WeekendFromDay").attr("disabled", "");
+                $("#WeekendToDay").attr("disabled", "");
+            }
+        });
+    });
+        $(function () {
+            $(".WeekendCheck").change(function () {
+                //   alert();
+                if (this.checked == true) {
+                    alert(this.checked)
+                    $("#WeekendFromDay").removeAttr("disabled");
+                    $("#WeekendToDay").removeAttr("disabled");
+
+
+
+                }
+                else {
+
+
+                    $("#WeekendFromDay").attr("disabled", "");
+                    $("#WeekendToDay").attr("disabled", "");
+                }
+            });
+        });
+    $(function () {
+        $(".StatusCheck").change(function () {
+            //   alert();
+            if (this.checked) {
+                $("#StartTime").removeAttr("disabled");
+                $("#EndTime").removeAttr("disabled");
+                $("#LateArrive").removeAttr("disabled");
+                $("#EarlyLeave").removeAttr("disabled");
+                $("#EarlyArrive").removeAttr("disabled");
+            } else {
+                $("#StartTime").attr("disabled", "");
+                $("#EndTime").attr("disabled", "");
+                $("#LateArrive").attr("disabled", "");
+                $("#EarlyLeave").attr("disabled", "");
+                $("#EarlyArrive").attr("disabled", "");
+
+            }
+        });
+    });
+        $(function () {
+            $(".StatusCheck").change(function () {
+                //   alert();
+                if (this.checked==true) {
+                    $("#StartTime").removeAttr("disabled");
+                    $("#EndTime").removeAttr("disabled");
+                    $("#LateArrive").removeAttr("disabled");
+                    $("#EarlyLeave").removeAttr("disabled");
+                    $("#EarlyArrive").removeAttr("disabled");
+                } else {
+                    $("#StartTime").attr("disabled", "");
+                    $("#EndTime").attr("disabled", "");
+                    $("#LateArrive").attr("disabled", "");
+                    $("#EarlyLeave").attr("disabled", "");
+                    $("#EarlyArrive").attr("disabled", "");
+
+                }
+            });
+        });
+</script>
+<script>
+        $(function(){
+            $('.StatusCheck').on("load", function () {
+
+                var x = $(".StatusCheck").checked;
+                alert(x)
+
+            })
+        })
+     
+</script>

@@ -1,17 +1,215 @@
-﻿@{
-    ViewBag.Title = "Contact";
+﻿<div id=root>
+</div>
+<script>
+    $("#root").html('<button onclick="createFn()" class="btn btn-success" id=create>create</button><table id="rootTable" class="display"></table><div id="form"></div>');
+    var table="vacations"
+    function readTable(t){
+         return readSQL("select * from "+t);
+    }
+    var data=readTable(table)
+    
+    
+    var columns=Object.keys(data[0])
+    var colObj=columns.map(e=>e={data:e,title:e})
+    colObj.push({data:"Id",title:"edit",render:function(id){return '<button onclick="editFn('+id+')" class="btn btn-warning">Edit</button>'}})
+    colObj.push({data:"Id",title:"delete",render:function(id){return '<button onclick="deleteFn('+id+')" class="btn btn-danger">delete</button>'}})
+    
+    
+    $("#rootTable").dataTable({
+        scrollX:true,
+        data:data,
+        columns:colObj
+    });
+
+    var types=readSQL(`
+    SELECT column_name 'Column_Name', data_type 'Data_Type'
+    FROM information_schema.columns
+    WHERE table_name = '${table}'
+    `)
+    console.log(types);
+    columns=[];
+    for(var i=0;i<colObj.length;i++){
+        if(colObj[i].title!=='edit' && colObj[i].title !== 'delete')
+        {
+            console.log(types.find(w=>w.Column_Name==colObj [i].title))
+            switch(types.find(w=>w.Column_Name==colObj[i].title).Data_Type)
+            {
+                case 'varchar': {columns.push({title:colObj[i].title,type:"text"})} break;
+                case 'nvarchar':{columns.push({title:colObj[i].title,type:"text"})} break;
+                case 'int': {columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'float':{columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'double': {columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'datetime':{columns.push({title:colObj[i].title,type:"date"})} break;
+                case 'date': { columns.push({ title: colObj[i].title, type: "date" }) } break;
+                case 'time': { columns.push({ title: colObj[i].title, type: "time" }) } break;
+            }
+        }
+    }
+    console.log(columns);
+    var formHTML=''
+    for(var i=0;i<columns.length;i++)
+    {
+        formHTML+=`<div class="form-floating mb-3">
+    <input type="${columns[i].type}" class="form-control" id="${columns[i].title}" placeholder="name@example.com">
+    <label for="${columns[i].title}">${columns[i].title}</label>
+    </div>  `;
+    }
+    formHTML+=`<button id=insertBtn onclick="insertFn()" class="btn btn-success">submit</btn>`
+    formHTML+=`<button id=updateBtn onclick="updateFn()" class="btn btn-warning">submit</btn>`
+    $("#form").html(formHTML);
+    $("#Id").attr("disabled","true");
+    $("#form").dialog({
+        autoOpen:false,
+        title:"form"
+    });
+    function deleteFn(id){
+            var sql="delete from "+table+" where id="+id;
+            console.log(sql);
+            if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+            else alert("خطأ");
+    }
+    function createFn(){
+            //var sql="delete from "+table+" where id="+id;
+              //  console.log(sql);
+        $("#Id").hide()
+        $("#insertBtn").show()
+        $("#updateBtn").hide()
+        $("#form").dialog("open");
+    }
+    function editFn(id){
+            //var sql="delete from "+table+" where id="+id;
+              //  console.log(sql);
+        $("#Id").show()
+        $("#insertBtn").hide()
+        $("#updateBtn").show()
+        $("#form").dialog("open");
+    }
+    function insertFn(){
+         var sql=`insert into ${table}(`
+         for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='Id')
+                sql+=columns[i].title+','
+            }
+            sql=sql.slice(0,-1);
+            sql+=")values("
+        for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='Id')
+                sql+="'"+$("#"+columns[i].title).val()+"',"
+            }
+            sql=sql.slice(0,-1);
+           sql+=")"
+         console.log(sql);
+         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+         else alert("خطأ");
+        
+    }
+    function updateFn (){
+        var sql = `update  ${table} set`
+            for(var i=0;i<columns.length;i++)
+                {
+                    if(columns[i].title!='Id')
+                    sql+=" "+columns[i].title+"= '"+$("#"+columns[i].title).val()+"',"
+                }
+            sql=sql.slice(0,-1);
+            sql+=" where Id="+$("#Id").val()
+         console.log(sql);
+        /* if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+        else alert("خطأ");*/
+    }
+    //console.log(colObj);
+
+</script>
+<!--div>
+    <img id="img"src="" style="width:150px;height:150px;" alt="no pic">
+    <input type="file" id="FileUpload1" style="width:0px;height:0px;" />
+    <!input type="button" id="btnUpload" value="Upload Files" />
+
+    <!script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"><!/script>
+    <script>
+
+    $(document).ready(function(){
+        //$('#btnUpload').click(function () {
+        $('#img').click(function () {
+            //upload();
+            $("#FileUpload1").click();
+        });
+        $("#FileUpload1").change(function(){
+            // Checking whether FormData is available in browser
+            upload();
+        });
+        var v=[10,20,30,40,50,60,70,80,90,100]
+        for(var i=0;i<15;i++)
+        {
+            
+                if(v[i]!==undefined)console.log(v[i])
+            
+            
+        }
+        function upload() {
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                //fileData.append('username', "Dillion");
+                console.log(files[0].name);
+                $.ajax({
+                    url: '/Home/UploadFiles',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result) {
+                        console.log(result);
+                        console.log("http://"+window.location.host+"/uploads/" + files[0].name);
+                        $("#img").attr("src","http://"+ window.location.host+"/uploads/" + files[0].name);
+                    },
+                    error: function (err) {
+                        console.log(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+        }
+    });
+    </script>
+</div-->
+<script>
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+  // Getter
+  get area() {
+    return this.calcArea();
+  }
+  // Method
+  calcArea() {
+    return this.height * this.width;
+  }
+  *getSides() {
+    yield this.height;
+    yield this.width;
+    yield this.height;
+    yield this.width;
+  }
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+const square = new Rectangle(10, 10);
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+console.log(square.area); // 100
+console.log([...square.getSides()]); // [10, 10, 10, 10]    
+</script>

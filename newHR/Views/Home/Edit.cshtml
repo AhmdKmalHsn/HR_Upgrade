@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Model.Home
+
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    if (Model != null)
+    {
+        <div class="text-center">
+            <input type='file' id="imgInp" value="@Model.Id" name="ImagePath" />
+            <br />
+            <input type="file" accept="image/*" name="ImagePath" id="file" onchange="loadFile(event)" style="display: none;" />
+
+            <div class="border" style="width:100%;height:250px">
+                <img id="blah" width="200" height="200" alt="your image" src="/assets2/images/@Model.Name" />
+
+            </div>
+
+            <div class="form-group row" hidden>
+                <div class="col-sm-8">
+                    @Html.EditorFor(ww => ww.IsCreated)
+                </div>
+            </div>
+            <div class="col align-self-center">
+                <button type="submit" class="btn btn-primary mt-5">Save</button>
+                <button type="submit" class="btn btn-primary mt-5">Delete</button>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+<div class="text-center">
+    <input type="file" accept="image/*" name="ImagePath" id="file" onchange="loadFile(event)" style="display: none;" />
+    <p><label for="file" style="cursor: pointer;">Upload Image</label></p>
+    <img id="output" width="200" src="~/assets2/images/img/HR.jpg" />
+    <div class="col align-self-center">
+        <button type="submit" class="btn btn-primary mt-5">Save</button>
+        <button type="submit" class="btn btn-primary mt-5">Delete</button>
+
+    </div>
+</div>
+    }
+}
+
+
+<script type="text/javascript " src="~/bower_components/jquery/js/jquery.min.js "></script>
+
+<script>
+    var t = document.title;
+    document.title = t + "- Change Picture "
+
+</script>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        }
+    }
+
+    $("#imgInp").change(function () {
+        readURL(this);
+
+    });
+</script>
