@@ -252,6 +252,7 @@
     <Compile Include="Controllers\settings\JobTitlesController.cs" />
     <Compile Include="Controllers\SQLController.cs" />
     <Compile Include="Controllers\SSEController.cs" />
+    <Compile Include="Controllers\static_class.cs" />
     <Compile Include="Controllers\TempShiftController.cs" />
     <Compile Include="Controllers\TruantController.cs" />
     <Compile Include="Controllers\Utilities\DeviceManipulator.cs" />

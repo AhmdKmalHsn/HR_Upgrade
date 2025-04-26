@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.IO;
-
+using System.Runtime.Remoting.Contexts;
 
 namespace newHR.Controllers
 {
@@ -138,6 +138,62 @@ namespace newHR.Controllers
             return View("Log");
 
         }
+        public ActionResult LogIn2(string username = "", string password = "")
+        {
+            string clientIP = Request.UserHostAddress;
+            string sql = @"SELECT u.Id userId,*
+                           from AK_Users u 
+                           where u.UserName='" + username + "' and u.password='" + password + "'";
+            string output = "";
+            var ds = static_class.getbysql(sql);
+            if (ds.Tables["status"].Rows[0][0].ToString() == "success")
+            {
+                //output = JsonConvert.SerializeObject(ds, Formatting.Indented);
+                if (ds.Tables["data"].Rows.Count > 0)
+                {
+                    DataSet update;
+                    if (ds.Tables["data"].Rows[0]["login_permit"].ToString() == "")
+                    {
+                        update = static_class.updatebysql(
+                                @"update users2 set login_at='" + DateTime.Now +
+                                "',login_to='" + DateTime.Now.AddMinutes(24 * 60) +
+                                "' where id=" + ds.Tables["data"].Rows[0]["Id"]
+                                );
+                    }
+                    else
+                    {
+                        update = static_class.updatebysql(
+                                @"update users2 set login_at='" + DateTime.Now +
+                                "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])) +
+                                "' where id=" + ds.Tables["data"].Rows[0]["Id"]
+                                );
+                    }
+                    static_class.insertbysql(
+                                @"INSERT INTO dbo.AK_logins
+                                (
+                                  userid
+                                 ,username
+                                 ,login_from
+                                )
+                                VALUES
+                                ('"+
+                                 ds.Tables["data"].Rows[0]["Id"]+"','"+
+                                 ds.Tables["data"].Rows[0]["UserName"] + "','"+ 
+                                 Request.UserHostAddress + "'"+
+                                 ");"
+                                );
+                    output = JsonConvert.SerializeObject(update.Tables[0]);
+                }
+            }
+
+            //return Content(/*, "application/json"*/); 
+            return Content(output, "application/json");
+        }
+        public ActionResult test()
+        {
+      
+            return Content("path"+Request.Path+""+Request.IsAuthenticated);
+        }
         public ActionResult LogOut()
         {
             Response.Cookies["userId"].Expires = DateTime.Now.AddDays(-1);
@@ -208,7 +264,8 @@ select count(*)cnt, 'depts' name from Departements
                 return Json("No files selected.");
             }
         }
-        public ActionResult license() {
+        public ActionResult license()
+        {
             return View();
         }
     }
