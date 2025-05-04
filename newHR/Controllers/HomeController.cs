@@ -16,7 +16,7 @@ namespace newHR.Controllers
     public class HomeController : Controller
     {
         HttpCookie UserId = new HttpCookie("UserId");
-        HttpCookie User = new HttpCookie("UserName");
+        HttpCookie UserName = new HttpCookie("UserName");
         HttpCookie Name = new HttpCookie("name");
         HttpCookie Vacation = new HttpCookie("Vacation");
         HttpCookie Mission = new HttpCookie("Mission");
@@ -69,25 +69,10 @@ namespace newHR.Controllers
                 SqlDataReader rdr = com.ExecuteReader();
                 while (rdr.Read())
                 {
-                    /*Session["userId"] = rdr["userId"].ToString(); 
-                    Session["User"] = rdr["UserName"].ToString();
-                    Session["name"] = rdr["name"].ToString();
-                    Session["Vacation"] = rdr["Vacation"].ToString();
-                    Session["Mission"] = rdr["Mission"].ToString();
-                    Session["Attendance"] = rdr["Attendance"].ToString();
-                    Session["OverTime"] = rdr["OverTime"].ToString();
-                    Session["Salary"] = rdr["Salary"].ToString();
-                    Session["ClosingPeriod"] = rdr["ClosingPeriod"].ToString();
-                    Session["FingerMachine"] = rdr["FingerMachine"].ToString();
-                    Session["Reports_Abs"] = rdr["Reports_Abs"].ToString();
-                    Session["Reports_Salary_Details"] = rdr["Reports_Salary_Details"].ToString();
-                    Session["Logs"] = rdr["Logs"].ToString();
-                    Session["TempShifts"] = rdr["TempShifts"].ToString();*/
-                    //HttpCookie User = new HttpCookie("user");
-
+                 
 
                     UserId.Value = rdr["userId"].ToString();
-                    User.Value = rdr["UserName"].ToString();
+                    UserName.Value = rdr["UserName"].ToString();
                     Name.Value = rdr["name"].ToString();
                     Vacation.Value = rdr["Vacation"].ToString();
                     Mission.Value = rdr["Mission"].ToString();
@@ -101,7 +86,7 @@ namespace newHR.Controllers
                     Logs.Value = rdr["Logs"].ToString();
                     TempShifts.Value = rdr["TempShifts"].ToString();
                     UserId.Expires =
-                    User.Expires =
+                    UserName.Expires =
                     Name.Expires =
                     Vacation.Expires =
                     Mission.Expires =
@@ -116,7 +101,7 @@ namespace newHR.Controllers
                     TempShifts.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Clear();
                     Response.Cookies.Add(UserId);
-                    Response.Cookies.Add(User);
+                    Response.Cookies.Add(UserName);
                     Response.Cookies.Add(Name);
                     Response.Cookies.Add(Vacation);
                     Response.Cookies.Add(Mission);
@@ -138,33 +123,39 @@ namespace newHR.Controllers
             return View("Log");
 
         }
-        public ActionResult LogIn2(string username = "", string password = "")
+        public ActionResult AK_LogIn(string username = "", string password = "")
         {
             string clientIP = Request.UserHostAddress;
             string sql = @"SELECT u.Id userId,*
                            from AK_Users u 
                            where u.UserName='" + username + "' and u.password='" + password + "'";
-            string output = "";
+            string output = "[{\"status\" : \"error\" ,\"message\" : \"user name or password is error\"}]";
             var ds = static_class.getbysql(sql);
             if (ds.Tables["status"].Rows[0][0].ToString() == "success")
             {
                 //output = JsonConvert.SerializeObject(ds, Formatting.Indented);
                 if (ds.Tables["data"].Rows.Count > 0)
                 {
+                    Guid g = Guid.NewGuid();
+                    string GuidString = Convert.ToBase64String(g.ToByteArray());
+                    GuidString = GuidString.Replace("=", "");
+                    GuidString = GuidString.Replace("+", "");
                     DataSet update;
                     if (ds.Tables["data"].Rows[0]["login_permit"].ToString() == "")
                     {
                         update = static_class.updatebysql(
-                                @"update users2 set login_at='" + DateTime.Now +
-                                "',login_to='" + DateTime.Now.AddMinutes(24 * 60) +
+                                @"update AK_Users set login_at ='" + DateTime.Now +
+                                "',login_to ='" + DateTime.Now.AddMinutes(24 * 60) +
+                                "',token ='" + GuidString +
                                 "' where id=" + ds.Tables["data"].Rows[0]["Id"]
                                 );
                     }
                     else
                     {
                         update = static_class.updatebysql(
-                                @"update users2 set login_at='" + DateTime.Now +
+                                @"update AK_Users set login_at='" + DateTime.Now +
                                 "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])) +
+                                "',token ='" + GuidString +
                                 "' where id=" + ds.Tables["data"].Rows[0]["Id"]
                                 );
                     }
@@ -174,14 +165,22 @@ namespace newHR.Controllers
                                   userid
                                  ,username
                                  ,login_from
+                                 ,token
                                 )
                                 VALUES
                                 ('"+
                                  ds.Tables["data"].Rows[0]["Id"]+"','"+
                                  ds.Tables["data"].Rows[0]["UserName"] + "','"+ 
-                                 Request.UserHostAddress + "'"+
+                                 Request.UserHostAddress + "','"+
+                                 GuidString+"'"+
                                  ");"
                                 );
+                    HttpCookie token =new HttpCookie("token", GuidString);
+                    HttpCookie userName = new HttpCookie("UserName", ds.Tables["data"].Rows[0]["UserName"].ToString());
+                    token.Expires = DateTime.Now.AddDays(1);
+                    userName.Expires= DateTime.Now.AddDays(1);
+                    Response.Cookies.Add(token);
+                    Response.Cookies.Add(userName);
                     output = JsonConvert.SerializeObject(update.Tables[0]);
                 }
             }
@@ -189,10 +188,42 @@ namespace newHR.Controllers
             //return Content(/*, "application/json"*/); 
             return Content(output, "application/json");
         }
+        public ActionResult AK_LogOut()
+        {
+            Response.Cookies["userName"].Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies["token"].Expires = DateTime.Now.AddDays(-1);
+            return RedirectToAction("log","home");
+        }
         public ActionResult test()
         {
-      
-            return Content("path"+Request.Path+""+Request.IsAuthenticated);
+            DataSet ds;
+            try
+            {
+                ds = static_class.is_Authrize("shifts", Request.Cookies.Get("token").Value, "p_access");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Log","Home");
+            }
+            if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
+            {
+                return View("_NotAuthorized");
+            }
+            else
+            {
+                ViewBag.perms = static_class.o_Authrizes(Request.Cookies.Get("token").Value).AsEnumerable().ToList();
+                return View();
+            }
+          // return Content(JsonConvert.SerializeObject(ds), "application/json");
+        }
+        public ActionResult meals()
+        {
+            DataSet ds = static_class.is_Authrize("meals", Request.Cookies.Get("token").Value, "p_access");
+            if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
+                return View("_NotAuthorized"); //Content(JsonConvert.SerializeObject(ds.Tables[0]), "application/json");
+
+            else
+                return View(ds);
         }
         public ActionResult LogOut()
         {

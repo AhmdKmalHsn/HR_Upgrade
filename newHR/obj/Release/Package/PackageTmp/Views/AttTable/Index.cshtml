@@ -1,4 +1,4 @@
-﻿@if (Request.Cookies["UserName"] == null)
+﻿@if (Request.Cookies["UserName"] == null || Request.Cookies["UserName"].Value == "")
 {
     Response.Redirect("~/home/Index");
 }

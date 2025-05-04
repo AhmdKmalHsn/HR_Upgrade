@@ -1,204 +1,178 @@
 ﻿
 @{
     ViewBag.Title = "Log";
+    Layout = null;
 }
+@Html.Partial("~/views/shared/_libs.cshtml");
 
 <style>
-    body {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    overflow: hidden;
-}
+   body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        overflow: hidden;
+    }
 
-.card{
-    margin-bottom:20px;
-    border:none;
-     background: linear-gradient(to right, #b92b27, #1565c0)
+    .card {
+        margin-bottom: 20px;
+        border: none;
+        background: linear-gradient(to right, #b92b27, #1565c0);
+    }
 
-}
+    .box {
+        width: 650px;
+        padding: 35px;
+        
+        background: #191919;
+        text-align: center;
+        transition: 0.25s;
+       
+        margin: 5% auto;
+        border-radius: 10px;
+        height: 655px;
+        box-shadow: 4px 2px 2px 4px white;
+    }
 
-.box {
-    width: 650px;
-    padding: 35px;
-    /* position: absolute; */
-    /* top: 50%;
-    left: 50%; */
-    background: #191919;
-    text-align: center;
-    transition: 0.25s;
-    /* margin-top: 100px */
-    margin: 5% auto;
-    border-radius: 10px;
-    height: 655px;
-    box-shadow: 4px 2px 2px 4px white;
+    .text-muted {
+        color: brown !important;
+        font-size: 27px;
+    }
 
-}
-.text-muted{
-    color: brown !important;
-    @* padding: 11px; *@
-    font-size: 27px;
-}
+    .box input[type="text"],
+    .box input[type="password"] {
+        border: 0;
+        background: none;
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        border: 2px solid #3498db;
+        padding: 10px 10px;
+        width: 375px;
+        outline: none;
+        color: white;
+        border-radius: 24px;
+        transition: 0.25s;
+        margin-top: 39px;
+        font-size: 20px;
+    }
 
-.box input[type="text"],
-.box input[type="password"] {
-    border: 0;
-    background: none;
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #3498db;
-    padding: 10px 10px;
-    width: 375px;
-    outline: none;
-    color: white;
-    border-radius: 24px;
-    transition: 0.25s;
-    margin-top: 39px;
-    font-size: 20px;
-    
-}
+    .box h1 {
+        color: white;
+        text-transform: uppercase;
+        font-weight: 800;
+        font-size: 41px;
+        text-shadow: 4px 2px 2px red;
+    }
 
-.box h1 {
-    color: white;
-    text-transform: uppercase;
-    font-weight: 800;
-    font-size: 41px;
-    text-shadow: 4px 2px 2px red;
-}
+    .box input[type="text"]:focus,
+    .box input[type="password"]:focus {
+        width: 300px;
+        border-color: #2ecc71;
+    }
 
-.box input[type="text"]:focus,
-.box input[type="password"]:focus {
-    width: 300px;
-    border-color: #2ecc71
-}
+    .box input[type="submit"] {
+        border: 0;
+        background: none;
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        border: 2px solid #2ecc71;
+        padding: 14px 40px;
+        outline: none;
+        color: white;
+        border-radius: 24px;
+        transition: 0.25s;
+        cursor: pointer;
+        font-size: 23px;
+        margin-top: 62px;
+    }
 
-.box input[type="submit"] {
-    border: 0;
-    background: none;
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #2ecc71;
-    padding: 14px 40px;
-    outline: none;
-    color: white;
-    border-radius: 24px;
-    transition: 0.25s;
-    cursor: pointer;
-    font-size: 23px;
-    margin-top: 62px;
-}
+    .box input[type="submit"]:hover {
+            background: #2ecc71;
+        }
 
-.box input[type="submit"]:hover {
-    background: #2ecc71
-}
+    .forgot {
+        text-decoration: underline;
+    }
 
-.forgot {
-    text-decoration: underline
-}
 
-ul.social-network {
-    list-style: none;
-    display: inline;
-    margin-left: 0 !important;
-    padding: 0
-}
+    a.socialIcon:hover,
+    .socialHoverClass {
+        color: #44BCDD;
+    }
 
-ul.social-network li {
-    display: inline;
-    margin: 0 5px
-}
+    .social-circle li a {
+        display: inline-block;
+        position: relative;
+        margin: 0 auto 0 auto;
+        border-radius: 50%;
+        text-align: center;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
 
-.social-network a.icoFacebook:hover {
-    background-color: #3B5998
-}
+    .social-circle li i {
+        margin: 0;
+        line-height: 50px;
+        text-align: center;
+    }
 
-.social-network a.icoTwitter:hover {
-    background-color: #33ccff
-}
+    .social-circle li a:hover i,
+    .triggeredHover {
+        transform: rotate(360deg);
+        transition: all 0.2s;
+    }
 
-.social-network a.icoGoogle:hover {
-    background-color: #BD3518
-}
+    .social-circle i {
+        color: #fff;
+        transition: all 0.8s;
+        transition: all 0.8s;
+    }
 
-.social-network a.icoFacebook:hover i,
-.social-network a.icoTwitter:hover i,
-.social-network a.icoGoogle:hover i {
-    color: #fff
-}
-
-a.socialIcon:hover,
-.socialHoverClass {
-    color: #44BCDD
-}
-
-.social-circle li a {
-    display: inline-block;
-    position: relative;
-    margin: 0 auto 0 auto;
-    border-radius: 50%;
-    text-align: center;
-    width: 50px;
-    height: 50px;
-    font-size: 20px
-}
-
-.social-circle li i {
-    margin: 0;
-    line-height: 50px;
-    text-align: center
-}
-
-.social-circle li a:hover i,
-.triggeredHover {
-    transform: rotate(360deg);
-    transition: all 0.2s
-}
-
-.social-circle i {
-    color: #fff;
-    transition: all 0.8s;
-    transition: all 0.8s
-}
-img{
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    box-shadow: 1px 1px 4px 3px powderblue;;
-}
+    img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        box-shadow: 1px 1px 4px 3px powderblue;
+        
+    }
 </style>
 <main>
- <div class="">
-         <div class=""> 
-            <div class=""> 
-                <div class="card">
-                     <form action="/home/login" method="post"  class="box">
-                        <img class="mb-4" src="~/assets/img/logo.jpg" alt="" width="72" height="57">
-                         <h1>تسجيل الدخول</h1> 
-                         <p class="text-muted">من فضلك ادخل البيانات </p> 
-                         <input type="text" name="UserName" placeholder="اسم المستخدم">
-                          <input type="password" name="Password" placeholder="الباسورد">
-                           @* <a class="forgot text-muted" href="#">Forgot password?</a>  *@
-                           <input type="submit" name="" value="تسجيل" href="#"> 
-                           
-</div>
+    <div class="card">
+        <div class="card-header">
+            
+        </div>
+        <div class="card-body">
+            <h1>تسجيل الدخول</h1>
+            <form id="login-form" method="post" class="box">
+                <img class="mb-4" src="~/assets/img/logo.jpg" alt="" width="72" height="57">
+
+                <p class="text-muted">من فضلك ادخل البيانات </p>
+                <input type="text" name="username" placeholder="اسم المستخدم">
+                <input type="password" name="password" placeholder="الباسورد">
+                @* <a class="forgot text-muted" href="#">Forgot password?</a>  *@
+                <input type="submit" name="" value="تسجيل" href="#">
+            </form>
+        </div>
+
+    </div>
 </main>
-
-@* <main class="form-signin w-50 m-auto">
-    <form action="/home/login" method="post">
-        <img class="mb-4" src="~/assets/img/logo.jpg" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" name="UserName" id="floatingInput" placeholder="UserName">
-            <label for="floatingInput">User Name</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" name="Password"  id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        </div>
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">© 2022</p>
-    </form>
-</main> *@
+<script>
+    $("#login-form").submit((e) =>{
+        e.preventDefault();
+        //console.log($("#login-form").serializeArray())
+        console.log($("#login-form").serialize())
+        $.ajax({
+            url: "ak_login?" + $("#login-form").serialize(),
+            success: (res) => {
+                console.log(res);
+                if (res[0].status=="success")
+                {
+                    location.href="/home/test";
+                }
+            },
+            error: (res) => { console.log(res) }
+        })
+    })
+</script>

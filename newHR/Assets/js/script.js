@@ -1,131 +1,16 @@
 var thePageWrapper = document.getElementById("page");
 var theSideBar = document.getElementById("sidebar");
 var bodywrapper = document.getElementById("bodywrapper");
-var thesidebarCollapsebtn = document.getElementById("sidebarCollapse");
+//var thesidebarCollapsebtn = document.getElementById("sidebarCollapse");
 var navSearchForm = document.getElementById("navSearchForm");
 var navBarElement = document.getElementById("navbar");
 var navbarnavlinks = document.getElementsByClassName("theme-item");
 
 
-document.getElementById("radioCompactView").addEventListener("click", function() {
-	//alert('yoyo1');
-	theSideBar.style.display = "none";
-	thePageWrapper.classList.add("container");
-	bodywrapper.classList.remove("container-fluid");
-	bodywrapper.classList.add("container");
-	navBarElement.classList.add("container");
-	thesidebarCollapsebtn.style.display = "none";
-	setVisible('.navbrandarea1', true);
-	setVisible('.navbrandarea2', true);
-	setCookie("compactView", "true", 1);
-});
-
-document.getElementById("radioFullView").addEventListener("click", function() {
-	//alert('yoyo2');
-	thePageWrapper.classList.remove("container");
-	bodywrapper.classList.remove("container");
-	bodywrapper.classList.add("container-fluid");
-	navBarElement.classList.remove("container");
-	thesidebarCollapsebtn.style.display = "block";
-    theSideBar.style.display = "block";
-	removeViewSizeCookie();
-});
-
-checkCookie();
-
-thesidebarCollapsebtn.addEventListener("click", pinSideBar);
-
-function pinSideBar() {
-	if (theSideBar.classList.contains("active")) {
-		theSideBar.classList.toggle('active');
-		setVisible('.navbrandarea1', false);
-		setVisible('.navbrandarea2', false);
-		setCookie("sidebarUnpinned", "true", 1);
-	} else {
-		theSideBar.classList.toggle('active');
-		setVisible('.navbrandarea1', true);
-		setVisible('.navbrandarea2', true);
-		//theSideBar.classList.remove('active');
-		//theSideBar.style.display = "none";
-		removeCookieSidebar();
-	}
-}
 
 function checkCookie() {
-	//var sidebarUnpinned = getCookie("sidebarUnpinned");
 	var colornumber = getCookie("colornumber");
-	//var theSideBar = document.getElementById("sidebar");
-	/*if (sidebarUnpinned != null) {
-		theSideBar.classList.toggle('active');
-		setVisible('.navbrandarea1', false);
-		setVisible('.navbrandarea2', false);
-	}*/
-
-	if (colornumber === '0') {
-		//alert('0');
-		theSideBar.style.background = getSpecificColor('0');
-		navBarElement.style.background = getSpecificColor('0');
-		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
-			navbarnavlinks[i].style.color = '#ffff';
-		}
-	}
-	if (colornumber === '1') {
-		//alert('1');
-		theSideBar.style.background = getSpecificColor('1');
-		navBarElement.style.background = getSpecificColor('1');
-		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
-			navbarnavlinks[i].style.color = '#ffff';
-		}
-	}
-	if (colornumber === '2') {
-		//alert('2');
-		theSideBar.style.background = getSpecificColor('2');
-		navBarElement.style.background = getSpecificColor('2');
-		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
-			navbarnavlinks[i].style.color = '#ffff';
-		}
-	}
-	if (colornumber === '3') {
-		//alert('3');
-		theSideBar.style.background = getSpecificColor('3');
-		navBarElement.style.background = getSpecificColor('3');
-		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
-			navbarnavlinks[i].style.color = '#ffff';
-		}
-	}
-	if (colornumber === '4') {
-		//alert('4');
-		theSideBar.style.background = getSpecificColor('4');
-		navBarElement.style.background = getSpecificColor('4');
-		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
-			navbarnavlinks[i].style.color = '#767676';
-		}
-	}
-
-
-
-	var compactView = getCookie("compactView");
-
-	if (compactView != null) {
-		bodywrapper.classList.remove("container-fluid");
-		bodywrapper.classList.add("container");
-		navBarElement.classList.remove("container-fluid");
-		navBarElement.classList.add("container");
-		thesidebarCollapsebtn.style.display = "none";
-		theSideBar.style.display = "none";
-		setVisible('.navbrandarea1', true);
-		setVisible('.navbrandarea2', true);
-	} else {
-		bodywrapper.classList.remove("container");
-		bodywrapper.classList.add("container-fluid");
-		navBarElement.classList.remove("container");
-		navBarElement.classList.add("container-fluid");
-		thesidebarCollapsebtn.style.display = "block";
-		theSideBar.style.display = "block";
-	}
-
-
-
+	
 }
 
 function setCookie(name, value, daysToLive) {
@@ -163,6 +48,7 @@ function getCookie(cookieName) {
 
 scrollToTop = document.getElementById("scrollToTop");
 window.onscroll = function() { scrollFunction() };
+
 function scrollFunction() {
 	if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
 		scrollToTop.style.display = "block";
@@ -278,10 +164,17 @@ changeColor('colornumber');
 
 
 var dropdown = document.getElementsByClassName("sidebar-dropdown-btn");
+var dropdown_container = document.getElementsByClassName("dropdown-container");
 var i;
 
 for (i = 0; i < dropdown.length; i++) {
+	
 	dropdown[i].addEventListener("click", function() {
+		for(let j =0;j<dropdown.length;j++) 
+		{
+			dropdown[j].classList.remove("active");
+			dropdown_container[j].style.display = "none";
+		}
 		this.classList.toggle("active");
 		var dropdownContent = this.nextElementSibling;
 		if (dropdownContent.style.display === "block") {
