@@ -1,0 +1,517 @@
+﻿<style>
+    th,
+    td,
+    input,
+    select {
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .formContainer {
+        border: 2px solid black;
+        width: 80%;
+        /*height:80%;*/
+        position: fixed;
+        top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: powderblue;
+        overflow-y: auto;
+    }
+
+    .formHeader {
+        display: flex;
+        background-color: #e1d2d2;
+        border: 0px double black;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: stretch;
+
+    }
+
+    #formTable {
+        margin-top: 30px;
+        border: none;
+        height: 80%;
+        overflow-y: auto;
+    }
+
+    input["type=search"] {
+        width: 120px;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+
+    .wrady,
+    .hour {
+        margin-left: 40px;
+    }
+
+    input[type="radio"] {
+        transform: scale(1.5);
+    }
+
+    th,
+    td,
+    input,
+    select {
+        text-align: center;
+        font-size: 95%;
+        font-weight: 600;
+    }
+
+    [type=search] {
+        outline-offset: -2px;
+        -webkit-appearance: textfield;
+        border-radius: 6px;
+    }
+</style>
+
+<h2>رفع الحضور والانصراف</h2>
+<hr>
+<div class="input-group" style="width:60%">
+
+    <button id="uploadATT" class="btn btn-outline-success"><b>رفع</b></button>
+    <button id="okay" class="btn btn-outline-primary"><b>إنشاء</b></button>
+    <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text">الي</label>
+    <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+    <label class="input-group-text">من</label>
+
+</div>
+<br>
+
+<form>
+    <div class="hour">
+        <input type="radio" id="hours" name="hours">
+        <label for="html">24 ساعه</label><br>
+    </div>
+    <div class="wrady">
+        <input type="radio" id="wrady" name="hours">
+        <label for="css">ورادى</label><br>
+    </div>
+    <div class="wrady">
+        <input type="radio" id="fileNo" name="hours">
+        <label for="css">برقم الملف</label><br>
+    </div>
+    <div class="wrady">
+        <input type="radio" id="dept" name="hours" checked>
+        <label for="css">بالقسم</label><br>
+    </div>
+</form>
+<div class=choise>
+    <div class="props" >
+        <div class="row " style="justify-content: center;">
+            <div class="col-1 p-1">
+                رقم االملف
+            </div>
+            <div class="col-6 p-1">
+                <div class="input-group">
+                    <input id="FN" type="number" class="form-control" value="" />
+                    <!--input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialog.dialog('open')" /-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="props">
+           <div class="row " style="justify-content: center;">
+            <div class="col-1 p-1">
+                القسم
+            </div>
+            <div class="col-6 p-1">
+                <div class="input-group">
+                    <input id="dept" type="number" class="form-control" value="" />
+                    <!--input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialog.dialog('open')" /-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="progress" class="progress" style="height:30px">
+    <div id="bar" class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" style="width: 0%;"
+        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<div class="table table-responsive" style="overflow-y:auto;">
+    <table id="tbl" class="table table-bordered" dir="rtl">
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>رقم الملف</th>
+                <th>الاسم</th>
+                <th>القسم</th>
+                <th>من</th>
+                <th>الى</th>
+            </tr>
+            <tr>
+                <th><input type="search" id="DF" /></th>
+                <th><input type="search" id="FNF" /></th>
+                <th><input type="search" id="NF" /></th>
+                <th><input type="search" id="DEPTF" /></th>
+                <th><input type="search" id="FF" /></th>
+                <th><input type="search" id="TF" /></th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<script>
+    //variables
+    var res = [];
+    var temp = [];
+    //functions
+    function display(data) {
+        var html = '';
+        //console.log(data);
+        $.each(data, function (index, item) {
+            html += '<tr><td>' + item.date.substr(0, 10)
+                + '</td><td>' + item.fileNumber
+                + '</td><td>' + item.name
+                + '</td><td>' + item.dept
+                + (item.timeFrom == '' || item.timeFrom == null ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeFrom)
+                + (item.timeTo == '' || item.timeTo == null ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeTo)
+                + '</td></tr>';
+        });
+        $('tbody').html(html);
+    }
+    function excute() {
+        $.ajax({
+            url: "GetMacAtt",//new attendace 
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val() },
+            success: function (response) {
+
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(response);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    function excuteFN() {
+        $.ajax({
+            url: "GetMacAttNewFN",//new attendace 
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val(),FN: $('.choise #FN').val() },
+            success: function (response) {
+
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(response);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    function excuteDept() {
+        $.ajax({
+            url: "GetMacAttNewDept",//new attendace 
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val(),dept: $('.choise #dept').val() },
+            success: function (response) {
+
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(response);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    function excute24() {
+        let sql = `with cte as
+(
+select dateadd(hour,6,cast( '${$("#dateFrom").val()}' as datetime)) date1
+union all
+select dateadd(day,1,date1) from cte where date1<='${$("#dateTo").val()}'
+) 
+select cast(dateI1 as date)'date', ac.FileNumber fileNumber,emp.KnownAs name,emp.dept	,cast(min(acin)as time(0))timeFrom	,cast(max(acout) as time(0))timeTo	
+from
+(select FileNumber,DateTime,Type,case when Type='in' then DateTime else null end 'acin' ,case when Type='out' then DateTime else null end 'acout' from AClogs)  ac 
+join 
+(select date1 dateI1,DATEADD(hour,24,date1)dateI2,DATEADD(hour,3,date1)dateO1,DATEADD(hour,27,date1)dateO2 from cte)limit
+on (ac.DateTime between limit.dateI1 and limit.dateI2 and ac.Type='in')or(ac.DateTime between limit.dateO1 and limit.dateO2 and ac.Type='out')
+join (select *,(select name from Departements where id=DepartementId)dept from Employees)emp on emp.FileNumber=ac.FileNumber
+--where FileNumber=11454
+group by cast(dateI1 as date), ac.FileNumber,emp.KnownAs,emp.dept 
+order by FileNumber,date`;
+        var response = readSQL(sql);
+        res = response;
+        temp = response;
+        if (res.length > 0) display(res.slice(0, 50));
+        console.log(response);
+    }
+
+
+    //events
+    $("#FNF,#NF,#DEPTF").keyup(function () {
+        temp = res;
+
+        if ($("#FNF").val()) {
+            temp = temp.filter(w => w.fileNumber == $("#FNF").val()).filter(w => w.name.includes($("#NF").val()) == true);
+        }
+        if ($("#NF").val()) {
+            temp = temp.filter(w => w.name.includes($("#NF").val()) == true);
+        }
+        if ($("#DEPTF").val()) {
+            temp = temp.filter(w => w.dept.includes($("#DEPTF").val()) == true);
+        }
+        display(temp.slice(0, 50));
+    });
+
+    $("#okay").click(function () {
+        //if ($("#wrady").is(':checked')) excute();
+        //if ($("#hours").is(':checked')) excute24();
+         switch(true)
+      {
+        case $("#wrady").is(':checked'):
+        {
+            excute();
+        }break;
+        case $("#hours").is(':checked'):
+        {
+            excute24();
+        }break;
+        case $("#fileNo").is(':checked'):
+        {
+             excuteFN();
+
+        }break;
+        case $("#dept").is(':checked'):
+        {
+             excuteDept();
+        }break;
+      }
+    });
+
+</script>
+
+<!--رفع النتائج الي جدول الحضور -->
+<script>
+    var total = 0,
+        tempDone = 0,
+        i = 0,
+        noPerTime = 3;
+    var sql = '';
+    function uploadATT(arr) {
+        i = 0;
+        total = arr.length;
+        for (i = 0; i < total; i += noPerTime) {
+            for (var j = i; j < i + noPerTime; j++) {
+                try {
+                    arr[j].timeFrom = arr[j].timeFrom == null ? '' : arr[j].timeFrom;
+                    arr[j].timeTo = arr[j].timeTo == null ? '' : arr[j].timeTo;
+                    sql = `
+            if not exists(
+            select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${arr[j].date.substr(0, 10)}' and  e.FileNumber='${arr[j].fileNumber}'
+            )
+            begin
+            insert into  Attendances(
+                    DateFrom,
+                    EmployeeId,
+                    TimeFrom,
+                    TimeTo,
+                    AttendanceTypeId
+                )
+            select
+            '${arr[j].date.substr(0, 10)}',id,'${arr[j].timeFrom}','${arr[j].timeTo}',2 from Employees where FileNumber='${arr[j].fileNumber}'
+            end
+            else
+            begin
+            update  A set 
+                    A.TimeFrom='${arr[j].timeFrom}',
+                    A.TimeTo='${arr[j].timeTo}',
+                    A.AttendanceTypeId=2
+            from Attendances A join Employees E on E.id=A.EmployeeId  
+            where FileNumber='${arr[j].fileNumber}' and A.DateFrom='${arr[j].date.substr(0, 10)}'
+            end;
+            `
+
+                } catch (e) {
+                    console.log(e);
+                }
+                console.log(`total=>${total} ,i=>${i} ,j=>${j}`)
+                //console.log(sql); 
+                if (excuteSQL(sql) == 1) {
+
+                    console.log("successfull!");
+                    $("#bar").css("width", ((i + noPerTime) * 100 / total).toFixed(2) + "%");
+                    $("#bar").html('<b>' + ((i + noPerTime) * 100 / total).toFixed(2) + "%" + '</b>');
+                    //i+=noPerTime;
+                }
+                else {
+                    console.log("failed!");
+                    $("#bar").css("width", ((i + noPerTime) * 100 / total).toFixed(2) + "%");
+                    $("#bar").html('<b>' + ((i + noPerTime) * 100 / total).toFixed(2) + "%" + '</b>');
+                    //i+=noPerTime;
+                }
+
+                setTimeout(function() { 
+                //uploadATT(arr);
+                },100);
+            }
+
+        }
+
+
+
+    }
+</script>
+<script>
+    /* async function uploadATT_P(arr) {
+         tempDone = 0;
+         if (i == 0) console.log(arr.length);
+         total = arr.length;
+         var pro = []
+         for (var k = 0; k < arr.length; k++) {
+             var sql = `
+             if not exists(
+             select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${arr[k].date.substr(0, 10)}' and  e.FileNumber='${arr[k].fileNumber}'
+             )
+             begin
+             insert into  Attendances(
+                     DateFrom,
+                     EmployeeId,
+                     TimeFrom,
+                     TimeTo,
+                     AttendanceTypeId
+                 )
+             select
+             '${arr[k].date.substr(0, 10)}',id,'${arr[k].timeFrom}','${arr[k].timeTo}',2 from Employees where FileNumber='${arr[k].fileNumber}'
+             end
+             else
+             begin
+             update  A set 
+                     A.TimeFrom='${arr[k].timeFrom}',
+                     A.TimeTo='${arr[k].timeTo}',
+                     A.AttendanceTypeId=2
+             from Attendances A join Employees E on E.id=A.EmployeeId  
+             where FileNumber='${arr[k].fileNumber}' and A.DateFrom='${arr[k].date.substr(0, 10)}'
+             end;
+             `
+             pro.push(await excuteSQL2(sql));
+         }
+         //Promise.all(pro).then(()=>console.log("success!"))
+         Promise.all(pro).then((values) => {
+             //console.log(values);
+         });
+     }*/
+</script>
+<script>
+    $("#uploadATT").click(function () {
+        total = 0; tempDone = 0;
+        i=0;
+        uploadATT(temp);
+    });
+</script>
+<script>
+    /*$("#uploadATT").click(function () {
+        let requests = []
+        let responses = []
+        var count = 0;
+        var array = temp;
+        console.log(temp)
+        console.log(array)
+
+        for (var i = 0; i < array.length; i += 5) {
+
+            /*array[k].timeFrom = (array[k].timeFrom == null ? '' : array[k].timeFrom);
+            array[k].timeTo = (array[k].timeTo == null ? '' : array[k].timeTo);*/
+            //console.log("in=>" + array[k].timeFrom + "out=>" + array[k].timeTo + "'")
+           /* let q='';
+            for (var k = i; k < i + 5; k++) {
+                
+                try{
+                    q = `
+                        if not exists(
+                        select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${array[k].date.substr(0, 10)}' and  e.FileNumber='${array[k].fileNumber}'
+                        )
+                        begin
+                        insert into  Attendances(
+                                DateFrom,
+                                EmployeeId,
+                                TimeFrom,
+                                TimeTo,
+                                AttendanceTypeId
+                            )
+                        select
+                        '${array[k].date.substr(0, 10)}',id,'${array[k].timeFrom}','${array[k].timeTo}',2 from Employees where FileNumber='${array[k].fileNumber}'
+                        end
+                        else
+                        begin
+                        update  A set 
+                                A.TimeFrom='${array[k].timeFrom}',
+                                A.TimeTo='${array[k].timeTo}',
+                                A.AttendanceTypeId=2
+                        from Attendances A join Employees E on E.id=A.EmployeeId  
+                        where FileNumber='${array[k].fileNumber}' and A.DateFrom='${array[k].date.substr(0, 10)}'
+                        end;`
+                    }catch(error)
+                    {
+                    console.error(error);
+                    }
+            }
+            console.log("q=>"+q);
+            requests.push(
+                $.ajax({
+                    url: "/SQL/Read",
+                    data: {
+                        sql: q
+                    },
+                    success: function (res) {
+                        //$.merge(responses, JSON.parse(res));
+                        count++;
+                        console.log((count * 100 / array.length).toFixed(2) + "%")
+                        $("#bar").css("width", ((count) * 100 / array.length).toFixed(2) + "%");
+                        $("#bar").html('<b>' + ((count) * 100 / array.length).toFixed(2) + "%" + '</b>');
+                    },
+                })
+            )
+
+        }
+
+        $.when.apply($, requests).done(function () {
+            console.log('complete');
+            alert("#Compelete!")
+        });
+    });*/
+</script>
+<script>
+     $(".props").eq(0).hide()
+    $('input[name="hours"]').change(()=>{
+     $(".props").hide();
+      switch(true)
+      {
+        case $("#wrady").is(':checked'):
+        {
+            
+        }break;
+        case $("#hours").is(':checked'):
+        {
+        }break;
+        case $("#fileNo").is(':checked'):
+        {
+             $(".props").eq(0).show()
+
+        }break;
+        case $("#dept").is(':checked'):
+        {
+             $(".props").eq(1).show()
+        }break;
+      }
+      
+    })
+</script>

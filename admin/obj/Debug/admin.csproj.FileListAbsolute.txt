@@ -1,0 +1,15 @@
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\admin.exe.config
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\admin.exe
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\admin.pdb
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\EntityFramework.dll
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\EntityFramework.SqlServer.dll
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\EntityFramework.xml
+D:\VIP_DESKTOP\.net Sources\newHR\admin\bin\Debug\EntityFramework.SqlServer.xml
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.csprojResolveAssemblyReference.cache
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.Form1.resources
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.modules.resources
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.Properties.Resources.resources
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.csproj.GenerateResource.Cache
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.exe
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.pdb
+D:\VIP_DESKTOP\.net Sources\newHR\admin\obj\Debug\admin.Roles.resources

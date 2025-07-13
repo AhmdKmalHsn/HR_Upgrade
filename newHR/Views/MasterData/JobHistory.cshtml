@@ -1,7 +1,53 @@
-﻿
+﻿@using WebMatrix.Data;
+@helper Print(string message)  
+{  
+   <label>@message</label>  
+} 
+<style>
+   table
+   {
+      border-radius: 50%;
+      border-color: blanchedalmond;
+      border-style: solid;
+      border-width: 1px;
+   }
+   td
+   {
+      border-radius: 50%;
+      border-color: rgb(117, 110, 100);
+      border-style: solid;
+      border-width: 1px;
+      padding: 8px;
+   }
+</style>
+<div style="overflow: auto;">
+<table>
 @{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
-
+   var db = Database.Open("CS");    
+   var sql1="select top 1024 * from AK_Forms ";
+   var sql2="select id,name from departements";
+   int i=0;
+foreach(var row in db.Query(sql1))
+            { 
+               if(i==0)
+               {
+                  <tr>
+                     <td>#</td>
+                     @foreach(var elem in row.Columns)
+                     {
+                        <td>@elem</td>
+                     }
+                  </tr>
+                }
+               i++;
+                <tr>
+                  <td>@i</td>
+                  @foreach(var elem in row.Columns)
+                     {
+                        <td>@row[@elem]</td>
+                     }
+                </tr>
+            }
+ }
+</table>
+</div>

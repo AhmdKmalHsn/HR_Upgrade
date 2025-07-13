@@ -206,24 +206,3 @@
         });
     }
 </script>
-
-<!--script>
-    var v1 = ["date", "2022-07-07", "hourno", "1.5"];
-    var v2 = ["date", "2022-07-07", "hourno", "2.5"];
-    $("#ok").click(function () {
-        $.ajax({
-            url: "createLog",
-            data: {
-                user: 'ahmdkmal',
-                ip: '192.168.1.49',
-                crud: 'c',
-                table: 'overtime',
-                value1: JSON.stringify(v1),
-                value2: JSON.stringify(v2),
-                isUpdate: true
-            },
-            success: function (res) { console.log(res);},
-            fail: function (res) { console.log(res); }
-        });
-    });
-</script-->

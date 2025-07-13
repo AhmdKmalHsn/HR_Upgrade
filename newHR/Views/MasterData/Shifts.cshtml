@@ -1,60 +1,4 @@
-﻿
-<h2>الورديات</h2>
-
-  <!--
-    [          
-    {
-        "data": "ShiftId",
-        "title": "ShiftId",
-    },
-    {
-        "data": "ShiftName",
-        "title": "الوصف",
-    },
-    {
-        "data": "StartTime",
-        "title": "وقت البدأ",
-    },
-    {
-        "data": "EndTime",
-        "title": "وقت الانتهاء",
-    },
-    {
-        "data": "DailyHours",
-        "title": "عدد الساعات",
-    },
-    {
-        "data": "NoOfShifts",
-        "title": "العدد",
-    },
-    {
-        "data": "Shift2",
-        "title": "Shift 2",
-    },
-    {
-        "data": "Shift3",
-        "title": "Shift 3",
-    },
-    {
-        "data": "XDelayId",
-        "title": "التأخيرات",
-    },
-    {
-        "data": "XLeaveId",
-        "title": "الانصراف المبكر",
-    },
-    /*{
-        "data": "WeekendFromDay",
-        "title": "الاجازة من",
-    },
-    {
-        "data": "WeekendToDay",
-        "title": "الاجازة حتى",
-    },*/
-    {"defaultContent": "<button id='edt-btn' class='btn btn-success'>Edit</button>"}
-					
-];
--->
+﻿<h2>الورديات</h2>  
 <div id=root>
 </div>
 <script>
@@ -74,16 +18,18 @@
     
     columns=Object.keys(data[0])
     //console.log(columns);
-
+    
     colObj=columns.map(e=>e={data:e,title:e})
     colObj.push({data:"Id",title:"edit",render:function(id){return '<button onclick="editFn('+id+')" class="btn btn-warning">Edit</button>'}})
     colObj.push({data:"Id",title:"delete",render:function(id){return '<button onclick="deleteFn('+id+')" class="btn btn-danger">delete</button>'}})
     
+    colObj[30]={data:"XDelayId",title:"XDelayId",render:function(id){return `<a target="_blank" href="/Delay/update?id=${id}" class="link">${id}</a>`}}
+    colObj[31]={data:"XLeaveId",title:"XLeaveId",render:function(id){return `<a target="_blank" href="/leave/update?id=${id}" class="link">${id}</a>`}}
     
     $("#rootTable").dataTable({
         scrollX:true,
         data:data,
-        columns:[1,2,7,12,13,19,20,21,30,31,32,33].map(x => colObj[x])//.slice(0,2).concat(colObj.slice(colObj.length-2,colObj.length))
+        columns:[1,2,7,12,13,19,20,21,30,31,32,33,34,35].map(x => colObj[x])//.slice(0,2).concat(colObj.slice(colObj.length-2,colObj.length))
     });
 
     types=readSQL(`
@@ -112,31 +58,189 @@
     }
     //console.log(columns);
     formHTML=''
-    for(var i=0;i<columns.length;i++)
+    for(var i=0;i<columns.length;i+=3)
     {
-        formHTML+=`<div id="div_${columns[i].title}" class="form-floating mb-3">
+        formHTML += `<div class="row"><div class="col">`
+        try {
+            formHTML += `<div id="div_${columns[i].title}" class="form-floating mb-3">
             <input type="${columns[i].type}" class="form-control" id="${columns[i].title}" placeholder="name@example.com">
             <label for="${columns[i].title}">${columns[i].title}</label>
             </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        try {
+            formHTML += `<div class="col">`
+            formHTML += `<div id="div_${columns[i + 1].title}" class="form-floating mb-3">
+            <input type="${columns[i + 1].type}" class="form-control" id="${columns[i + 1].title}" placeholder="name@example.com">
+            <label for="${columns[i + 1].title}">${columns[i + 1].title}</label>
+            </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        try {
+            formHTML += `<div class="col">`
+            formHTML += `<div id="div_${columns[i + 2].title}" class="form-floating mb-3">
+            <input type="${columns[i + 2].type}" class="form-control" id="${columns[i + 2].title}" placeholder="name@example.com">
+            <label for="${columns[i + 2].title}">${columns[i + 2].title}</label>
+            </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        formHTML += `</div>`
     }
-    formHTML+=`<button id=insertBtn onclick="insertFn()" class="btn btn-success">submit</btn>`
-    formHTML+=`<button id=updateBtn onclick="updateFn()" class="btn btn-warning">submit</btn>`
-    $("#form").html(formHTML);
+    formHTML+=`<div><button id=insertBtn onclick="insertFn()" class="btn btn-success">submit</btn>`
+    formHTML+=`<button id=updateBtn onclick="updateFn()" class="btn btn-warning">submit</btn></div>`
+    let formHTML2=`
+    <div class="row">
+            <div class="col-6">
+                <div id="div_Id" class="form-floating mb-3">
+                    <input type="number" class="form-control" name="Id" placeholder="name@example.com"
+                        disabled="disabled">
+                    <label for="Id">Id</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_ShiftName" class="form-floating mb-3">
+                    <input type="text" class="form-control" name="ShiftName" placeholder="name@example.com">
+                    <label for="ShiftName">ShiftName</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_WeekendFromDay" class="form-floating mb-3">
+                    <select class="form-control" name="WeekendFromDay" placeholder="name@example.com">
+                        <option value="0">السبت</option>
+                        <option value="1">الاحد</option>
+                        <option value="2">الاثنين</option>
+                        <option value="3">الثلاثاء</option>
+                        <option value="4">الاربعاء</option>
+                        <option value="5">الخميس</option>
+                        <option value="6">الجمعة</option>
+                    </select>
+                    <label for="WeekendFromDay">WeekendFromDay</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_WeekendToDay" class="form-floating mb-3">
+                    <select class="form-control" name="WeekendToDay" placeholder="name@example.com">
+                        <option value="0">السبت</option>
+                        <option value="1">الاحد</option>
+                        <option value="2">الاثنين</option>
+                        <option value="3">الثلاثاء</option>
+                        <option value="4">الاربعاء</option>
+                        <option value="5">الخميس</option>
+                        <option value="6">الجمعة</option>
+                    </select>
+                    <label for="WeekendToDay">WeekendToDay</label>
+                </div>
+            </div>
+        
+           
+           
+       
+            <div class="col-6">
+                <div id="div_StartTime" class="form-floating mb-3">
+                    <input type="time" class="form-control" name="StartTime" placeholder="name@example.com">
+                    <label for="StartTime">StartTime</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_EndTime" class="form-floating mb-3">
+                    <input type="time" class="form-control" name="EndTime" placeholder="name@example.com">
+                    <label for="EndTime">EndTime</label>
+                </div>
+            </div>
+             <div class="col-6">
+                <div id="div_DailyHours" class="form-floating mb-3">
+                    <input type="number" class="form-control" name="DailyHours" placeholder="name@example.com">
+                    <label for="DailyHours">DailyHours</label>
+                </div>
+            </div>
+
+
+            <div class="col-6">
+                <div id="div_NoOfShifts" class="form-floating mb-3">
+                    <select class="form-control" name="NoOfShifts" placeholder="name@example.com">
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                    </select>
+                    <label for="NoOfShifts">NoOfShifts</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_Shift2" class="form-floating mb-3">
+                    <select class="form-control" name="Shift2" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="Shift2">Shift2</label>
+                </div>
+            </div>
+        
+            <div class="col-6">
+                <div id="div_Shift3" class="form-floating mb-3">
+                    <select  class="form-control" name="Shift3" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="Shift3">Shift3</label>
+                </div>
+            </div>
+            
+           
+        
+            <div class="col-6">
+                <div id="div_XDelayId" class="form-floating mb-3">
+                    <select class="form-control" name="XDelayId" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="XDelayId">DelayId</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_XLeaveId" class="form-floating mb-3">
+                    <select class="form-control" name="XLeaveId" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="XLeaveId">LeaveId</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_InOffset" class="form-floating mb-3">
+                    <input type="number" class="form-control" name="InOffset" value="0" placeholder="name@example.com">
+                    <label for="InOffset">InOffset</label>
+                </div>
+            </div>
+        
+            <div class="col-6">
+                <div id="div_OutOffset" class="form-floating mb-3">
+                    <input type="number" class="form-control" name="OutOffset" value="0" placeholder="name@example.com">
+                    <label for="OutOffset">OutOffset</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="col-6"></div>
+                <div><button id="insertBtn" onclick="insertFn()" class="btn btn-success"
+                        style="display: none;">submit</button><button id="updateBtn" onclick="updateFn()"
+                        class="btn btn-warning">submit</button></div>
+            </div>
+        </div>
+    `
+    $("#form").html(formHTML2);
     $("#Id").attr("disabled","true");
+    
     $("#form").dialog({
+        width:window.innerWidth*0.8,
         autoOpen:false,
         title:"form"
     });
     function deleteFn(id){
             var sql="delete from "+table+" where id="+id;
-            console.log(sql);
+            //console.log(sql);
             if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
             else alert("خطأ");
     }
     function createFn(){
-        $("#Id").hide()
-        $("#insertBtn").show()
-        $("#updateBtn").hide()
+        $("input [name]").val("");
+        $("#Id").hide();
+        $("#insertBtn").show();
+        $("#updateBtn").hide();
         $("#form").dialog("open");
     }
     function editFn(id){
@@ -144,44 +248,52 @@
         var arr= readSQL(sql)[0];
         console.log(arr);
         for (const property in arr) {
-            console.log(""+arr[property]);
-            $("#"+property).val(""+arr[property]).change();
+            $(`[name=${property}]`).val(""+arr[property]);
         }
-        $("#Id").show()
-        $("#insertBtn").hide()
-        $("#updateBtn").show()
+        $("#Id").show();
+        $("#insertBtn").hide();
+        $("#updateBtn").show();
         $("#form").dialog("open");
     }
     function insertFn(){
+         let cols=$("#form [name]")
          var sql=`insert into ${table}(`
-         for(var i=0;i<columns.length;i++)
+         for(var i=0;i<cols/*columns*/.length;i++)
             {
-                if(columns[i].title!='Id')
-                sql+=columns[i].title+','
+                if(cols[i].name/*columns[i].title*/!='Id')
+                sql+=cols[i].name+','
             }
             sql=sql.slice(0,-1);
             sql+=")values("
-        for(var i=0;i<columns.length;i++)
+        for(var i=0;i<cols/*columns*/.length;i++)
             {
-                if(columns[i].title!='Id')
-                sql+="'"+$("#"+columns[i].title).val()+"',"
+                if(cols[i].name/*columns[i].title*/!='Id')
+                if(cols[i].value)
+                {
+                    sql+="'"+cols[i].value+"',"
+                }
+                else
+                {
+                    sql+="NULL,"
+                }
             }
             sql=sql.slice(0,-1);
            sql+=")"
-         console.log(sql);
+          console.log(sql);
          if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
          else alert("خطأ");
-        
     }
     function updateFn (){
+        let cols=$("#form [name]")
         var sql = `update  ${table} set`
-            for(var i=0;i<columns.length;i++)
+            for(var i=0;i<cols.length;i++)
                 {
-                    if(columns[i].title!='Id')
-                    sql+=" "+columns[i].title+"= '"+$("#"+columns[i].title).val()+"',"
+                    //console.log(cols[i].value=='')
+                    if(cols[i].name!='Id')
+                    sql+=" "+cols[i].name+"="+(cols[i].value==''?`NULL`:`'${cols[i].value}'`)+","
                 }
             sql=sql.slice(0,-1);
-            sql+=" where Id="+$("#Id").val()
+            sql+=" where Id="+$("[name=Id]").val()
          console.log(sql);
          if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
         else alert("خطأ");
@@ -196,29 +308,57 @@
     //</div>`;
 
     }
-   /******/
-   /*var s=[
-   {"id":1,"name":"غير مسموح"},
-   {"id":2,"name":"قراءة"},
-   {"id":3,"name":"حذف"},
-   {"id":4,"name":"تعديل"},
-   ]
-    toSelect("Vacation",s);
-    toSelect('Mission', s);
-    toSelect('Attendance',s);
-    toSelect('OverTime' ,s);
-    toSelect('Salary',s);
-    toSelect('ClosingPeriod',s); 
-    toSelect('FingerMachine' ,s);
-    toSelect('Reports_Abs' ,s);
-    toSelect('Reports_Salary_Details',s); 
-    toSelect('Logs' ,s);
-    toSelect('TempShifts',s); 
-    toSelect('Employee' ,s);
-    toSelect('BasicBayWorks',s);
-    toSelect('Insurance',s);*/
-    //console.log(colObj);
 
+    let dts=readSQL(
+        `SELECT cast(id AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift2,0) AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift3,0) AS VARCHAR(MAX)) 'k',*
+        FROM Shifts s`
+   )
+   //console.log(dts.length);
+   let filterd=[];
+   for(let i=0;i<dts.length;i++){
+       dts[i].k=dts[i].k.split(',').sort().join(',');
+       if(filterd.findIndex(w=>w.k==dts[i].k)==-1)
+       {
+           filterd.push(dts[i]);
+       }
+      
+   }
+   var shifts_list=readSQL("select id,cast(id AS Nvarchar(Max))+' - '+ShiftName 'text' from shifts");
+   var delays_list=readSQL("select id,cast(id AS Nvarchar(Max))+' - '+ShiftName 'text' from delays");
+   
+  function draw_option(data,selector)
+  {
+      var html='';
+      for(var i=0;i<data.length;i++)
+      {
+          html+=`<option value="${data[i].id}">${data[i].text}</option>`
+      }
+      $(selector).html(html);
+      $(selector).val(-1);
+  } 
+    draw_option(shifts_list,"[name=Shift2]");
+    draw_option(shifts_list,"[name=Shift3]");
+    draw_option(delays_list,"[name=XDelayId]");
+    draw_option(delays_list,"[name=XLeaveId]");
+    $("input").change((e)=>{
+        let start = $("[name=StartTime]").val();
+        let end = $("[name=EndTime]").val();
+    start = start.split(":");
+    end = end.split(":");
+    var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+    var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+    var diff = endDate.getTime() - startDate.getTime();
+    var hours = Math.floor(diff / 1000 / 60 / 60);
+    diff -= hours * 1000 * 60 * 60;
+    var minutes = Math.floor(diff / 1000 / 60);
+   //console.log();
+   //console.log((hours < 9 ? "0" : "") + hours + ":" + (minutes < 9 ? "0" : "") + minutes);
+        $("[name=DailyHours]").val(
+            hours + (minutes/60)
+            //$("[name=EndTime]").val()-$("[name=StartTime]").val()
+        );
+        })
+    //$("select").select2();
 </script>
 
 

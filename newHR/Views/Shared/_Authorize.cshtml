@@ -1,0 +1,55 @@
+﻿@using WebMatrix.Data;
+@{
+    var db = Database.Open("CS");
+    var selectQueryString = @"
+SELECT
+AK_Modules_lines.name
+,AK_Roles_lines.[access]
+,AK_Roles_lines.[read]
+,AK_Roles_lines.[create]
+,AK_Roles_lines.[update]
+,AK_Roles_lines.[delete]
+FROM dbo.AK_Modules_lines
+INNER JOIN dbo.AK_Modules
+ON AK_Modules_lines.Module_id = AK_Modules.Id
+INNER JOIN dbo.AK_Roles_lines
+ON AK_Roles_lines.module_line_id = AK_Modules_lines.id
+INNER JOIN dbo.AK_Roles
+ON AK_Roles_lines.role_id = AK_Roles.Id
+INNER JOIN dbo.Users2
+ON Users2.RoleId = AK_Roles.Id
+WHERE Users2.Id =" + @Request.Cookies["UserId"].Value;
+    var data = db.Query(selectQueryString);
+}
+
+@functions
+{
+    bool check(IEnumerable<dynamic> d, string name, string permission)
+    {
+        foreach (var item in d)
+        {
+            if (item["name"] == name)
+            {
+                return item[permission];
+            }
+        }
+        return false;
+    }
+}
+@model dynamic
+
+<div>@Model.Value</div>
+@*
+if (!check(data, "attendTable", "access"))
+{
+    <script>
+        alert("ليس لديك صلاحية الدخول لهذه الصفحة");
+        //window.location.href = "/home/Index";
+    </script>
+}else
+{
+    <script>
+        alert("لديك صلاحية الدخول لهذه الصفحة");
+    </script>
+}
+*@

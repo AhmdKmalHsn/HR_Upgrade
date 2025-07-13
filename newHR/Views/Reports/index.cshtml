@@ -23,8 +23,7 @@ where e.Id=b.EmployeeId and e.PersonalId=p.id and p.StatusId<>3";
     var grid = new WebGrid(data, canPage: true, rowsPerPage: 30);
     if (IsPost)
     {
-        //var deleteQueryString = " WHERE Id=@0";
-        //db.Execute(deleteQueryString, Request.Form["id"]);
+        
     }
 
 }
@@ -59,20 +58,7 @@ where e.Id=b.EmployeeId and e.PersonalId=p.id and p.StatusId<>3";
            
                 )
                 );
-                <!--table>
-                   foreach (var row in db.Query(selectQueryString))
-                         {
-                             <tr>
-                                 <td>row.id</td>
-                                 <td>row.shiftId</td>
-                                 <td>row.TempShiftId</td>
-                                 <td><input type="checkbox" checked=row.IsPrivate></td>
-                                 <td><a href="">delete</a></td>
-                                 <td><a href="">edite</a></td>
-                             </tr>
-                         }
-                </table-->
-
+                
 </div>
 
 </body>

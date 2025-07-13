@@ -129,8 +129,11 @@
      userId=Int32.Parse(Request.Cookies["UserId"].Value);
 }
 <script>
-    var EMPS = [];
+  var EMPS = [];
+  var ROLES = [];
 	EMPS = EmpGet(@userId);
+  ROLES = RolesGet(@userId);
+  console.log(ROLES);
 	console.log(EMPS); 
 </script>
 <body >

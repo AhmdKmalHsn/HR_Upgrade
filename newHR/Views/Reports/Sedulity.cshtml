@@ -1,0 +1,382 @@
+﻿@if(Request.Cookies["Reports_Salary_Details"]==null)
+{
+    Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>=2){
+
+}else
+{
+   //Response.Redirect("~/home/Index");
+}
+@using WebMatrix.Data;
+<h2>تقرير المواظبة - احمد عيد</h2>
+<script>
+    var all = [];
+</script>
+@{
+    var db1 = Database.Open("CS");
+	var db2 = Database.Open("CS");
+    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
+	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId<>3 order by FileNumber";
+}
+<script>
+@foreach (var row in db1.Query(selectQueryString1))
+{
+        @:all.push({fileNo:@row.fn,dept:@row.deptId})
+} 
+</script>
+<style>
+    #tblStocks {
+          tr:nth-child(even){background-color: #f2f2f2;}
+    }
+    #thead td{
+        vertical-align:middle;
+    }
+    .row{
+        align-items: center;
+    }
+    .card{
+     background-image: linear-gradient(45deg, #F0F0A0, #A0C0F0);
+    }
+</style>
+ 
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+		<hr>
+		<div style="overflow-y:auto;height:400px">
+		  <table id="myTable" class="table table-bordered table-responsive-lg">
+		  <thead>
+			<tr>
+			  <th>رقم الملف</th>
+			  <th>الاسم</th>
+			  <th>القسم</th>
+			  <th>choose</th>
+			</tr>
+			</thead>
+			<tbody>
+		    @foreach (var row in db2.Query(sql))
+                     {
+                        <tr> 
+						 <td style="text-align:center">@row.fn</td>
+						 <td style="text-align:center">@row.name</td>
+						 <td style="text-align:center">@row.dept</td>
+						 <td style="text-align:center">
+						   <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" /></td>
+						</tr>
+                     }
+			</tbody>
+		  </table>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	<hr>
+    <div class="card container" style="width:60%">
+        <div class=row>        
+             <div class="col-9" >     
+			 <div class="input-group">
+			    <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				<input id="fileNo" class="form-control" type="number" />
+			  </div>
+			</div>
+             <div class="col-3" >     
+				<h3 style="margin:10px;float:left">رقم الملف </h3>
+			</div>
+
+        </div>
+        
+                    
+         <div class=row>     
+         
+             <div class="col-9" > 
+                <div class="input-group">    
+                    <button id="Depts" class="btn btn-info">اختر الاقسام</button>
+                @{
+                    var db = Database.Open("CS");
+                    var selectQueryString = "select Id,Name from Departements where [group] =0 ORDER BY Name ";
+                }
+                <select id="D" class="form-control">
+                    @foreach (var row in db.Query(selectQueryString))
+                    {
+                        <option style="text-align:right" value="@row.Id">@row.Name</option>
+                    }
+                </select>
+                </div>
+            </div>
+             <div class="col-3" >     
+                 <h3 style="margin:10px;float:left">القسم </h3>
+            </div>
+        </div> 
+        
+        <div class=row id="month">     
+             
+             <div class="col-4" >     
+                <select id="Y" class="form-control" style="margin:5px;float:right">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                </select>
+            </div>
+             <div class="col-2" >     
+                 <h3 style="margin:5px;float:center">سنة </h3>
+            </div> 
+            <div class="col-4" >     
+                <select id="M" class="form-control" style="margin:5px;float:right">
+                      <option value="1">01</option>
+                      <option value="2">02</option>
+                      <option value="3">03</option>
+                      <option value="4">04</option>
+                      <option value="5">05</option>
+                      <option value="6">06</option>
+                      <option value="7">07</option>
+                      <option value="8">08</option>
+                      <option value="9">09</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                </select>
+            </div>
+            <div class="col-2" >     
+                <h3 style="margin:5px;float:center">شهر </h3>
+            </div>  
+        </div> 
+        <div class=row>     
+            <div class="col-12 m-1 p-1">
+                <input id="ok" class="btn btn-primary" value="تاكيد" type="button" />
+                <button onclick="ExportToExcel('xlsx')" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                    Excel
+                </button>
+                <button onclick="printData()" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-print"></span>
+                    طباعة
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dialogDept">
+    <table id="allDeptTable" class="display" style="width:100%">
+
+    </table>
+    </div>
+    
+    <div id="loader" style="display:none">
+        <center><img src="~/1.gif" /></center>
+    </div>
+    <div class="table-responsive-lg" style="overflow-x:auto">
+        <table id ="tblStocks" border="1" dir="rtl" class="table table-hover table-bordered">
+           
+            <tbody id="container1" style="text-align:center;font-size:large">
+                
+               
+            </tbody>
+            <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+        
+    </div>
+
+
+
+<script>   
+    function userLog()
+	{
+          return  {
+                user: $("#userName").html() ,
+                ip: '@HttpContext.Current.Request.UserHostAddress' ,
+            } 
+    }
+</script>
+<script src="~/Assets/AttendanceSetup2.js?version=9.5.1"></script>
+<script src="~/Assets/attendance2.js?version=9.5.1"></script>
+<script>
+    $("#myTable").DataTable();
+    var q = window.location.href;
+    var url = new URL(q);
+    var fileNo = url.searchParams.get("fileNo");
+    var M = url.searchParams.get("M");
+    var Y = url.searchParams.get("Y");
+    if(typeof fileNo!=='undefined' && typeof M!=='undefined' && typeof Y!=='undefined')
+    {
+       getdata(fileNo,M,Y,1)
+    }
+</script>
+<script>
+     
+$('.table-responsive-lg').show();
+
+function displayAllMonth(res) // المواصبة بالقسم
+{
+    console.log(res)
+    let a=0,v=0;
+    
+					$('#loader').hide();
+                    $('.table-responsive-lg').show();
+                    var htmlDom='<tr style="background-color:gray">' +
+                                '<th scope=col>القسم</th>' +         
+                                '<th scope=col>رقم الملف</th>' +
+                                '<th scope=col>الاسم</th>' +                                
+                                '<th scope=col>حضور</th>' +
+                                //'<th scope=col>غياب</th>' +
+                                '<th scope=col>اجازة</th>' +
+                                '<th scope=col>تأخير</th>' +
+                                '<th scope=col>جزاءات</th>' +
+                                '<th scope=col>انصراف مبكر</th>' +
+                                '<th scope=col>أضافي</th>' +
+                            '</tr>';
+    for(var i=0;i<res.length;i++)
+    {
+        res[i].total.attSum=res[i].total.attSum+(res[i].total.vacSumAll-res[i].total.vacSum)
+    if(res[i].total.absSum>0)
+    {
+        if((res[i].total.vacSum+res[i].total.absSum)>1.75)
+        {
+            a=res[i].total.attSum;
+            //if(res[i].all.JoiningDate<='2025-03-26')a+=2;
+            v=res[i].total.vacSum;
+        }
+        else
+        {
+            a=res[i].total.attSum;
+            //if(res[i].all.JoiningDate<='2025-03-26')a+=2;
+            v=res[i].total.vacSum;
+        }
+    }
+    else
+    {
+        if((res[i].total.vacSum)>1.75)
+        {
+            a=28.25;
+            //if(res[i].all.JoiningDate<='2025-03-26')a++;
+            v=1.75;
+        }
+        else
+        {
+            a=res[i].total.attSum;
+            //if(res[i].all.JoiningDate<='2025-03-26')a+=2;
+            v=res[i].total.vacSum;
+        }
+    }
+                        console.log(res[i])
+					   // if(EMPS.includes('' + res.fileNo))
+                        htmlDom+=
+                        '<tr><td>'+
+                        res[i].all.dept +'</td><td><a href=/Truant/Abscence?fileNo='+
+                        res[i].all.filenumber+'&M='+$("#M").val()+'&Y='+$("#Y").val()+' target="_blank">'+
+                        res[i].all.filenumber+'</a></td><td >' +
+                        res[i].all.name+'</td><td >' +
+                        a + '</td><td >' +
+                        //res[i].total.absSum + '</td><td>' +
+                        v + '</td><td>' + 
+                        res[i].total.lateSum + '</td><td>' +
+                        (parseFloat(res[i].total.dValue)+parseFloat(res[i].all.sanctions2)) + '</td><td>' +
+                        (parseFloat(res[i].total.leaveSum)+parseFloat(res[i].total.specialSum))+ '</td><td>' +
+                        res[i].total.overSum + '</td></tr>'
+                    }
+                    $('#container1').html(htmlDom)
+}
+
+$("#M").val(new Date().getMonth()+1)
+
+var department = [],dept=[];
+
+$('#ok').click(function () {
+    if ($('#fileNo').val())
+    {
+        department = all.filter(w => w.fileNo == $('#fileNo').val());
+    }
+    else 
+    {
+        var rows_selected = table.columns(0).checkboxes.selected()[0];
+        //console.log(rows_selected);
+        if (rows_selected.length > 0) 
+            {
+                department = all.filter(w => rows_selected.includes(w.dept) )
+            }
+            else
+            {
+                department = all.filter(w => w.dept == $('#D').val());
+            }
+    }
+    
+    res = [];
+    dept=[];
+
+    for(var i=0;i<department.length;i++){
+        
+        dept.push(department[i].fileNo);
+    }
+    
+    $('#loader').show();
+    getArray(dept,$("#M").val(),$("#Y").val()); 
+});
+
+var data = readSQL(`select d.Id,d.Name'Dept' from Departements d`);
+    
+var table= $("#allDeptTable").DataTable({
+        data:data,
+        columns: [
+                     { data: "Id", title: '' },
+                     { data: "Id", title: "Id" },
+                     { data: "Dept", title: "Department" },
+                ],
+        'columnDefs': [
+                        {
+                            'targets': 0,
+                            'checkboxes': {
+                                'selectRow': true
+                                }
+                        }
+                    ],
+        'select': {
+                'style': 'multi'
+                },
+        'order': [[1, 'asc']] 
+});
+   
+$(".dialogDept").dialog({
+        autoOpen:false,
+        width:900,
+        height:700,
+        title:"Select Departments",
+}); 
+
+$('#Depts').on('click', function(e){
+        $(".dialogDept").dialog('open');
+});
+
+</script>
+<script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
+<script>
+ function ExportToExcel(type, fn, dl) {
+     var elt = document.getElementById('tblStocks');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+ }   
+ function printData()
+ {
+     var divToPrint=document.getElementById("tblStocks");
+     newWin= window.open("");
+     newWin.document.write(divToPrint.outerHTML);
+     newWin.print();
+     newWin.close();
+ }
+</script>
+
+

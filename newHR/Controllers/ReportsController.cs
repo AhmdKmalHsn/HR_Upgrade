@@ -61,6 +61,28 @@ namespace newHR.Controllers
         {
             return View();
         }
+        public ActionResult salaryReport1()
+        {
+            //return View();
+            return static_class.GetView(this, "salaryReport1");
+        }
+        public ActionResult Report1()
+        {
+            //return View();
+            return static_class.GetView(this, "Report1");
+        }
+        public ActionResult Report2()
+        {
+            //return View();
+            return static_class.GetView(this, "Report2");
+        }
+        public ActionResult Report3()
+        {
+            //return View();
+            return static_class.GetView(this, "Report2");
+        }
+
+
 
         /**************************************************/
         public JsonResult getAttendBydepartment(DateTime date,int dept) {

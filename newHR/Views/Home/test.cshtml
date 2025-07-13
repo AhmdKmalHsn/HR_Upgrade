@@ -2,14 +2,7 @@
     hello it's my test page ?!!!!!
 </h1>
 
-@try
+@if (ViewBag.perms.Columns.Contains("shift") && ViewBag.perms.Rows[0]["shift"]=="True")
 {
-    if (ViewBag.perms[0]["shift"])
-    {
-        
-        <li>ahmed kamal hassan</li>
-    }
-}
-catch (Exception)
-{
+    <li>ahmed kamal hassan</li> 
 }

@@ -1,19 +1,32 @@
-﻿<style>
-    th, td,input,select {
-    text-align:center;
-    font-size:24px;
+﻿@using WebMatrix.Data
+@{
+    var db = Database.Open("CS");
+    var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+}
+<style>
+    th,
+    td,
+    input,
+    select {
+        text-align: center;
+        font-size: 24px;
+        width: auto;
     }
-    
+
+    td:hover {
+        scale: 1.2;
+    }
+
     .formContainer {
         border: 2px solid black;
         width: 80%;
-        /*height:80%;*/
         position: fixed;
         top: 10%;
         margin-left: 10%;
         margin-right: 10%;
         background-color: powderblue;
-        overflow-y:auto;
+        overflow-y: auto;
+        box-shadow: 5px 5px #2b2929;
     }
 
     .formHeader {
@@ -23,123 +36,323 @@
         align-content: stretch;
         justify-content: space-between;
         align-items: stretch;
-        
     }
 
     #formTable {
         margin-top: 30px;
         border: none;
-        height:80%;
-        overflow-y:auto;
-    }
-    input["type=search"]
-    {
-        width:120px;
-    }
-    form{
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size: 25px;
-        font-weight: 500;
+        height: 80%;
+        overflow-y: auto;
 
     }
-    .wrady, .hour{
-    margin-left: 40px;
-}
-input[type="radio"]
-{
-    transform:scale(1.5);
-}
-th, td, input, select {
-    text-align: center;
-    font-size: 19px;
-}
-[type=search] {
-    outline-offset: -2px;
-    -webkit-appearance: textfield;
-    border-radius: 6px;
-}
+
+    input["type=search"] {
+        width: 120px;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .wrady,
+    .hour {
+        margin-left: 40px;
+    }
+
+    input[type="radio"] {
+        transform: scale(1.5);
+    }
+
+    th,
+    td,
+    input,
+    select {
+        text-align: center;
+        font-size: 95%;
+        font-weight: 600;
+    }
+
+    input[type=search] {
+        outline-offset: -2px;
+        -webkit-appearance: textfield;
+        border-radius: 6px;
+    }
 </style>
 
 <h2>رفع الحضور والانصراف</h2>
 <hr>
-<div class="input-group" style="width:60%">
-    
-    <button id="uploadATT" class="btn btn-outline-success"><b>رفع</b></button>
-    <button id="okay" class="btn btn-outline-primary"><b>إنشاء</b></button>
-    <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
-    <label class="input-group-text">الي</label>
-    <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
-    <label class="input-group-text">من</label>
-    
+<div id="progress" style="display:none; 
+                        text-align: center;
+                        padding-top: 20px;
+                        position: fixed;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 100;
+                        top: 0;
+                        background-color: white;">
+    <img src="~/1.gif" alt="Loading..." />
+</div>
+
+
+<div class="card" style="width: 60%; margin-top: 10px;">
+    <div class="card-header">
+        <h4>البحث</h4>
+    </div>
+    <div class="card-body">
+        <div class="input-group" style="width:60%">
+            <button id="okay" class="btn btn-outline-primary"><b>إنشاء</b></button>
+            <input type="date" id="dateTo" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+            <label class="input-group-text">الي</label>
+            <input type="date" id="dateFrom" class="form-control" value='@DateTime.Now.Date.ToString("yyyy-MM-dd")'>
+            <label class="input-group-text">من</label>
+        </div>
+        <form>
+            <div class="hour">
+                <input type="radio" id="hours" name="hours">
+                <label for="hours">24 ساعه</label><br>
+            </div>
+            <div class="wrady">
+                <input type="radio" id="wrady" name="hours" checked>
+                <label for="wrady">ورادى</label><br>
+            </div>
+            <div class="wrady">
+                <input type="radio" id="fileNo" name="hours">
+                <label for="fileNo">برقم الملف</label><br>
+            </div>
+            <div class="wrady">
+                <input type="radio" id="dept" name="hours">
+                <label for="dept">بالقسم</label><br>
+            </div>
+        </form>
+        <div class=choise>
+            <div class="props">
+                <div class="row " style="justify-content: center;">
+
+                    <div class="col-6 p-1">
+                        <div class="input-group">
+                            <input id="FN" type="number" class="form-control" value="" />
+                            <!--input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialog.dialog('open')" /-->
+                           <label for="FN" class="input-group-text bg-info">رقم الملف</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="props">
+                <div class="row " style="justify-content: center;">
+
+                    <div class="col-6 p-1">
+                        <div class="input-group">
+                            <select id="dept_id" type="number" class="form-control" />
+                                @foreach (var row in db.Query(selectQueryString))
+                                {
+                                    <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                }
+                            </select>
+                            <label for="dept_id" class="input-group-text bg-info">القسم</label>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <br>
+    </div>
+</div>
+<div>
+    <div><button id="uploadATT" class="btn btn-outline-success"><b>رفع</b></button></div>
+    <div id="progress" class="progress" style="height:30px">
+        <div id="bar" class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar"
+            style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
 </div>
 <br>
+<div class="table table-responsive" style="overflow-y:auto;box-shadow:0px 0px 10px 5px #AAA">
+    <table id="tbl" class="table table-bordered" dir="rtl">
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>رقم الملف</th>
+                <th>الاسم</th>
+                <th>القسم</th>
+                <th>من</th>
+                <th>الى</th>
+            </tr>
+            <tr>
+                <th><input type="search" id="DF" /></th>
+                <th><input type="search" id="FNF" /></th>
+                <th><input type="search" id="NF" /></th>
+                <th><input type="search" id="DEPTF" /></th>
+                <th><input type="search" id="FF" /></th>
+                <th><input type="search" id="TF" /></th>
+            </tr>
+        </thead>
+        <tbody>
 
-    <form> 
-      <div class="hour">
-      <input type="radio" id="hours" name="hours">
-        <label for="html">24 ساعه</label><br>
-    </div>
-     <div class="wrady">
-      <input type="radio" id="wrady" name="hours"  checked>
-      <label for="css">ورادى</label><br>
-    </div>
-    </form>
-<div id="progress" class="progress" style="height:30px">
-    <div id="bar" class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </tbody>
+    </table>
 </div>
-<br>
-<div class="table table-responsive" style="overflow-y:auto;height:800px">
-<table id="tbl" class="table table-bordered" dir="rtl">
- <thead>
-     <tr>
-         <th>التاريخ</th>
-         <th>رقم الملف</th>
-         <th>الاسم</th>
-         <th>القسم</th>
-         <th>من</th>
-         <th>الى</th>
-     </tr>
-     <tr>
-         <th><input type="search" id="DF"/></th>
-         <th><input type="search" id="FNF"/></th>
-         <th><input type="search" id="NF" /></th>
-         <th><input type="search" id="DEPTF" /></th>
-         <th><input type="search" id="FF"/></th>
-         <th><input type="search" id="TF"/></th>
-     </tr>
- </thead>
- <tbody >
+@if (Int32.Parse(Request.Cookies["Attendance"].Value) >= 3)
+{
+    <div class="myModal modal fade MODALIN" id="MODALIN" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">حضور</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                    <div class="row">
+                        <div class="col-6">
+                            <div id="DIN" class="datefrom" style="border-radius:10px;text-align:right"></div>
+                        </div>
+                        <div class="col-6">
+                            التاريخ
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="time" id="TIN" style="border-radius:10px;text-align:center">
+                        </div>
+                        <div class="col-6">
+                            الميعاد
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="checkbox" class="dayIn">
+                            ترحيل للغد
+                        </div>
+                        <div class="col-6">
+                            <select id="deviceIN" onchange="$('#TIN').val( $('#deviceIN').val())"></select>
+                        </div>
+                        <div class="col-2">
+                            من البصمة
+                        </div>
+                    </div>
 
- </tbody>
-</table> 
-</div>
+
+                    <div class="modal-footer">
+                        <button id="ADDIN" type="button" onclick="ins_in()" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="myModal modal fade MODALOUT" id="MODALOUT" tabindex="-1" role="dialog" aria-labelledby=""
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">انصراف</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                    <div class="row">
+                        <div class="col-6">
+                            <div id="DOUT" class="datefrom" style="border-radius:10px;text-align:right"></div>
+                        </div>
+                        <div class="col-6">
+                            التاريخ
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="time" id="TOUT" style="border-radius:10px;text-align:center">
+                        </div>
+                        <div class="col-6">
+                            الميعاد
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="checkbox" class="dayOut">
+                            ترحيل للغد
+                        </div>
+                        <div class="col-6">
+                            <select id="deviceOUT" onchange="$('#TOUT').val( $('#deviceOUT').val())"></select>
+                        </div>
+                        <div class="col-2">
+                            من البصمة
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="ADDOUT" type="button" onclick="ins_out()" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <script>
     //variables
     var res = [];
     var temp = [];
     //functions
     function display(data) {
-    var html = '';
-    //console.log(data);
-    $.each(data, function (index, item) {
-        html += '<tr><td>' + item.date.substr(0, 10)
-              + '</td><td>' + item.fileNumber
-              + '</td><td>' + item.name
-              + '</td><td>' + item.dept
-              + (item.timeFrom == ''||item.timeFrom == null ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeFrom)
-              + (item.timeTo == ''||item.timeTo == null ? '</td><td style="background-color:#d52">' : '</td><td>' + item.timeTo)
-              + '</td></tr>';
-    });
-    $('tbody').html(html);
-}
+        var html = '';
+        //console.log(data);
+        $.each(data, function (index, item) {
+            html += '<tr><td>' + item.date.substr(0, 10)
+                + '</td><td>' + item.fileNumber
+                + '</td><td>' + item.name
+                + '</td><td>' + item.dept
+                + (item.timeFrom == '' || item.timeFrom == null ? '</td><td onclick="MODALIN($(this))" style="background-color:#d52">' : '</td><td onclick="MODALIN($(this))">' + item.timeFrom)
+                + (item.timeTo == '' || item.timeTo == null ? '</td><td onclick="MODALOUT($(this))" style="background-color:#d52">' : '</td><td onclick="MODALOUT($(this))">' + item.timeTo)
+                + '</td></tr>';
+        });
+        $('tbody').html(html);
+    }
     function excute() {
         $.ajax({
-            url: "GetMacAtt",
+            url: "/Mac/GetMacAtt",//new attendace 
             data: { F: $('#dateFrom').val(), T: $('#dateTo').val() },
             success: function (response) {
-                
+
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(response);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    function excuteFN() {
+        $.ajax({
+            url: "/Mac/GetMacAttNewFN",//new attendace 
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val(), FN: $('.choise #FN').val() },
+            success: function (response) {
+
+                res = response;
+                temp = response;
+                display(res.slice(0, 50));
+                console.log(response);
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    function excuteDept() {
+        $.ajax({
+            url: "/Mac/GetMacAttNewDept",//new attendace 
+            data: { F: $('#dateFrom').val(), T: $('#dateTo').val(), dept: $('.choise #dept_id').val() },
+            success: function (response) {
                 res = response;
                 temp = response;
                 display(res.slice(0, 50));
@@ -151,9 +364,9 @@ th, td, input, select {
         });
     }
     function excute24() {
-        let sql=`with cte as
+        let sql = `with cte as
 (
-select dateadd(hour,6,cast( '${ $("#dateFrom").val() }' as datetime)) date1
+select dateadd(hour,6,cast( '${$("#dateFrom").val()}' as datetime)) date1
 union all
 select dateadd(day,1,date1) from cte where date1<='${$("#dateTo").val()}'
 ) 
@@ -167,225 +380,287 @@ join (select *,(select name from Departements where id=DepartementId)dept from E
 --where FileNumber=11454
 group by cast(dateI1 as date), ac.FileNumber,emp.KnownAs,emp.dept 
 order by FileNumber,date`;
-           var response = readSQL(sql);
-
-
+        var response = readSQL(sql);
         res = response;
         temp = response;
         if (res.length > 0) display(res.slice(0, 50));
-
         console.log(response);
-            
+        /*let sql = `DECLARE @@d1 DATE = '${$("#dateFrom").val()}',@@d2 DATE = '${$("#dateTo").val()}';
+					WITH cte
+AS
+(SELECT
+    DATEADD(HOUR, 6, CAST(@@d1 AS DATETIME)) date1
+  UNION ALL
+  SELECT
+    DATEADD(DAY, 1, date1)
+  FROM cte
+  WHERE date1 <= @@d2)
+SELECT
+  CAST(dateI1 AS DATE) 'date'
+ ,ac.FileNumber fileNumber
+ ,emp.KnownAs name
+ ,emp.dept
+ --,ac.acin
+ --,ac.acout
+ ,CAST(MIN(acin) AS TIME(0)) timeFrom
+ ,CAST(MAX(acout) AS TIME(0)) timeTo
+FROM (SELECT
+    FileNumber
+   ,DateTime
+   ,Type
+   ,CASE
+      WHEN Type = 'in' THEN DateTime
+      ELSE NULL
+    END 'acin'
+   ,CASE
+      WHEN Type = 'out' THEN DateTime
+      ELSE NULL
+    END 'acout'
+  FROM AClogs) ac
+JOIN (SELECT
+    date1 dateI1
+   ,DATEADD(HOUR, 24, date1) dateI2
+   ,DATEADD(HOUR, 3, date1) dateO1
+   ,DATEADD(HOUR, 27, date1) dateO2
+  FROM cte) limit
+  ON (ac.DateTime BETWEEN limit.dateI1 AND limit.dateI2
+      AND ac.Type = 'in')
+    OR (ac.DateTime BETWEEN limit.dateO1 AND limit.dateO2
+      AND ac.Type = 'out')
+JOIN (SELECT
+    *
+   ,(SELECT
+        name
+      FROM Departements
+      WHERE id = DepartementId)
+    dept
+  FROM Employees) emp
+  ON emp.FileNumber = ac.FileNumber
+GROUP BY ac.FileNumber
+        ,emp.KnownAs
+        ,emp.dept
+        ,cast(dateI1 AS DATE)
+ORDER BY FileNumber, date`;
+let dateFrom = new Date($("#dateFrom").val());
+let dateTo = new Date($("#dateTo").val());
+let sql_queries = [];
+
+while (dateFrom <= dateTo) {
+    let formattedDate = dateFrom.toISOString().split('T')[0];
+    let sql_query = `
+        SELECT
+            CAST('${formattedDate}' AS DATE) 'date',
+            ac.FileNumber AS fileNumber,
+            emp.KnownAs AS name,
+            dept.name AS dept,
+            CAST(MIN(CASE WHEN ac.Type = 'in' THEN ac.DateTime ELSE NULL END) AS TIME(0)) AS timeFrom,
+            CAST(MAX(CASE WHEN ac.Type = 'out' THEN ac.DateTime ELSE NULL END) AS TIME(0)) AS timeTo
+        FROM AClogs ac
+        INNER JOIN Employees emp ON emp.FileNumber = ac.FileNumber
+        INNER JOIN Departements dept ON dept.id = emp.DepartementId
+        WHERE ac.DateTime BETWEEN DATEADD(HOUR, 6, '${formattedDate}') AND DATEADD(HOUR, 27, '${formattedDate}')
+        GROUP BY ac.FileNumber, emp.KnownAs, dept.name
+        ORDER BY ac.FileNumber, date;
+    `;
+    sql_queries.push(sql_query);
+    dateFrom.setDate(dateFrom.getDate() + 1);
+}
+
+        temp = res;
+        if (res.length > 0) display(res.slice(0, 50));
+        console.log(res);
+
+Promise.all(sql_queries.map(query => readSQL_MAX(query)))
+    .then(responses => {
+        res = responses.flat();
+        temp = res;
+        if (res.length > 0) display(res.slice(0, 50));
+        console.log(res);
+    })
+    .catch(error => console.error(error));
+*/		
         
     }
-   
-   
     //events
     $("#FNF,#NF,#DEPTF").keyup(function () {
         temp = res;
 
         if ($("#FNF").val()) {
-            temp = temp.filter(w => w.fileNumber == $("#FNF").val()).filter(w=>w.name.includes($("#NF").val())==true);
+            temp = temp.filter(w => w.fileNumber == $("#FNF").val()).filter(w => w.name.includes($("#NF").val()) == true);
         }
         if ($("#NF").val()) {
-            temp = temp.filter(w=>w.name.includes($("#NF").val()) == true);
+            temp = temp.filter(w => w.name.includes($("#NF").val()) == true);
         }
         if ($("#DEPTF").val()) {
-            temp = temp.filter(w=>w.dept.includes($("#DEPTF").val()) == true);
+            temp = temp.filter(w => w.dept.includes($("#DEPTF").val()) == true);
         }
         display(temp.slice(0, 50));
     });
-    
+
     $("#okay").click(function () {
-       if($("#wrady").is(':checked')) excute();
-       if($("#hours").is(':checked')) excute24();
+        switch (true) {
+            case $("#wrady").is(':checked'):
+                {
+                    //$("#progress").show(); // Show loading gif
+                    $(document).ajaxStart(function () {
+                       // $("#progress").show(); // Show loading gif when AJAX call starts
+                    });
+                    excute();
+                    $(document).ajaxStop(function () {
+                        //$("#progress").hide(); // Hide loading gif when all AJAX calls are complete
+                    });
+                    //akhmaia aiamhka
+                    //excute();
+                } break;
+            case $("#hours").is(':checked'):
+                {
+                    excute24();
+                } break;
+            case $("#fileNo").is(':checked'):
+                {
+                    excuteFN();
+
+                } break;
+            case $("#dept").is(':checked'):
+                {
+                    excuteDept();
+                } break;
+        }
     });
-    
+
 </script>
 
 <!--رفع النتائج الي جدول الحضور -->
 <script>
-    /*var run = false;
-    var total = 0, tempDone = 0;
-   function uploadATT(arr) {
-        var promises = [];
-        if (!run) { total = arr.length; }
-        run = true;
-        total==0?arr.length:0;
-        //console.log(temp.length);
-        for (var i = 0; i < 1000; i++) {
-            if(i<arr.length){
-                var request = $.ajax({
-                url: "SetMacAtt",
-                data: {
-                    FN: arr[i].fileNumber,
-                    DT: arr[i].date.substr(0,10),
-                    F: arr[i].timeFrom,
-                    T: arr[i].timeTo
-                },
-                success: function (response) {
-                    console.log("successfull!");
-                    tempDone++;
-                    if (tempDone == total){
-                        $("#bar").removeClass("progress-bar-animated");
-                        run=false;
-                    } 
-                    $("#bar").css("width", tempDone / total * 100 + "%");
-                    $("#bar").html('<b>'+(tempDone / total * 100).toFixed(2) + "%"+'</b>');
-                },
-                fail: function (response) {
-                    console.log("failed!");
-                    console.log(response);
-                }
-            });
+    var total = 0,
+        tempDone = 0
+    let index = 0;
+    var sql = [];
+    function uploadATT(arr) {
+        sql = []
 
-            }
-            
-            promises.push(request);
+        for (let j = 0; j < arr.length; j++) {
+            try {
+                arr[j].timeFrom = arr[j].timeFrom == null ? '' : arr[j].timeFrom;
+                arr[j].timeTo = arr[j].timeTo == null ? '' : arr[j].timeTo;
+                sql.push(`if not exists(select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${arr[j].date.substr(0, 10)}' and  e.FileNumber='${arr[j].fileNumber}')
+                            begin insert into  Attendances(
+                                    DateFrom,
+                                    EmployeeId,
+                                    TimeFrom,
+                                    TimeTo,
+                                    AttendanceTypeId
+                                )
+                            select '${arr[j].date.substr(0, 10)}',id,'${arr[j].timeFrom}','${arr[j].timeTo}',2 from Employees where FileNumber='${arr[j].fileNumber}'
+                            end
+                            else
+                            begin
+                            update  A set 
+                                    A.TimeFrom='${arr[j].timeFrom}',
+                                    A.TimeTo='${arr[j].timeTo}',
+                                    A.AttendanceTypeId=2
+                            from Attendances A join Employees E on E.id=A.EmployeeId  
+                            where FileNumber='${arr[j].fileNumber}' and A.DateFrom='${arr[j].date.substr(0, 10)}'
+                            end;
+                            `)
+            } catch (e) { console.log(e) }
         }
+        console.log(sql.length)
+        index = 0;
+        call_ajax(index)
 
-        $.when.apply($, promises).always(function () {
-            //
-            arr.splice(0, 1000);
-            if (arr.length > 0) uploadATT(arr);
-            else
-            {
-                run = false;
-                console.log('All Done');
-            }
+        //}
+    }
+    function call_ajax(i) {
+        console.log(i)
+        $.ajax({
+            url: "/SQL/Excute",
+            //async: false,
+            data: { sql: sql[i] },
+            success: function (res) {
+                data = JSON.parse(res);
+                //console.log(data)
+                if (data == 1)
+                    $("#bar").css("width", ((i + 1) * 100 / sql.length).toFixed(2) + "%");
+                $("#bar").html('<b>' + ((i + 1) * 100 / sql.length).toFixed(2) + "%" + '</b>');
+                index++;
+                if (index != sql.length) call_ajax(index)
+            },
         });
     }
-    
-    $("#uploadATT").click(function(){
-       total = 0; tempDone = 0;
-       uploadATT(temp);
+    $("#uploadATT").click(function () {
+        total = 0; tempDone = 0;
+        i = 0;
+        uploadATT(temp);
     });
-    */
 </script>
-<!--رفع النتائج الي جدول الحضور -->
-<script>
-  var total = 0,
-      tempDone = 0,
-      i=0,
-      noPerTime=3;
-      var sql='';
-   function uploadATT(arr) {
-        i=0;
-        //tempDone = 0;
-        //if(i==0)console.log(arr.length);
-        total = arr.length;
-        for(i=0;i<total;i+=noPerTime)
-        {
-            for(var j=i;j<i+noPerTime;j++)
-            {
-                try{
-            arr[j].timeFrom = arr[j].timeFrom==null?'':arr[j].timeFrom;
-            arr[j].timeTo = arr[j].timeTo==null?'':arr[j].timeTo;
-         sql=`
-            if not exists(
-            select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${arr[j].date.substr(0,10)}' and  e.FileNumber='${arr[j].fileNumber}'
-            )
-            begin
-            insert into  Attendances(
-                    DateFrom,
-                    EmployeeId,
-                    TimeFrom,
-                    TimeTo,
-                    AttendanceTypeId
-                )
-            select
-            '${arr[j].date.substr(0,10)}',id,'${arr[j].timeFrom}','${arr[j].timeTo}',2 from Employees where FileNumber='${arr[j].fileNumber}'
-            end
-            else
-            begin
-            update  A set 
-                    A.TimeFrom='${arr[j].timeFrom}',
-                    A.TimeTo='${arr[j].timeTo}',
-                    A.AttendanceTypeId=2
-            from Attendances A join Employees E on E.id=A.EmployeeId  
-            where FileNumber='${arr[j].fileNumber}' and A.DateFrom='${arr[j].date.substr(0,10)}'
-            end;
-            `
-            
-            }catch(e)
-            {
-                console.log(e);
-            }
-            console.log(`total=>${total} ,i=>${i} ,j=>${j}`)
-            //console.log(sql); 
-            if (excuteSQL(sql) == 1) {
 
-                console.log("successfull!");
-                $("#bar").css("width", ((i + noPerTime) * 100 / total).toFixed(2) + "%");
-                $("#bar").html('<b>' + ((i + noPerTime) * 100 / total).toFixed(2) + "%" + '</b>');
-                //i+=noPerTime;
-            }
-            else {
-                console.log("failed!");
-                $("#bar").css("width", ((i + noPerTime) * 100 / total).toFixed(2) + "%");
-                $("#bar").html('<b>' + ((i + noPerTime) * 100 / total).toFixed(2) + "%" + '</b>');
-                //i+=noPerTime;
-            }
-            
-            /*setTimeout(function() { 
-            //uploadATT(arr);
-            },100);*/
-            }
-            
-        }
-        
-       
-        
-    }
-    </script>   
-     <script>
-    async function uploadATT_P(arr) {
-       
-        tempDone = 0;
-        if(i==0)console.log(arr.length);
-        total = arr.length;
-        var pro=[]
-        for(var k=0;k<arr.length;k++)
-        {
-        var sql=`
-            if not exists(
-            select * from Attendances A join Employees E on A.EmployeeId=E.Id where A.DateFrom='${arr[i].date.substr(0,10)}' and  e.FileNumber='${arr[i].fileNumber}'
-            )
-            begin
-            insert into  Attendances(
-                    DateFrom,
-                    EmployeeId,
-                    TimeFrom,
-                    TimeTo,
-                    AttendanceTypeId
-                )
-            select
-            '${arr[k].date.substr(0,10)}',id,'${arr[k].timeFrom}','${arr[k].timeTo}',2 from Employees where FileNumber='${arr[i].fileNumber}'
-            end
-            else
-            begin
-            update  A set 
-                    A.TimeFrom='${arr[i].timeFrom}',
-                    A.TimeTo='${arr[i].timeTo}',
-                    A.AttendanceTypeId=2
-            from Attendances A join Employees E on E.id=A.EmployeeId  
-            where FileNumber='${arr[i].fileNumber}' and A.DateFrom='${arr[i].date.substr(0,10)}'
-            end;
-            `
-        pro.push(await excuteSQL2(sql));
-        }
-        //Promise.all(pro).then(()=>console.log("success!"))
-        Promise.all(pro).then((values) => {
-            //console.log(values);
-        });
-    }
-
-   
-</script>
 <script>
-     $("#uploadATT").click(function(){
-       total = 0; tempDone = 0;
-       i=0;
-       uploadATT(temp);
-    });
+    $(".props").hide()
+    $('input[name="hours"]').change(() => {
+        $(".props").hide();
+        switch (true) {
+            case $("#wrady").is(':checked'):
+                {
+
+                } break;
+            case $("#hours").is(':checked'):
+                {
+                } break;
+            case $("#fileNo").is(':checked'):
+                {
+                    $(".props").eq(0).show()
+
+                } break;
+            case $("#dept").is(':checked'):
+                {
+                    $(".props").eq(1).show()
+                } break;
+        }
+
+    })
+    var row_index = 0;
+    function MODALIN(evt) {
+        let row = evt.closest('tr')
+        let dateFrom = row.find('td:eq(0)').html();
+        let FN = row.find('td:eq(1)').html();
+        $(".dateFrom").html(dateFrom);
+        row_index = evt.parent().index();
+
+        $("#MODALIN .dayIn").prop('checked', false);
+        var sql = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime";
+        var data = readSQL(sql);
+        var html = '<option >--select--</option>';
+        for (var i = 0; i < data.length; i++) {
+            html += '<option>' + data[i].time + '</option>';
+        }
+        $('#TIN').val('');
+        $('#deviceIN').html(html);
+        $('#MODALIN').modal('show');
+    }
+    function MODALOUT(evt) {
+        let row = evt.closest('tr')
+        let dateFrom = row.find('td:eq(0)').html();
+        let FN = row.find('td:eq(1)').html();
+        $(".dateFrom").html(dateFrom);
+        row_index = row.index();
+        //console.log(row_index )
+        //console.log(fileNo)
+        $("#MODALOUT .dayOut").prop('checked', false);
+        var sql = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime";
+        var data = readSQL(sql);
+        var html = '<option >--select--</option>';
+        for (var i = 0; i < data.length; i++) {
+            html += '<option>' + data[i].time + '</option>';
+        }
+        $('#deviceOUT').html(html);
+        $('#TOUT').val('');
+        $('#MODALOUT').modal('show');
+    }
+    function ins_in() {
+        $("tbody").find("tr").eq(row_index).find("td").eq(4).html($("#TIN").val())
+    }
+    function ins_out() {
+        $("tbody").find("tr").eq(row_index).find("td").eq(5).html($("#TOUT").val())
+    }
 </script>

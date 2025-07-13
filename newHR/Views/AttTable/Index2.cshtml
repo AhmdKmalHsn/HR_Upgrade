@@ -1,1 +1,357 @@
 ﻿
+@using WebMatrix.Data;
+@if (Request.Cookies["Reports_Salary_Details"] == null)
+{
+    Response.Redirect("~/home/log");
+}
+@if (Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value) < 3)
+{
+    Response.Redirect("~/home/Index");
+}
+
+<h2>تقرير مفردات مرتب</h2>
+<hr>
+<button id="create" class="btn btn-info" onclick="dialogCrt.dialog('open')">انشاء تفاصيل مرتب جديدة</button>
+<hr>
+<div id="container" style="overflow-x:auto">
+    <table id="example" class="display" style="width:100%" dir="rtl">
+
+    </table>
+</div>
+
+<div id="Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">بيانات العامل</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id=modalTable style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>رقم الملف</th>
+                            <th>الاسم</th>
+                            <th>الاساسي</th>
+                            <th>حافز الانتظام</th>
+                            <th>حوافز اخري</th>
+                            <th>الاجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    var sqlInsert, sqlUpdate, id;
+    const sql1 = `select    filenumber,
+                            knownas name,
+                            (select name from Departements where DepartementId=Id)dept 
+from employees e left join Personals p on e.PersonalId=p.Id left join BasicBayWorks b on e.id=b.EmployeeId 
+where b.id is null and p.StatusId=1`;
+    var q =
+        `select  
+e.Id,
+e.FileNumber ,
+e.KnownAs'الأسم',
+p.JoiningDate 'تاريخ التعيين',
+dept.Name 'القسم',
+c.Name'الوظيفة',
+isNull(b.TotalSalary,0)'الاساسي',
+isNull(b.RegularityIncentive,0)'الانتظام', 
+b.ConstValue'قيمة ثابتة',
+b.NumberOfDays'عدد الأيام',
+isNull(b.ExpensiveLivingConditons,0)'غلاء_المعيشة',
+isNull(b.SkillIncentive,0)'المهارة',
+isNull(b.IncentiveIncentiveForAbsence,0)'الادارة',
+isNull(i.EmployeeFixedSalary*0.11 ,0)'خصم التأمين',
+isNull(b.TotalSalary,0)+isNull(b.RegularityIncentive,0)+
+isNull(b.ExpensiveLivingConditons,0)+isNull(b.SkillIncentive,0)+
+isNull(b.IncentiveIncentiveForAbsence,0)-isNull(i.EmployeeFixedSalary*.11 ,0)'صافي المرتب',
+isNull(b.withinSalary,0)withinSalary,
+isNull(b.isProMonthly,0)isProMonthly,
+isNull(b.isProWeekly,0)isProWeekly,
+isNull(b.ProductivityDays,0)ProductivityDays,
+isNull(b.ProductivityFixed,0)ProductivityFixed
+from    
+Employees E left join 
+JobTitles c on c.Id=e.JobTitleId left join
+Departements dept on dept.Id=e.DepartementId left join 
+Personals p on e.PersonalId=p.Id left join 
+Status s on s.Id =p.StatusId left join 
+BasicBayWorks b on E.Id=b.EmployeeId left join
+(select max(id)id,EmployeeId from InsuranceDetails group by EmployeeId)q on q.EmployeeId=e.id join 
+InsuranceDetails i on i.id=q.id 
+where p.StatusId=1`;
+   
+    var v = readSQL(q)
+    console.log(v);	   
+    var columns = [
+        {
+            "data": "Id",
+            "title": "رقم العامل",
+        },
+        {
+            "data": "FileNumber",
+            "title": "رقم الملف",
+
+        },
+        {
+            "data": "الأسم",
+            "title": "الاسم",
+
+        },
+        {
+            "data": "تاريخ التعيين",
+            "title": "تاريخ التعيين",
+            "render": function (a, b, c) {
+                return a != null ? a.substr(0, 10) : a;
+            }
+        },
+        {
+            "data": "القسم",
+            "title": "القسم",
+
+        },
+        {
+            "data": "الوظيفة",
+            "title": "الوظيفة",
+        },
+        {
+            "data": "الاساسي",
+            "title": "الراتب الشهري",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "المهارة",
+            "title": "حافزالمهارة",
+
+        },
+        {
+            "data": "غلاء_المعيشة",
+            "title": "غلاء المعيشة",
+
+        },
+        {
+            "data": "الادارة",
+            "title": "حافز مجلس الادارة",
+
+        },
+        {
+            'title':"حوافز اخرى",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:blueviolet;">'+
+                    (
+                        row.الادارة+row.المهارة+row.غلاء_المعيشة
+                    ).toFixed(2)
+                    +'</b>';
+            }
+
+        },
+        {
+            "data": "قيمة ثابتة",
+            "title": "قيمة ثابتة",
+            "render": function (a, b, c) {
+                return '<b>' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "عدد الأيام",
+            "title": "عدد الايام",
+            "render": function (a, b, c) {
+                return '<b style="font-size:24px;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "الانتظام",
+            "title": "حافز الانتظام",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            'title':"اجمالي",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:blueviolet;">'+
+                    (
+                        row.الادارة+row.المهارة+row.غلاء_المعيشة+row.الانتظام+row.الاساسي
+                    ).toFixed(2)
+                        +'</b>';
+            }
+
+        },
+        
+         {
+            'title':"الانتاج",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:orange;">'+
+                    ( 
+                        row.الاساسي/30 * row.ProductivityDays + row.ProductivityFixed     
+                    ).toFixed(2)
+                        +'</b>';
+            }
+
+        },
+        {
+            "data": "خصم التأمين",
+            "title": "خصم التأمين"
+
+        },
+        {
+            "data": "صافي المرتب",
+            "title": "صافي المرتب",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + 
+                (a < 0 ? '' : (parseFloat(a)+parseFloat(c.الاساسي/30 * c.ProductivityDays + c.ProductivityFixed)).toFixed(2)) + '</b>'
+            }
+        },
+        { 
+            "defaultContent": `<button  id='edt-btn' 
+                                        class='btn btn-success' 
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#Modal"
+                                        onclick="populateModal(this)"
+                                >
+                            Show</button>` 
+        }
+
+    ];
+
+    //console.log(columns);
+    var tb = $('#example').dataTable({
+        stateSave: true,
+        "destroy": true,
+        "data": v.filter(w => EMPS.includes('' + w.FileNumber)),
+        "columns": columns,
+        dom: 'QBlfrtip',
+        buttons: [
+            'copy', 'excel', 'print'
+        ],
+    });
+    /**workspace**/
+    
+    var empTable = $("#empTable").dataTable({
+        data: readSQL(sql1),
+        columns: [
+            {
+                title: "filenumber",
+                data: "filenumber",
+            },
+            {
+                title: "name",
+                data: "name",
+            },
+            {
+                title: "choose",
+                data: "filenumber",
+
+                render: function (a) {
+                    return `<button class="btn btn-dark" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#Modal" 
+                            onclick="populateModal(this)">
+                            show
+                            </button>`
+                }
+            }
+        ]
+    });
+    
+    $(".dt-button").addClass("btn btn-success")
+
+    function convertToNull(e) {
+        return (e == ""||e == null ? "NULL" : "'"+e+"'")
+    }
+    function convertToZero(e) {
+        return (e == "" ? 0 : e)
+    }
+
+
+    
+</script>
+
+<script>
+
+    function populateModal(e) {
+
+        const row = e.closest('tr');
+        const table2 = document.querySelector('#modalTable tbody');
+        console.log(table2);
+        let it = `
+            <tr style="background-color: #88f9fa;">
+                <td>${row.cells[1].innerText}</td>
+                <td>${row.cells[2].innerText}</td>
+                <td>${row.cells[6].innerText}</td>
+                <td>${row.cells[13].innerText}</td>
+                <td>${row.cells[10].innerText}</td>
+                <td>${row.cells[14].innerText}</td>
+            </tr>
+            <tr style="background-color: #22f922;">
+                <td colspan="6" 
+                    style="font-weight:700;font-size:24px;text-align:center;color:#33f988;">
+                >details</td>
+            </tr>
+        `
+        
+        var logs= readSQL(`SELECT * FROM
+  (    select distinct isNull(b.TotalSalary,0)'basic',
+        cast(isNull(b.TotalSalary,0)*isNull(b.NumberOfDays,0)/30+ISNULL(b.ConstValue,0) as float(2)) 'regular', 
+        isNull(b.ExpensiveLivingConditons,0)+
+        isNull(b.SkillIncentive,0)+
+        isNull(b.IncentiveIncentiveForAbsence,0)'other',
+        cast(
+        isNull(b.TotalSalary,0)+
+        isNull(b.TotalSalary,0)*isNull(b.NumberOfDays,0)/30+ISNULL(b.ConstValue,0)+
+        isNull(b.ExpensiveLivingConditons,0)+
+        isNull(b.SkillIncentive,0)+
+        isNull(b.IncentiveIncentiveForAbsence,0) as float(2)) 'total',
+        cast (b.time_stamp AS DATE)'date'     
+from aK_basicbayworks_history b 
+  where EmployeeId=${row.cells[0].innerText}
+  )q
+  order by date desc`);
+        console.log(logs);
+        if(logs==null || logs.length==0)
+        {
+            //table2.innerHTML = `<tr><td colspan="6">لا توجد بيانات</td></tr>`;
+            //return;
+        }else
+        {
+            let j=0;
+        for (let i = 0; i < logs.length; i++) {
+            
+            const prev_log =  Object.assign({}, logs[i-1]);
+            const log =  Object.assign({}, logs[i]);
+            log["date"]="";
+            console.log(log,prev_log);
+            if(JSON.stringify(log)!=JSON.stringify(prev_log))
+                {
+                    j++;
+                    it += `
+                    <tr style="background-color:">
+                        <td>${logs[i].date==null?"":logs[i].date.substr(0,10)}</td>
+                        <td>${j}</td>
+                        <td>${log.basic.toFixed(2)}</td>
+                        <td>${log.regular.toFixed(2)}</td>
+                        <td>${log.other.toFixed(2)}</td>
+                        <td>${log.total.toFixed(2)}</td>
+                    </tr>
+                    `
+                }
+        }
+        }   
+        table2.innerHTML = it;
+    }
+
+
+</script>

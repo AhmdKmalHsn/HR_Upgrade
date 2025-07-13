@@ -1,0 +1,65 @@
+﻿
+    
+<div class="container">
+        <div class="card" dir="rtl">
+            <div class="card-header">
+                <h2> الورديات</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12" style="overflow: auto;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الوردية</th>
+                                    <th>عدد ساعات العمل</th>
+                                    <th>عدد الورديات</th>
+                
+                                    
+                                </tr>
+                            <tbody id="table_data">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+       
+        let dts=readSQL(
+        `SELECT cast(id AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift2,0) AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift3,0) AS VARCHAR(MAX)) 'k',*
+        FROM Shifts s`
+    )
+        //console.log(dts.length);
+        let filterd = [];
+        for (let i = 0; i < dts.length; i++) {
+            dts[i].k = dts[i].k.split(',').sort().join(',');
+            if (filterd.findIndex(w => w.k == dts[i].k) == -1) {
+                filterd.push(dts[i]);
+            }
+
+        }
+        //console.log(filterd.length);
+        //console.log(filterd);
+        filterd.map(x=>x.NoOfShifts=x.NoOfShifts+1);
+        let html = '';
+        let cols = ["Id", "ShiftName", "DailyHours", "NoOfShifts"];
+        for (let i = 0; i < filterd.length; i++) {
+            const ele = filterd[i];
+            html += "<tr>";
+            for (let j = 0; j < cols.length; j++) {
+                
+                if(cols[j]!="Id")html += "<td>" + (filterd[i][cols[j]] ?? '') + "</td>";
+                else html += '<td><a href="/masterdata/shift?q='+ (filterd[i][cols[j]] ?? '') + `">${ (filterd[i][cols[j]] ?? '')}</td>`;
+            }
+            html += "</tr>";
+        }
+        $("#table_data").html(html);
+        $("table").DataTable();
+    </script>   
+
+
+

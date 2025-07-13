@@ -2,110 +2,124 @@
 {
     Response.Redirect("~/home/Index");
 }
+
 <head>
     <link rel="stylesheet" href="~/Assets/Attendance.css">
+    <style>
+        .sp-ch {
+            display: none;
+        }
+
+        td:hover {
+            scale: 1.2;
+        }
+    </style>
 </head>
 
 <h2>جدول الحضور</h2>
 <hr>
-
 <div id="empContainer" title="بيانات العمال">
     <table id=empTable style="width:100%"></table>
 </div>
+<div class="container mx-auto">
+    <div class="row">
+        <div class="col-xl-6 col-md-6 col-sm-12">
+            <form class="" action="" method="post" onsubmit="getTable(); return false;" style="
+                border: 1px aliceblue solid;
+                /*width: 39%;*/
+                background-color: #9dc8ed;
+                border-radius: 7%;
+                padding: 16px;
+                box-shadow:0 0 10px 5px #afafaf; 
+            ">
+                <div class="container mx-auto">
+                    <div class="row row-reversed">
+                        <div class="col p-1">
+                            رقم االملف
+                        </div>
+                        <div class="col-9 p-1">
+                            <div class="input-group">
+                                <input id="FN" type="number" class="form-control">
+                                <input id="FNChoose" type="button" class="btn btn-outline-dark" value="☰"
+                                    onclick="dialog.dialog('open')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-reversed">
+                        <div class="col  p-1">
+                            الشهر
+                        </div>
+                        <div class="col-9  p-1">
+                            <select id="M" class="form-control">
+                                <option value="1">1-يناير</option>
+                                <option value="2">2-فبراير</option>
+                                <option value="3">3-مارس</option>
+                                <option value="4">4-ابريل</option>
+                                <option value="5">5-مايو</option>
+                                <option value="6">6-يونيو</option>
+                                <option value="7">7-يوليو</option>
+                                <option value="8">8-اغسطس</option>
+                                <option value="9">9-سبتمبر</option>
+                                <option value="10">10-اكتوبر</option>
+                                <option value="11">11-نوفمبر</option>
+                                <option value="12">12-ديسمبر</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row-reversed">
+                        <div class="col p-1">
+                            السنة
+                        </div>
+                        <div class="col-9 p-1">
+                            <select id="Y" class="form-control">
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3 p-1">
+                            <input type="submit" onclick="" class="w-100 btn btn-success" value="تأكيد">
+                        </div>
+                    </div>
 
-<form class="p-2" action="" method="post" onsubmit="getTable(); return false;">
-    <div class="container mx-auto">
-        <div class="row row-reversed">
-            <div class="col-1 p-1">
-                رقم االملف
-            </div>
-            <div class="col-6 p-1">
-                <div class="input-group">
-                    <input id="FN" type="number" class="form-control" />
-                    <input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialog.dialog('open')" />
                 </div>
-            </div>
+            </form>
         </div>
-        <div class="row row-reversed">
-            <div class="col-1  p-1">
-                الشهر
-            </div>
-            <div class="col-6  p-1">
-                <select id="M" class="form-control">
-                    <option value="1">1-يناير</option>
-                    <option value="2">2-فبراير</option>
-                    <option value="3">3-مارس</option>
-                    <option value="4">4-ابريل</option>
-                    <option value="5">5-مايو</option>
-                    <option value="6">6-يونيو</option>
-                    <option value="7">7-يوليو</option>
-                    <option value="8">8-اغسطس</option>
-                    <option value="9">9-سبتمبر</option>
-                    <option value="10">10-اكتوبر</option>
-                    <option value="11">11-نوفمبر</option>
-                    <option value="12">12-ديسمبر</option>
-                </select>
-            </div>
-        </div>
-        <div class="row row-reversed">
-            <div class="col-1 p-1">
-                السنة
-            </div>
-            <div class="col-6 p-1">
-                <select id="Y" class="form-control">
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-3 p-1">
-                <input type="submit" onclick="" class="w-100 btn btn-success" value="تأكيد" />
-            </div>
-        </div>
-
     </div>
-</form>
-
-<div id="personal_data" class="container mx-auto">
+    <div class="row">
+        <div id="personal_data" class="col-xl-6 col-md-6 col-sm-12">
+        </div>
+    </div>
 </div>
-<div id="loader"><img src="~/3.gif" style="margin:auto"></div>
-<div id="mytable" class="card table table-responsive">
+<div id="loader"><img src="~/3.gif" style="margin:auto;width:350px;"></div>
+<div id="mytable" class=" table table-responsive">
+
+</div>
+<div id="mytable2" class=" table table-responsive">
 
 </div>
 @if (Int32.Parse(Request.Cookies["ClosingPeriod"].Value) >= 3)
 {
-    <div class="card">
-        <table class='table ' id="salary" style="" dir=rtl></table>
+    <div class="card" style="border:none;">
+        <table class='table' id="salary" style="" dir=rtl>
+
+        </table>
     </div>
 }
-@*
-<div id="contextMenu" class="dropdown clearfix">
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
-        <li>
-            <p tabindex="-1" dir="rtl" onclick="$('#ModalTemp').modal('show');">تغيير وردية مؤقتة</p>
-        </li>
-        <li>
-            <p tabindex="-1" dir="rtl" onclick="">تعديل مرتب</p>
-        </li>
-        <li>
-            <p tabindex="-1" dir="rtl" onclick="">تعديل بيانات</p>
-        </li>
-        <li>
-            <p tabindex="-1" dir="rtl" onclick="">تحويل لقسم/وظيفة</p>
-        </li>
-    </ul>
-</div>
-*@
+
 @if (Int32.Parse(Request.Cookies["Attendance"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALIN" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="myModal modal fade MODALIN" id="MODALIN" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false"
+        aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">حضور</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -126,30 +140,36 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-4">
+                            <input type="checkbox" class="dayIn">
+                            ترحيل للغد
+                        </div>
                         <div class="col-6">
                             <select id="deviceIN" onchange="$('#TIN').val( $('#deviceIN').val())"></select>
                         </div>
-                        <div class="col-6">
+                        <div class="col-2">
                             من البصمة
                         </div>
                     </div>
 
 
                     <div class="modal-footer">
-                        <button id="ADDIN" type="button" onclick="ins_in()" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
+                        <button id="ADDIN" type="button" onclick="ins_in()" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="myModal modal fade " id="MODALOUT" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="myModal modal fade MODALOUT" id="MODALOUT" tabindex="-1" role="dialog" aria-labelledby=""
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">انصراف</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -170,16 +190,21 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-4">
+                            <input type="checkbox" class="dayOut">
+                            ترحيل للغد
+                        </div>
                         <div class="col-6">
                             <select id="deviceOUT" onchange="$('#TOUT').val( $('#deviceOUT').val())"></select>
                         </div>
-                        <div class="col-6">
+                        <div class="col-2">
                             من البصمة
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button id="ADDOUT" type="button" onclick="ins_out()" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
+                        <button id="ADDOUT" type="button" onclick="ins_out()" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
 
                     </div>
                 </div>
@@ -190,13 +215,14 @@
 
 @if (Int32.Parse(Request.Cookies["Mission"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALMission" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="myModal modal fade " id="MODALMission" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false"
+        aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">مأمورية</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -235,8 +261,10 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button id="ADDMission" onclick="ins_mission()" type="button" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
-                        <button id="DELMission" onclick="del_mission()" style="float:left" type="button" class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
+                        <button id="ADDMission" onclick="ins_mission()" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELMission" onclick="del_mission()" style="float:left" type="button"
+                            class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -246,13 +274,14 @@
 
 @if (Int32.Parse(Request.Cookies["OverTime"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="ModalOvertime" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="myModal modal fade " id="ModalOvertime" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle">الاضافي</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -283,8 +312,10 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button id="add" onclick="ins_overtime()" type="button" class="btn btn-success  " data-bs-dismiss="modal">أضافة</button>
-                        <button id="delete" onclick="del_overtime()" style="float:left" type="button" class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
+                        <button id="add" onclick="ins_overtime()" type="button" class="btn btn-success  "
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="delete" onclick="del_overtime()" style="float:left" type="button"
+                            class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -294,13 +325,14 @@
 
 @if (Int32.Parse(Request.Cookies["Vacation"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="ModalVacation" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="myModal modal fade " id="ModalVacation" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false"
+        aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle">اجازة</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -408,8 +440,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="add" onclick="ins_vacation()" type="button" class="btn btn-success  " data-bs-dismiss="modal">أضافة</button>
-                        <button id="delete" onclick="del_vacation()" style="float:left" type="button" class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
+                        <button id="add" onclick="ins_vacation()" type="button" class="btn btn-success  "
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="delete" onclick="del_vacation()" style="float:left" type="button"
+                            class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -417,33 +451,34 @@
     </div>
 }
 
-@if (Int32.Parse(Request.Cookies["TempShifts"].Value) >= 5)
+@if (Int32.Parse(Request.Cookies["TempShifts"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="ModalTemp" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="myModal modal fade " id="ModalTemp" tabindex="-1" role="dialog" aria-labelledby="vacation"
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle">تسجيل ورديه خاصه</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
                     <div class="row">
                         <div class="col-4">
-                            <input type="date" id="dateFrom" class="dateFrom" style="border-radius:10px;text-align:center">
+                            <input type="date" id="dateTo" class="dateTo form-control" style="border-radius:10px;text-align:center">
                         </div>
                         <div class="col-2">
                             الى
                         </div>
                         <div class="col-4">
-                            <input type="date" id="dateTo" class="dateTo" style="border-radius:10px;text-align:center">
+                            <input type="date" id="dateFrom" class="dateFrom form-control" style="border-radius:10px;text-align:center">
                         </div>
                         <div class="col-2">
                             من
                         </div>
                     </div>
-                    <div class="row">
+                    <!--div class="row">
                         <div class="col-4">
                             <input type="time" id="timeTo" style="border-radius:10px;text-align:center">
                         </div>
@@ -456,32 +491,24 @@
                         <div class="col-2">
                             من
                         </div>
-                    </div>
+                    </div-->
+                    
                     <div class="row">
-                        <div class="col-4">
-                            التاخيرات
+                        <div class="col-3">
+                            الوردية
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <select name="delay" id="delay" style="border-radius:10px;text-align:center"></select>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            الانصراف
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <select name="leave" id="leave" style="border-radius:10px;text-align:center"></select>
+                        <div class="col-11">
+                            <select class="form-control" name="shiftId" id="shiftId" style="border-radius:10px;text-align:center"></select>
                         </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button id="add" type="button" onclick="ins_temp()" class="btn btn-success  " data-bs-dismiss="modal">أضافة</button>
-
+                        <button id="add" type="button" onclick="ins_temp()" class="btn btn-success  "
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="del_temp" type="button" onclick="del_temp()" class="btn btn-danger  "
+                            data-bs-dismiss="modal">ازالة التأثير</button>
                     </div>
                 </div>
             </div>
@@ -490,13 +517,14 @@
 }
 @if (Int32.Parse(Request.Cookies["Attendance"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALATT" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="myModal modal fade " id="MODALATT" tabindex="-1" role="dialog" aria-labelledby="vacation"
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center"> ** حضور **</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -519,8 +547,10 @@
 
 
                     <div class="modal-footer">
-                        <button id="ADD" onclick="ins_ATT()" type="button" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
-                        <button id="DELETE" onclick="del_ATT()" type="button" class="btn btn-danger" data-bs-dismiss="modal">حذف</button>
+                        <button id="ADD" onclick="ins_ATT()" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELETE" onclick="del_ATT()" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -529,13 +559,14 @@
 }
 @if (Int32.Parse(Request.Cookies["Attendance"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALLATE" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="myModal modal fade " id="MODALLATE" tabindex="-1" role="dialog" aria-labelledby="vacation"
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">تأخير</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -558,23 +589,27 @@
 
 
                     <div class="modal-footer">
-                        <button id="ADD" onclick="ins_LATE()" type="button" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
-                        <button id="DELETE" onclick="del_LATE()" type="button" class="btn btn-danger" data-bs-dismiss="modal">حذف</button>
+                        <button id="ADD" onclick="ins_LATE()" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELETE" onclick="del_LATE()" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 }
 @if (Int32.Parse(Request.Cookies["Attendance"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALLEAVE" tabindex="-1" role="dialog" aria-labelledby="vacation" aria-hidden="true">
+    <div class="myModal modal fade " id="MODALLEAVE" tabindex="-1" role="dialog" aria-labelledby="vacation"
+        aria-hidden="false" aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">انصراف </h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
@@ -595,52 +630,325 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="ADD" onclick="ins_LEAVE()" type="button" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
-                        <button id="DELETE" onclick="del_LEAVE()" type="button" class="btn btn-danger" data-bs-dismiss="modal">حذف</button>
+                        <button id="ADD" onclick="ins_LEAVE()" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELETE" onclick="del_LEAVE()" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!--الخصم -->
+
+    <div class="myModal modal fade " id="MODALDEDU" tabindex="-1" role="dialog" aria-labelledby="vacation">
+        aria-hidden="false" aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="" style="text-align:center">الجزاءات</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="false" aria-modal="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                    <div class="card" dir="rtl">
+
+                        <div class="row m-1">
+                            <div class="col-3">
+                                <label>
+                                    التاريخ
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="date" class="form-control" name="date" id="date" required="">
+                            </div>
+                        </div>
+                        <div class="row m-1" style="display:none">
+                            <div class="col-3">
+                                <label>
+                                    نوع الاستقطاع
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" name="type" id="type">
+                                    <option value="6">بدل أجازة سنوية</option>
+                                    <option value="11">تسديد مبلغ سلفة نقدا</option>
+                                    <option value="4" selected>جزاء</option>
+                                    <option value="3">خصم</option>
+                                    <option value="1">سلف</option>
+                                    <option value="9">صندوق زمالة</option>
+                                    <option value="8">قسط تأمين خاص</option>
+                                    <option value="7">كشف تأمين صحي</option>
+                                    <option value="10">مزاولة مهنة</option>
+                                    <option value="5">مكافأة</option>
+                                    <option value="2">ملابس</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    total/net
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" name="totalNet" id="totalNet" readonly>
+                                    <option value="0" selected>أجمالي</option>
+                                    <option value="1">صافي</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div class="col-3">
+                                <label>
+                                    المبلغ
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" placeholder="في حالة الخصم بالايام لا تضع المبلغ" class="form-control" name="amount" id="amount" required="">
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    عدد ايام(الجزاءات)
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" class="form-control" step="1" value="1" name="daysNumber"
+                                    id="daysNumber" onchange="convert(this.value)" onkeyup="convert(this.value)"
+                                    required="">
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div class="col-3">
+                                <label>
+                                    ملاحظات
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" name="remarks" id="remarks">
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    عدد الشهور
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" class="form-control" value="1" name="times" id="times" required="">
+                            </div>
+
+                        </div>
+                        <div class="row m-1" style="display:none">
+                            <div class="col-3">
+                                <label>
+                                    سبب الجزاء
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" name="reason" id="reason">
+                                    <option value="-1"></option>
+                                    <option value="1">الاهمال في العمل</option>
+                                    <option value="2">النوم اثناء العمل</option>
+                                    <option value="3">استخدام الموبايل لفترة طويلة</option>
+                                    <option value="4">الغياب بدون اذن</option>
+                                    <option value="5">التحدث بطريقة غير لائقة</option>
+                                    <option value="6">الجلوس لاكثر من ساعة</option>
+                                    <option value="7">شرب السجائر</option>
+                                    <option value="8">الجلوس خارج العنبر</option>
+                                    <option value="9">معيب</option>
+                                    <option value="10">عدم نظافة العنبر</option>
+                                    <option value="11">تحقيق</option>
+                                    <option value="12">تاخير عن العمل</option>
+                                    <option value="13">كثرة الهالك</option>
+                                    <option value="14">سوء جودة</option>
+                                    <option value="15">مسامير رايش</option>
+                                    <option value="16">قلة الانتاج</option>
+                                    <option value="17">سوء سلوك</option>
+                                    <option value="18">غياب بدون اذن</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <label>
+                                    القائم بالجزاء
+                                </label>
+                            </div>
+                            <div class="col-9">
+                                <div class="row" style="display:none">
+                                    <div class="col-9">
+                                        <input type="number" class="form-control" name="by" id="by"
+                                            onfocusout="/*selectList2(this.value)*/">
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn" id="openList2">☰</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="ADD" onclick="create_dedu()" type="button" class="btn btn-success"
+                        data-bs-dismiss="modal">أضافة</button>
+                    <button id="DELETE" onclick="delete_dedu()" type="button" class="btn btn-danger"
+                        data-bs-dismiss="modal">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--الخصم -->
 }
+
+
 @if (Int32.Parse(Request.Cookies["Mission"].Value) >= 3)
 {
-    <div class="myModal modal fade " id="MODALSPECIAL" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="myModal modal fade " id="MODALSPECIAL" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false"
+        aria-modal="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">مأمورية</h2>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="false" aria-modal="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
-                    <div class="row">
+                    <div class="row"><!--#DRemove-->
                         <div class="col-6">
-                            <div id="DMission" class="datefrom" style="border-radius:10px;text-align:center"></div>
+                            <div id="DRemove" class="datefrom" style="border-radius:10px;text-align:center"></div>
                         </div>
                         <div class="col-6">
                             التاريخ
                         </div>
                     </div>
-                    <div class="row">
-
+                    <div class="row "><!--#specialChoise-->
                         <div class="col-6">
-                            <select id="dayPartSpecial" class="form-control">
-                                <option value="0.25">0.25</option>
-                                <option value="0.5">0.5</option>
-                                <option value="0.75">0.75</option>
-                                <option value="1.0">1.0</option>
+                            <select id="specialChoise" class="form-control">
+                                <option value="1">اذن خاص</option>
+                                <option value="2">مأمورية</option>
+                                <option value="3">اجازة</option>
+                                <option value="4">غياب</option>
+                                <option value="5">طعام/ داخل المصنع</option>
                             </select>
                         </div>
                         <div class="col-2">
-                            القيمة
+
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--اذن خاص-->
+                        <div class="row">
+                            <div class="col-6">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0">0</option>
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                القيمة
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--مأمورية-->
+
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="time" id="TOUTMission" style="border-radius:10px;text-align:center">
+                            </div>
+
+                            <div class="col-2">
+                                الي
+                            </div>
+                            <div class="col-4">
+                                <input type="time" id="TINMission" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                من
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <select id="deviceMOUT"
+                                    onchange="$('.sp-ch #TOUTMission').eq(0).val($('.sp-ch #deviceMOUT').eq(0).val())"></select>
+                            </div>
+                            <div class="col-2"> </div>
+                            <div class="col-4">
+                                <select id="deviceMIN"
+                                    onchange="$('.sp-ch #TINMission').eq(0).val($('.sp-ch #deviceMIN').eq(0).val())"></select>
+                            </div>
+                            <div class="col-2"> من البصمة</div>
+
+                        </div>
+
+
+                    </div>
+                    <div class="sp-ch"><!--اجازة-->
+                        <div class="row">
+                            <div class="col-4">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                القيمة
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="time" id="TOUTMission" style="border-radius:10px;text-align:center">
+                            </div>
+
+                            <div class="col-2">
+                                الي
+                            </div>
+                            <div class="col-4">
+                                <input type="time" id="TINMission" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                من
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <select id="deviceMOUT"
+                                    onchange="$('.sp-ch #TOUTMission').eq(1).val($('.sp-ch #deviceMOUT').eq(1).val())"></select>
+                            </div>
+                            <div class="col-2"> </div>
+                            <div class="col-4">
+                                <select id="deviceMIN"
+                                    onchange="$('.sp-ch #TINMission').eq(1).val($('.sp-ch #deviceMIN').eq(1).val())"></select>
+                            </div>
+                            <div class="col-2"> من البصمة</div>
+
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--غياب-->
+
+                        <div class="row">
+                            <div class="col-2">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                القيمة
+                            </div>
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button id="ADDSpecial" onclick="ins_special()" type="button" class="btn btn-success" data-bs-dismiss="modal">أضافة</button>
-                        <button id="DELSpecial" onclick="del_special()" style="float:left" type="button" class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
+                    <div class="modal-footer"><!--ADDSpecial-->
+                        <button id="spBTN" onclick="/*ins_special()*/" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELSpecial" onclick="del_special()" style="float:left" type="button"
+                            class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -648,28 +956,310 @@
     </div>
 }
 <script>
-function userLog()
-	{
+    function userLog() {
 
-          return  {
-                user: $("#userName").html() ,
-                ip: '@HttpContext.Current.Request.UserHostAddress' ,
-            }
+        return {
+            user: $("#userName").html(),
+            ip: '@HttpContext.Current.Request.UserHostAddress',
+        }
     }
 </script>
-<script src="~/Assets/AttendanceSetup2.js?version=4.5"></script>
-<script src="~/Assets/Attendance2.js?version=1.5"></script>
+<script src="~/Assets/attendanceSetup2.js?version=10.59"></script>
+<script src="~/Assets/attendance2.js?version=10.56"></script>
 <script>
     var q = window.location.href;
     var url = new URL(q);
     var fileNo = url.searchParams.get("fileNo");
     var M = url.searchParams.get("M");
     var Y = url.searchParams.get("Y");
-    if(typeof fileNo!=='undefined' && typeof M!=='undefined' && typeof Y!=='undefined')
-    {
-       $("#FN").val(fileNo);
-       FN=fileNo;
-       getdata(fileNo,M,Y,1)
+    if (typeof fileNo !== 'object' && typeof M !== 'object' && typeof Y !== 'object') {
+        $("#FN").val(fileNo);
+        $("#M").val(M);
+        $("#Y").val(Y);
+        FN = fileNo;
+        $("#loader").show();
+        let archive = readSQL(`select * from SalarySheet sh join AttTable att on sh.Id=att.salarysheetid where filenumber=${FN} and month=${M} and year=${Y}`)
+        if (archive.length == 0) {
+            getdata(fileNo, M, Y, 1)
+        }
+        else {
+            displayFromArchive(archive)
+            $("input,select").attr("disabled", "true")
+        }
     }
-</script>
+    // display from archive
+    function displayFromArchive(v) {
 
+        console.error(v);
+        for (let j = 0; j < v.length; j++) {
+            for (let [key, value] of Object.entries(v[j])) {
+                if (v[j][key] == null) v[j][key] = '';
+                //console.log(`${key}: ${value}`);
+            }
+        }
+        console.error(v);
+        /*$("#personal_data").html('<div class="row row-reversed" style="background:gray;font-size:24px;border:1px #1595 solid;">'+
+                +'<td>الاسم</td><td>' + v[0].Name + '</td>'
+            + '<td>القسم</td><td>' + v[0].Department + '</td>'
+            
+            + '</div>');*/
+
+        let fno = v[0].FileNumber;
+        var html = '<table class="table table-hover"><thead class="">';
+        html += '<tr style="background-color:darkorange;">';
+        html += '<th class="--bs-cyan" style="background-color:">اليوم</th>';
+        html += '<th style="">التاريخ</th>';
+        html += '<th style="">الدخول</th>';
+        html += '<th style="">الخروج</th>';
+        html += '<th style="">الحضور</th>';
+        html += '<th style="">غياب</th>';
+        html += '<th style="">اجازة</th>';
+        html += '<th style="">تأخير</th>';
+        html += '<th style="">انصراف</th>';
+        html += '<th style="">اضافي</th>';
+        html += '<th style="">مأمورية</th>';
+        html += '<th style="">اذن خاص</th>';
+        html += '</tr></thead><tbody>';
+
+        for (var i = 0; i < v.length; i++) {
+
+            if (v[i].weekend == "0") {
+                html += '<tr>';
+                html +=
+                    '<td class="--bs-cyan" style="background-color:">' +
+                    v[i]["Dayname"] +
+                    "</td>";
+                html +=
+                    '<td style="background-color:#2098bb55">' +
+                    v[i]["dateDay"].substr(0, 10) +
+                    "</td>";
+                html +=
+                    '<td style="background-color:">' +
+                    v[i]["TimeFrom"] +
+                    "</td>";
+                html +=
+                    '<td style="background-color:">' + v[i]["TimeTo"] + "</td>";
+                html += '<td class="table-success">' + v[i]["att"] + "</td>";
+                html += '<td class="table-danger">' + v[i]["abs"] + "</td>";
+                html +=
+                    '<td class="table-warning">' + v[i]["vacDay"] + "</td>";
+                html +=
+                    '<td class="table-secondary">' + v[i]["lateHours"] + "</td>";
+                html +=
+                    '<td class="table-primary">' + v[i]["leaveHours"] + "</td>";
+                html +=
+                    '<td style="background-color:silver">' +
+                    v[i]["overTimeHour"] +
+                    "</td>";
+                html += '<td style="background-color:rgb(169 83 225 / 80%);">' + v[i]["errand"] + "</td>";
+
+                html +=
+                    '<td style="background-color:rgb(237 46 136 / 75%);">' +
+                    v[i]["special"] +
+                    "</td>";
+            }
+            else {
+                html += '<tr style="background-color:#05F548">';
+                html +=
+                    '<td  style="background-color:">' +
+                    v[i]["Dayname"] +
+                    "</td>";
+                html +=
+                    '<td style="background-color:#2098bb55">' +
+                    v[i]["dateDay"].substr(0, 10) +
+                    "</td>";
+                html +=
+                    '<td style="background-color:">' +
+                    v[i]["TimeFrom"] +
+                    "</td>";
+                html += '<td style="background-color:">' + v[i]["TimeTo"] + "</td>";
+                html += '<td >' + v[i]["att"] + "</td>";
+                html += '<td >' + v[i]["abs"] + "</td>";
+                html += '<td >' + v[i]["vacDay"] + "</td>";
+                html += '<td >' + v[i]["lateHours"] + "</td>";
+                html += '<td >' + v[i]["leaveHours"] + "</td>";
+                html += '<td style="background-color:">' +
+                    v[i]["overTimeHour"] +
+                    "</td>";
+                html += '<td ">' + v[i]["errand"] + "</td>";
+                html += '<td style="">' +
+                    v[i]["special"] +
+                    "</td>";
+            }
+
+            html += '</tr>';
+        }
+        html +=
+            '<tr><td rowspan=2 colspan="4">أجمالي</td><td rowspan=2>' +
+            v[0].Attendance +
+            "</td><td rowspan=2>" +
+            v[0].Abcence +
+            "</td><td rowspan=2>" +
+            v[0].Vacation +
+            "</td><td>" +
+            v[0].lateSum +
+            "</td><td rowspan=2>" +
+            v[0].leaveSum +
+            "</td><td rowspan=2>" +
+            v[0].overtimeSum +
+            "</td><td rowspan=2>" +
+            v[0].errand +
+            "</td><td rowspan=2>" +
+            v[0].sepcialSum +
+            "</td></tr>" +
+
+            "</td><td>" +
+            v[0].deductionSum + //parseFloat(v[0].sanctions2))+
+            "</td></tr></tbody></table>";
+        $("#mytable2").html(html);
+        $("#loader").css("display", "none");
+
+        var htmlDom =
+            "<tr><td colspan=4>مفردات المرتب</td></tr><tr><td>الاساسي</td><td>" +
+            //s.basicM +
+            //"</td><td>" +
+            v[0].SalaryMonth +
+            "</td><td>خصم التأمينات</td><td>" +
+            v[0].Insurance +
+            "</td>" +
+            "</tr><tr><td>الانتظام</td><td>" +
+            v[0].RegularityIncentive +
+            "</td><td>التاخيرات</td><td>" +
+            v[0].Delays +
+            "</td>" +
+            "</tr><tr><td>غلاء المعيشة</td><td>" +
+            v[0].ExpensiveIncetive +
+            "</td><td>الجزاءات</td><td>" +
+            v[0].Deductions +
+            "</td>" +
+            "</tr><tr><td>مجلس الادارة</td><td>" +
+            v[0].ManagmentIncetive +
+            "</td><td>الملبس</td><td>" +
+            v[0].Clothes +
+            "</td>" +
+            "</tr><tr><td>المهارة</td><td>" +
+            v[0].SkillIncentive +
+            "</td><td>السلف</td><td>" +
+            v[0].Loans +
+            "</td>" +
+            "</tr><tr><td>الاضافي</td><td>" +
+            v[0].Overtime +
+            "</td>" +
+            "</tr><tr><td>أجمالي الاستحقاقات</td><td>" +
+            v[0].Total1 +
+            "</td><td>اجمالي الاستقطاعات</td><td>" +
+            v[0].Total2 +
+            "</td>" +
+            "</tr><tr><td colspan=2>صافي المرتب</td><td colspan=2>" +
+            v[0].Total3 +
+            "</td></tr>";
+        $('#salary').html(htmlDom)
+    }
+
+</script>
+<script>
+
+    $(".sp-ch").eq(0).show();
+
+    $("#specialChoise").change(() => {
+        $(".sp-ch").hide();
+        $(".sp-ch").eq($("#specialChoise").val() - 1).show();
+    })
+
+    //for save removel
+    $("#spBTN").click(() => {
+
+        let sql = ''
+        let date = $("#DRemove").text();
+        switch ($("#specialChoise").val()) {
+            case "1":
+                {//removal_ak
+                    sql += 'insert into Absences([DateFrom],[HoursNo],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}',${$(".sp-ch #dayPartSpecial").eq(0).val()},11,(select id from employees where filenumber=${FN}),1)`
+
+                }
+                break;
+            case "2":
+                {
+                    sql += 'insert into Absences([DateFrom],[TimeFrom],[TimeTo],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}','${$(".sp-ch #TINMission").eq(0).val()}','${$(".sp-ch #TOUTMission").eq(0).val()}',4,(select id from employees where filenumber=${FN}),1)`
+
+                } break;
+            case "3":
+                {
+                    sql += 'insert into Absences([DateFrom],[TimeFrom],[TimeTo],[DayPart] ,[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}','${$(".sp-ch #TINMission").eq(1).val()}','${$(".sp-ch #TOUTMission").eq(1).val()}',${$(".sp-ch #dayPartSpecial").eq(1).val()},3,(select id from employees where filenumber=${FN}),1)`
+
+                }
+                break;
+            case "4":
+                {
+                    sql += 'update attendances set [AttValue]=1-' + $(".sp-ch #dayPartSpecial").eq(2).val()
+                    sql += ` where employeeid=(select id from employees where filenumber=${FN}) and [DateFrom]='${date}'`
+
+                }
+                break;
+            case "5":
+                {
+                    sql += 'insert into Absences([DateFrom],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}',16,(select id from employees where filenumber=${FN}),1)`
+
+                }
+                break;
+
+        }
+        console.log(sql)
+        if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+        else alert("خطأ");
+    })
+    function valu(e) { return e == '' ? 'NULL' : `'${e}'` }
+    function create_dedu() {
+        let sqlC = `
+          insert into Deductions
+          (Date,Amount,PaymentDeductionId,RecurringOneTimeId,TotalNet,
+          EmployeeId,Remarkes,DaysNumber,Reason,Imposer,createdBy)
+          values(
+            ${valu($("#MODALDEDU #date").val())},
+            ${valu($("#MODALDEDU #amount").val())},
+            ${valu($("#MODALDEDU #type").val())},
+            ${valu($("#MODALDEDU #times").val())},
+            ${valu($("#MODALDEDU #totalNet").val())},
+            (select id from employees where filenumber=${$("#FN").val()}),
+            ${valu($("#MODALDEDU #remarks").val())},
+            ${valu($("#MODALDEDU #daysNumber").val())},
+            ${valu($("#MODALDEDU #reason").val())},
+            ${valu($("#MODALDEDU #by").val())},
+            ${valu($("#userName").html())}
+          )
+         `
+       // console.log($("#MODALDEDU #fileNo").val());
+        //console.log($("#FN").val());
+        //console.log(sqlC);
+
+        if (excuteSQL(sqlC) == 1) {
+            alert("تم الحفظ بنجاح");
+        }
+        else {
+            alert("خطأ");
+        }
+    }
+function delete_dedu(){
+     let sqlC = `
+          delete from Deductions where
+          Date=${valu($("#MODALDEDU #date").val())} and 
+          PaymentDeductionId =4 and 
+          EmployeeId = (select id from employees where filenumber=${$("#FN").val()})
+         `
+        console.log(sqlC);
+
+        if (excuteSQL(sqlC) == 1) {
+            alert("تم الحذف بنجاح");
+        }
+        else {
+            alert("خطأ");
+        }
+}
+
+
+
+</script>

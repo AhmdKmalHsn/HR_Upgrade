@@ -1,0 +1,190 @@
+﻿@using WebMatrix.Data; 
+@{
+    var db = Database.Open("CS");
+    var sql= "select Id,Name from paymentDeductions ORDER BY Name";
+}
+
+<style>
+    label 
+    {
+        font-size:20px;
+        background-color:azure;
+        border:solid 1px azure;
+        border-radius:8px;
+        padding:8px; 
+    }
+</style>
+<h2>Create new Payment</h2>
+
+<form action="" method="post" class="container">
+    <div class="card">
+        <div class="row m-1">
+            <div class="col-2">
+                <label>
+                    id
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="text" class="form-control" name="id" disabled />
+            </div>
+            <div class="col-2">
+                <label>
+                    رقم الملف
+                </label>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-10">
+					    <input type="number" class="form-control" name="fileNo" onfocusout="selectList(this.value)" required />
+					</div>
+					 <div class="col-1">
+						<button type="button" class="btn" id="openList">&#9776;</button>
+				    </div>
+				</div>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-2">
+                <label>
+                    الأسم
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="text" class="form-control" name="name" disabled />
+            </div>
+            <div class="col-2">
+                <label>
+                    التاريخ
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="date" class="form-control" name="date" required />
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-2">
+                <label>
+                    نوع الاستقطاع
+                </label>
+            </div>
+            <div class="col-4">
+                <select class="form-control" name="type">
+                    @foreach (var row in db.Query(sql))
+                    {
+                        <option value="@row.id">@row.name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-2">
+                <label>
+                    total/net
+                </label>
+            </div>
+            <div class="col-4">
+                <select class="form-control" name="totalNet">
+                    <option value="0">أجمالي</option>
+                    <option value="1">صافي</option>
+                </select>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-2">
+                <label>
+                    المبلغ
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="text" class="form-control" name="amount" required />
+            </div>
+            <div class="col-2">
+                <label>
+                    عدد ايام(الجزاءات)
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="number" class="form-control" step="0.01" value="0" name="daysNumber" onchange="convert(this.value)" onkeyup="convert(this.value)" required />
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-2">
+                <label>
+                    ملاحظات
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="text" class="form-control" name="remarks" />
+            </div>
+            <div class="col-2">
+                <label>
+                    عدد الشهور
+                </label>
+            </div>
+            <div class="col-4">
+                <input type="number" class="form-control" name="times" required />
+            </div>
+
+        </div>
+    </div>
+    <input class="btn btn-primary" type="submit">
+</form>
+<div id="employees">
+<table id="empTable" class="display" width=600 >
+</table>
+</div>
+<script>
+
+var data1=readSQL('select e.id, fileNumber fileNo,knownas name,totalsalary basicsalary from Employees e left join basicbayworks b on e.id=b.employeeid');
+var f;
+$("#empTable").dataTable({
+data:data1,
+columns:[
+{
+title:"id",
+data:"id",
+width:"20px",
+},
+{
+title:"رقم الملف",
+data:"fileNo",
+width:"20px",
+},
+{
+title:"الاسم",
+data:"name",
+width:"20px",
+},
+{
+title:"أختر",
+data:"fileNo",
+width:"20px",
+render:function(e)
+{
+return '<button class="btn btn-primary" onclick="selectList('+e+')">اختر</button>'
+}
+},
+]
+});
+var dialog=$( "#employees" ).dialog({
+	autoOpen: false,
+    height: 500,
+    width: 600,
+    modal: true,
+});
+$("#openList").button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+function selectList(e)
+	{
+	 f=data1.filter(w=>w.fileNo==e);
+	 $("input[name=id]").val(f[0].id);
+	 $("input[name=name]").val(f[0].name);
+	 $("input[name=fileNo]").val(f[0].fileNo);
+	 console.log(f[0].basicsalary)
+	 dialog.dialog( "close" );
+	}
+	
+function convert(e)
+{
+ $("input[name=amount]").val(f[0].basicsalary*e/30);
+}
+</script>

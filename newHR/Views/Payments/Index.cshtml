@@ -1,11 +1,24 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
+@using WebMatrix.Data;
+@{
+    var db = Database.Open("CS");
+    var sql = "select Id,Name from paymentDeductions ORDER BY Name";
+}
+
 <body>
     <h2>Index</h2>
-    <a class="btn btn-outline-success m-2" href="/payments/create">انشاء</a>
-    <div >
+    <button class="btn btn-outline-success m-2"
+        onclick="formDialog.dialog('open');$('input[type=submit]').eq(0).hide();$('input[type=submit]').eq(1).show()"
+        href="/payments/create"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-sd-card" viewBox="0 0 16 16">
+            <path
+                d="M6.25 3.5a.75.75 0 0 0-1.5 0v2a.75.75 0 0 0 1.5 0zm2 0a.75.75 0 0 0-1.5 0v2a.75.75 0 0 0 1.5 0zm2 0a.75.75 0 0 0-1.5 0v2a.75.75 0 0 0 1.5 0zm2 0a.75.75 0 0 0-1.5 0v2a.75.75 0 0 0 1.5 0z" />
+            <path fill-rule="evenodd"
+                d="M5.914 0H12.5A1.5 1.5 0 0 1 14 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5V3.914c0-.398.158-.78.44-1.06L4.853.439A1.5 1.5 0 0 1 5.914 0M13 1.5a.5.5 0 0 0-.5-.5H5.914a.5.5 0 0 0-.353.146L3.146 3.561A.5.5 0 0 0 3 3.914V14.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5z" />
+        </svg> انشاء </button>
+    <div>
         <table id="mytable" class="display">
             <thead>
             </thead>
@@ -17,18 +30,195 @@
             </tfoot>
         </table>
     </div>
+
+    <!--create/edit Form-->
+    <form action="" onsubmit="return false;" method="post" class="container">
+        <div class="card">
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        id
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" name="id" id="id" readonly />
+                </div>
+                <div class="col-2">
+                    <label>
+                        رقم الملف
+                    </label>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-9">
+                            <input type="number" class="form-control" name="fileNo" id="fileNo"
+                                onfocusout="selectList(this.value)" required />
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn" id="openList">&#9776;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        الأسم
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" name="name" id="name" readonly />
+                </div>
+                <div class="col-2">
+                    <label>
+                        التاريخ
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="date" class="form-control" name="date" id="date" required />
+                </div>
+            </div>
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        نوع الاستقطاع
+                    </label>
+                </div>
+                <div class="col-4">
+                    <select class="form-control" name="type" id="type">
+                        @foreach (var row in db.Query(sql))
+                        {
+                            <option value="@row.id">@row.name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label>
+                        total/net
+                    </label>
+                </div>
+                <div class="col-4">
+                    <select class="form-control" name="totalNet" id="totalNet">
+                        <option value="0">أجمالي</option>
+                        <option value="1">صافي</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        المبلغ
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" name="amount" id="amount" required />
+                </div>
+                <div class="col-2">
+                    <label>
+                        عدد ايام(الجزاءات)
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="number" class="form-control" step="0.01" value="0" name="daysNumber" id="daysNumber"
+                        onchange="convert(this.value)" onkeyup="convert(this.value)" required />
+                </div>
+            </div>
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        ملاحظات
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" name="remarks" id="remarks" />
+                </div>
+                <div class="col-2">
+                    <label>
+                        عدد الشهور
+                    </label>
+                </div>
+                <div class="col-4">
+                    <input type="number" class="form-control" name="times" id="times" required />
+                </div>
+
+            </div>
+            <div class="row m-1">
+                <div class="col-2">
+                    <label>
+                        سبب الجزاء
+                    </label>
+                </div>
+                <div class="col-4">
+                    <select class="form-control" name="reason" id="reason">
+                        <script>
+                            let d = readSQL(`select * from sanctions_reasons`);
+                            let html=`<option value="-1"></option>`
+                            for (let i = 0; i < d.length; i++) 
+                            {
+                                html += `<option value="${d[i].Id}">${d[i].Name}</option>`
+                            }
+                            $("#reason").html(html)
+                        </script>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label>
+                        القائم بالجزاء
+                    </label>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-9">
+                            <input type="number" class="form-control" name="by" id="by"
+                                onfocusout="/*selectList2(this.value)*/" />
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn" id="openList2">&#9776;</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <input class="btn btn-primary" type="submit" onclick="edit()" value="Save">
+        <input class="btn btn-secondary" type="submit" onclick="create()" value=create>
+    </form>
+    <!--employees form-->
+    <div id="employees">
+        <table id="empTable" class="display" width=600>
+        </table>
+    </div>
+    <div id="employees2">
+        <table id="empTable2" class="display" width=600>
+        </table>
+    </div>
 </body>
+
 <script>
-    var sql = `select Id,(select filenumber from employees where id= EmployeeId)fileno,(select knownas from employees where id= EmployeeId) name,	Date,	Amount	,CurrencyId	,(select name from PaymentDeductions where id= PaymentDeductionId)PaymentDeductionId,RecurringOneTimeId	,case when TotalNet=0 then 'Total' else 'net' end TotalNet,	EmployeeId	,Remarkes,	DaysNumber from deductions`;
-    var data = readSQL(sql);
+    var sqlindex = `select Id,
+    (select filenumber from employees where id= EmployeeId)fileno,
+    (select knownas from employees where id= EmployeeId) name,	
+    Date,	
+    Amount	,
+    CurrencyId	,
+    (select name from PaymentDeductions where id= PaymentDeductionId)PaymentDeductionId,
+    RecurringOneTimeId	,
+    case when TotalNet=0 then 'Total' else 'net' end TotalNet,
+    EmployeeId	,
+    Remarkes,	
+    DaysNumber, 
+    (select top 1 knownas from employees where filenumber= imposer)imposer,
+    (select name from sanctions_reasons where id=reason)reason
+    from Deductions `;
+    var data = readSQL_MAX(sqlindex);
     console.log(data);
-    $('#mytable').dataTable(
+    $('#mytable').DataTable(
         {
             data: data,
-            columns:[ 
+            columns: [
                 {
-                    data:'Id',
-                    title:'id',
+                    data: 'Id',
+                    title: 'id',
                 },
                 {
                     data: 'name',
@@ -40,45 +230,248 @@
                 },
                 {
                     data: 'Date',
-                    render:function(a){return a.substr(0,10)},
-                    title:'التاريخ',
+                    render: function (a) { return a.substr(0, 10) },
+                    title: 'التاريخ',
                 },
                 {
-                    data:'Amount',
-                    title:'المبلغ',
+                    data: 'Amount',
+                    title: 'المبلغ',
                 },
                 {
-                    data:'PaymentDeductionId',
-                    title:'نوع الخصم',
+                    data: 'PaymentDeductionId',
+                    title: 'نوع الخصم',
                 },
-                
+
                 {
-                    data:'RecurringOneTimeId',
-                    title:'عدد الاشهر',
+                    data: 'RecurringOneTimeId',
+                    title: 'عدد الاشهر',
                 },
                 {
-                    data:'TotalNet',
-                    title:'اجمالي/صافي',
+                    data: 'TotalNet',
+                    title: 'اجمالي/صافي',
                 },
-                /*{
-                    data:'EmployeeId',
-                    title:'EmployeeId',
-                },*/
                 {
-                    data:'Remarkes',
-                    title:'ملاحظات',
+                    data: 'reason',
+                    title: 'السبب',
                 },
-                 {
-                     data:'DaysNumber',
-                     title:'عدد الايام',
-                 },
+                {
+                    data: 'imposer',
+                    title: 'موقع الخصم',
+                },
+                {
+                    data: 'Remarkes',
+                    title: 'ملاحظات',
+                },
+                {
+                    data: 'DaysNumber',
+                    title: 'عدد الايام',
+                },
                 {
                     data: 'Id',
-                    render: function (id) { return '<a class="btn btn-danger" href="/payments/delete/'+ id + '">delete</a>'; },
+                    render: function (id) { return `<button class="btn btn-info" onclick="formDialog.dialog('open');$('input[type=submit]').eq(1).hide();$('input[type=submit]').eq(0).show();getId(${id})">edit</button>`; },
+                    title: 'edit',
+                },
+                {
+                    data: 'Id',
+                    render: function (id) { return '<a class="btn btn-danger" href="/payments/delete/' + id + '">delete</a>'; },
                     title: 'delete',
                 },
-            
-            ]
+
+            ],
+            order: [[0, 'desc']]
         }
     );
+</script>
+<script>
+    var formDialog = $("form").dialog({
+        autoOpen: false,
+        height: 500,
+        width: 750,
+        modal: true,
+    });
+    var data1 = readSQL('select e.id, fileNumber fileNo,knownas name,totalsalary basicsalary from Employees e left join basicbayworks b on e.id=b.employeeid');
+    var f;
+    $("#empTable").dataTable({
+        data: data1,
+        columns: [
+            {
+                title: "id",
+                data: "id",
+                width: "20px",
+            },
+            {
+                title: "رقم الملف",
+                data: "fileNo",
+                width: "20px",
+            },
+            {
+                title: "الاسم",
+                data: "name",
+                width: "20px",
+            },
+            {
+                title: "أختر",
+                data: "fileNo",
+                width: "20px",
+                render: function (e) {
+                    return '<button class="btn btn-primary" onclick="selectList(' + e + ')">اختر</button>'
+                }
+            },
+        ]
+    });
+    $("#empTable2").dataTable({
+        data: data1,
+        columns: [
+            {
+                title: "id",
+                data: "id",
+                width: "20px",
+            },
+            {
+                title: "رقم الملف",
+                data: "fileNo",
+                width: "20px",
+            },
+            {
+                title: "الاسم",
+                data: "name",
+                width: "20px",
+            },
+            {
+                title: "أختر",
+                data: "fileNo",
+                width: "20px",
+                render: function (e) {
+                    return `<button class="btn btn-primary" onclick="$('input[name=by]').val(${e});dialog2.dialog('close');">اختر</button>`
+                }
+            },
+        ]
+    });
+
+    var dialog = $("#employees").dialog({
+        autoOpen: false,
+        height: 500,
+        width: 600,
+        modal: true,
+        title: "employees"
+    });
+    var dialog2 = $("#employees2").dialog({
+        autoOpen: false,
+        height: 500,
+        width: 600,
+        modal: true,
+        title: "employees2"
+    });
+
+    $("#openList").on("click", function () {
+        dialog.dialog("open");
+    });
+    $("#openList2").on("click", function () {
+        dialog2.dialog("open");
+    });
+
+    function selectList(e) {
+        f = data1.filter(w => w.fileNo == e);
+        //$("input[name=id]").val(f[0].id);
+        $("input[name=name]").val(f[0].name);
+        $("input[name=fileNo]").val(f[0].fileNo);
+        console.log(f[0].basicsalary)
+        dialog.dialog("close");
+    }
+    /*
+    function selectList2(e) {
+        //$("input[name=by]").val(data1.filter(w=>w.fileNo==e).fileNo);
+        dialog2.dialog("close");
+    }*/
+    function convert(e) {
+        $("input[name=amount]").val(f[0].basicsalary * e / 30);
+    }
+</script>
+<script>
+    function getId(id) {
+        let f = readSQL(`
+        select Id,
+    (select filenumber from employees where id= EmployeeId)fileno,
+    (select knownas from employees where id= EmployeeId) name,	
+    Date,	
+    Amount,
+    PaymentDeductionId,
+    RecurringOneTimeId,
+    TotalNet,
+    EmployeeId,
+    Remarkes,	
+    DaysNumber, 
+    imposer,
+    reason
+    from Deductions 
+    where id=${id}
+        `)
+
+        $("#id").val(f[0].Id)
+        $("#fileNo").val(f[0].fileno)
+        $("#name").val(f[0].name)
+        $("#date").val(f[0].Date.substr(0, 10))
+        $("#type").val(f[0].PaymentDeductionId)
+        $("#totalNet").val(f[0].TotalNet)
+        $("#amount").val(f[0].Amount)
+        $("#daysNumber").val(f[0].DaysNumber)
+        $("#remarks").val(f[0].Remarkes)
+        $("#times").val(f[0].RecurringOneTimeId)
+        $("#reason").val(f[0].reason)
+        $("#by").val(f[0].imposer)
+    } 
+    function valu(e){ return e == '' ? `NULL` : `'${e}'`}
+    function create() {
+        let sqlC = `
+              insert into Deductions
+              (Date,Amount,PaymentDeductionId,RecurringOneTimeId,TotalNet,
+              EmployeeId,Remarkes,DaysNumber,Reason,Imposer,createdby)
+              values(
+                ${valu($("#date").val())},
+                ${valu($("#amount").val())},
+                ${valu($("#type").val())},
+                ${valu($("#times").val())},
+                ${valu($("#totalNet").val())},
+                (select id from employees where filenumber=${valu($("#fileNo").val())}),
+                ${valu($("#remarks").val())},
+                ${valu($("#daysNumber").val())},
+                ${valu($("#reason").val())},
+                ${valu($("#by").val())},
+                ${valu($("#userName").html())}
+              )
+             `
+             console.log(sqlC)
+        if (excuteSQL(sqlC) == 1) {
+            alert("تم الحفظ بنجاح");
+        }
+        else {
+            alert("خطأ");
+        }
+    }
+    function edit() {
+        let sqlU = `
+              update Deductions 
+              set 
+              Date=${valu($("#date").val())},
+              Amount=${valu($("#amount").val())},
+              PaymentDeductionId=${valu($("#type").val())},
+              RecurringOneTimeId=${valu($("#times").val())},
+              TotalNet=${valu($("#totalNet").val())},
+              EmployeeId=(select id from employees where filenumber=${valu($("#fileNo").val())}),
+              Remarkes=${valu($("#remarks").val())},
+              DaysNumber=${valu($("#daysNumber").val())},
+              Imposer=${valu($("#by").val())},
+              Reason=${valu($("#reason").val())},
+              updatedby=${valu($("#userName").html())},
+              updatedAt=getdate() 
+              where id= ${valu($("#id").val())}
+             `
+            console.log(sqlU);
+        if (excuteSQL(sqlU) == 1) {
+            alert("تم الحفظ بنجاح");
+        }
+        else {
+            alert("خطأ");
+        }
+    }
 </script>

@@ -64,6 +64,7 @@ where cast(Datetime as date) >= @f and cast(Datetime as date) <= @t and A.FileNu
             com.Parameters.Add("@t", SqlDbType.Date).Value = t.Date;
             return Json(db.toJSON(db.getData(com)), JsonRequestBehavior.AllowGet);
         }
+        //Mac/GetMacAtt     => 
         public JsonResult GetMacAtt( DateTime F, DateTime T)
         {
             return Json(macDB.getMacAtt(F, T), JsonRequestBehavior.AllowGet);

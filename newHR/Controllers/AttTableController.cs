@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -39,6 +41,24 @@ namespace newHR.Controllers
         public ActionResult ByProduction()
         {
             return View();
+        }
+        // att table api
+        public ActionResult AttTableAPI(string fn)
+        {
+            string sql = "select * from users2";
+            DataTable dt=new DataTable();
+            DataSet ds = new DataSet();
+            SqlDataAdapter sda = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["CS"].ConnectionString);
+            sda.Fill(dt);
+            dt.Compute("sum(Id)", "id>1");
+            dt.Rows[0]["UserName"] = "ahmed";
+            object o = new {
+                status ="success",
+                sum = dt.Compute("sum(Id)a,avg(Id)b",""),
+                count = dt.Compute("count(Id)", ""),
+                data =dt
+            };
+            return Content( JsonConvert.SerializeObject(o, Formatting.Indented),"application/json");
         }
         public JsonResult AttTable(string fn)
         {

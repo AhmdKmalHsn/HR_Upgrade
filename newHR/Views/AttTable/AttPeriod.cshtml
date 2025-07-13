@@ -1,1 +1,101 @@
-﻿
+﻿<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="text-center">
+               <h2> جزاءات الاجازات الرسمية </h2>
+            </div>
+        </div>
+        <div class="card-body">
+           <form action="" id="form1">
+            <div class="row" dir="rtl">
+                <div class="col-2 p-2">
+                    التاريخ
+                </div>
+                <div class="col-8 p-2">
+                    <input type="date" class="form-control" name="datefrom" id="datefrom" 
+                            style="display: flex;
+                                flex-direction: row-reverse;
+                                align-items: flex-start;
+                                flex-wrap: nowrap;">
+                </div>
+                <div class="col-2 p-2" dir="rtl">
+                    <button  type="submit" class="btn btn-success">تاكيد</button>
+                </div>
+               </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <table id="result" style="width:100%" class="table table-responsive display">
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $("#form1").submit((e)=>{
+        e.preventDefault();
+        console.log("ok");
+        console.log($("#datefrom").val());
+        $.ajax({
+            url:'/atttable/AttPeriod_api',
+            data:{
+                date1:$("#datefrom").val(),
+                date2:$("#datefrom").val()
+            },
+            success:(e)=>
+            {
+                e=JSON.parse(e)
+                console.log(e);
+                draw_table(e,"result")
+            }
+        })
+    })
+    function draw_table(data,dom)
+    {
+        let html='no result';
+        if(data.length>0)
+        {
+            html=''
+            html+=`<thead><tr>`;
+            @* for(key in data[0])
+            {
+                html+=`<td>${key}</td>`;
+            } *@
+            html+=`<td>FileNumber</td>`;
+            html+=`<td>Name</td>`;
+            html+=`<td>Departement</td>`;
+            html+=`<td>Attendance</td>`;
+            html+=`</tr></thead><tbody>`;
+            for(let i=0 ;i<data.length;i++)
+            {
+                html+=`<tr style="background-color:${data[i]['color']}">`;
+                /*for(key in data[i])
+                {
+                    html+=`<td>${data[i][key]}</td>`;
+                }*/
+                html+=`<td>${data[i]['FileNumber'].replace("null","")}</td>`;
+                html+=`<td>${data[i]['KnownAs'].replace("null","")}</td>`;
+                html+=`<td>${data[i]['Name'].replace("null","")}</td>`;
+                html+=`<td>${data[i]['att']}</td>`;
+                html+=`</tr>`;
+            }
+            html+=`</tbody>`;
+        }
+
+        $("#"+dom).html(html); 
+        //$("#"+dom).DataTable();
+        new DataTable('#'+dom, {
+            fixedHeader: {
+                header: true,
+            },
+            scrollX: true,
+            stateSave: true,
+            dom: 'BQlfrtip',
+            buttons: [
+                'copy', 'excel', 'print'
+            ]
+        });
+    }
+    
+</script>

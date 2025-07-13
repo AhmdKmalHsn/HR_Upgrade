@@ -1,38 +1,75 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "SalarySheet";
 }
-@using WebMatrix.Data;
-@{
+<!--
     var db = Database.Open("cs");
-    var sql = @"select FileNumber,
-            Name,
-            Attendance,
-            Vacation,
-            Abcence,
-            SalaryMonth,
-            DaysValue,
-            RegularityIncentive,
-            ExpensiveIncetive,
-            ManagmentIncetive,
-            SkillIncentive,
-            Overtime,
-            Total1,
-            Insurance,
-            Sanctions_Delays,
-            Delays,
-            Deductions,
-            Clothes,
-            Loans,
-            Total2,
-            Total3,
-            Department,	
-            Year,
-            Month from SalarySheet";
-} 
-  <h2>SalarySheet</h2>
+    -->
+
+
+<h2>SalarySheet</h2>
+<form id="myForm1" method="post">
+    <div class="row">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <label class="input-group-text" for="file_number">File Number</label>
+                <input class="form-control" type="number" name="file_number" id="file_number" required>
+                <input class="btn btn-outline-dark" type="submit" value="إحضار">
+            </div>
+        </div>
+    </div>
+</form>
+<form id="myForm2" method="post">
+    <div class="row">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <label class="input-group-text" for="Dept">Departments</label>
+                <select class="form-control" type="number" name="Dept" id="Dept" required>
+                    <script>
+                        var sql = "select distinct Department from SalarySheet";
+                        var d = readSQL(sql);
+                        for (let i = 0; i < d.length; i++) {
+                            document.write(`<option value="` + d[i].Department + `">` + d[i].Department + `</option>`);
+                        }
+                    </script>
+                </select>
+                <input class="btn btn-outline-dark" type="submit" value="إحضار">
+            </div>
+        </div>
+    </div>
+</form>
+<form id="myForm3" method="post">
+    <div class="row">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <label class="input-group-text" for="year">Year</label>
+                <select class="form-control" type="number" name="year" id="year" required>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+                <label class="input-group-text" for="month">Month</label>
+                <select class="form-control" type="number" name="month" id="month" required>
+                    <option value="1">يناير</option>
+                    <option value="2">فبراير</option>
+                    <option value="3">مارس</option>
+                    <option value="4">ابريل</option>
+                    <option value="5">مايو</option>
+                    <option value="6">يونيو</option>
+                    <option value="7">يوليو</option>
+                    <option value="8">اغسطس</option>
+                    <option value="9">سبتمبر</option>
+                    <option value="10">اكتوبر</option>
+                    <option value="11">نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+                <input class="btn btn-outline-dark" type="submit" value="إحضار">
+            </div>
+        </div>
+    </div>
+</form>
 <div style="overflow-x:auto">
-    <table dir="rtl" class="display"  id="example" style="width:100%">
+    <table dir="rtl" class="display" id="example" style="width:100%">
         <thead>
             <tr>
                 <td class="filter">
@@ -63,7 +100,7 @@
                     حافز غلاء المعيشة
                 </td>
                 <td class="filter">
-                   حافز مجلس الادارة
+                    حافز مجلس الادارة
                 </td>
                 <td class="filter">
                     حافز المهارة
@@ -107,96 +144,375 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var row in db.Query(sql))
-            {
-                <tr>
-                    <td>
-                        @row.FileNumber
-                    </td>
-                    <td style="white-space:nowrap">
-                        @row.Name
-                    </td>
-                    <td>
-                        @row.Attendance
-                    </td>
-                    <td>
-                        @row.Vacation
-                    </td>
-                    <td>
-                        @row.Abcence
-                    </td>
-                    <td>
-                        @row.SalaryMonth
-                    </td>
-                    <td>
-                        @row.DaysValue
-                    </td>
-                    <td>
-                        @row.RegularityIncentive
-                    </td>
-                    <td>
-                        @row.ExpensiveIncetive
-                    </td>
-                    <td>
-                        @row.ManagmentIncetive
-                    </td>
-                    <td>
-                        @row.SkillIncentive
-                    </td>
-                    <td>
-                        @row.Overtime
-                    </td>
-                    <td>
-                        @row.Total1
-                    </td>
-                    <td>
-                        @row.Insurance
-                    </td>
 
-                    <td>
-                        @row.Delays
-                    </td>
-                    <td>
-                        @row.Deductions
-                    </td>
-                    <td>
-                        @row.Clothes
-                    </td>
-                    <td>
-                        @row.Loans
-                    </td>
-                    <td>
-                        @row.Total2
-                    </td>
-                    <td>
-                        @row.Total3
-                    </td>
-                    <td>
-                        @row.Department
-                    </td>
-                    <td>
-                        @row.Year
-                    </td>
-                    <td>
-                        @row.Month
-                    </td>
-                </tr>
-            }
         </tbody>
     </table>
-    
+
 
 </div>
 <script>
-      $(document).ready(function () {
+    $(document).ready(function () {
 
-            var table = $('#example').DataTable({
+        let table = $('#example').DataTable({
+            orderCellsTop: true,
+            //fixedHeader: true, 
+            stateSave: true,
+            scrollX: true,
+            dom: 'QBlfrtip',
+        });;
+        $("#myForm1").submit((e) => {
+            e.preventDefault();
+            var sql = `select FileNumber,
+                Name,
+                Attendance,
+                Vacation,
+                Abcence,
+                SalaryMonth,
+                DaysValue,
+                RegularityIncentive,
+                ExpensiveIncetive,
+                ManagmentIncetive,
+                SkillIncentive,
+                Overtime,
+                Total1,
+                Insurance,
+                Sanctions_Delays,
+                Delays,
+                Deductions,
+                Clothes,
+                Loans,
+                Total2,
+                Total3,
+                Department,	
+                Year,
+                Month from SalarySheet where filenumber=`+ $("#file_number").val();
+
+            var d = readSQL(sql);
+            table.clear();
+            table.destroy();
+            $("tbody").html("");
+            for (let i = 0; i < d.length; i++) {
+                //console.log(d[i]);
+
+                $("tbody").append(`<tr>
+                        <td>
+                            <a href="/truant/Abscence?fileNo=`+ d[i].FileNumber + `&M=` + d[i].Month + `&Y=` + d[i].Year + `" target="_blank">
+                            `+ d[i].FileNumber + `
+                            </a>
+                        </td>
+                        <td style="white-space:nowrap">
+                            `+ d[i].Name + `
+                        </td>
+                        <td>
+                            `+ d[i].Attendance + `
+                        </td>
+                        <td>
+                            `+ d[i].Vacation + `
+                        </td>
+                        <td>
+                            `+ d[i].Abcence + `
+                        </td>
+                        <td>
+                            `+ d[i].SalaryMonth + `
+                        </td>
+                        <td>
+                            `+ d[i].DaysValue + `
+                        </td>
+                        <td>
+                            `+ d[i].RegularityIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].ExpensiveIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].ManagmentIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].SkillIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].Overtime + `
+                        </td>
+                        <td>
+                            `+ d[i].Total1 + `
+                        </td>
+                        <td>
+                            `+ d[i].Insurance + `
+                        </td>
+
+                        <td>
+                            `+ d[i].Delays + `
+                        </td>
+                        <td>
+                            `+ d[i].Deductions + `
+                        </td>
+                        <td>
+                            `+ d[i].Clothes + `
+                        </td>
+                        <td>
+                            `+ d[i].Loans + `
+                        </td>
+                        <td>
+                            `+ d[i].Total2 + `
+                        </td>
+                        <td>
+                            `+ d[i].Total3 + `
+                        </td>
+                        <td>
+                            `+ d[i].Department + `
+                        </td>
+                        <td>
+                            `+ d[i].Year + `
+                        </td>
+                        <td>
+                            `+ d[i].Month + `
+                        </td>
+                    </tr>`);
+            }
+            table = $('#example').DataTable({
                 orderCellsTop: true,
                 //fixedHeader: true, 
                 stateSave: true,
-                scrollX:true,
-                dom: 'Qlfrtip'
+                scrollX: true,
+                dom: 'QBlfrtip',
+            });
+            //table.ajax.reload();
+        });
+        $("#myForm2").submit((e) => {
+            e.preventDefault();
+            var sql = `select FileNumber,
+                Name,
+                Attendance,
+                Vacation,
+                Abcence,
+                SalaryMonth,
+                DaysValue,
+                RegularityIncentive,
+                ExpensiveIncetive,
+                ManagmentIncetive,
+                SkillIncentive,
+                Overtime,
+                Total1,
+                Insurance,
+                Sanctions_Delays,
+                Delays,
+                Deductions,
+                Clothes,
+                Loans,
+                Total2,
+                Total3,
+                Department,	
+                Year,
+                Month from SalarySheet where Department='${$("#Dept").val()}'`;
+
+            var d = readSQL(sql);
+            //console.log(d);       
+            table.clear();
+            table.destroy();
+            $("tbody").html("");
+            for (let i = 0; i < d.length; i++) {
+                
+                $("tbody").append(`<tr>
+                        <td>
+                            <a href="/truant/Abscence?fileNo=`+ d[i].FileNumber + `&M=` + d[i].Month + `&Y=` + d[i].Year + `" target="_blank">
+                            `+ d[i].FileNumber + `
+                            </a>
+                        </td>
+                        <td style="white-space:nowrap">
+                            `+ d[i].Name + `
+                        </td>
+                        <td>
+                            `+ d[i].Attendance + `
+                        </td>
+                        <td>
+                            `+ d[i].Vacation + `
+                        </td>
+                        <td>
+                            `+ d[i].Abcence + `
+                        </td>
+                        <td>
+                            `+ d[i].SalaryMonth + `
+                        </td>
+                        <td>
+                            `+ d[i].DaysValue + `
+                        </td>
+                        <td>
+                            `+ d[i].RegularityIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].ExpensiveIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].ManagmentIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].SkillIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].Overtime + `
+                        </td>
+                        <td>
+                            `+ d[i].Total1 + `
+                        </td>
+                        <td>
+                            `+ d[i].Insurance + `
+                        </td>
+                        <td>
+                            `+ d[i].Delays + `
+                        </td>
+                        <td>
+                            `+ d[i].Deductions + `
+                        </td>
+                        <td>
+                            `+ d[i].Clothes + `
+                        </td>
+                        <td>
+                            `+ d[i].Loans + `
+                        </td>
+                        <td>
+                            `+ d[i].Total2 + `
+                        </td>
+                        <td>
+                            `+ d[i].Total3 + `
+                        </td>
+                        <td>
+                            `+ d[i].Department + `
+                        </td>
+                        <td>
+                            `+ d[i].Year + `
+                        </td>
+                        <td>
+                            `+ d[i].Month + `
+                        </td>
+                    </tr>`);
+            }
+            
+            table = $('#example').DataTable({
+                orderCellsTop: true,
+                //fixedHeader: true, 
+                stateSave: true,
+                scrollX: true,
+                dom: 'QBlfrtip',
+            });
+
+        });
+        $("#myForm3").submit((e) => {
+            e.preventDefault();
+            var sql = `select FileNumber,
+                Name,
+                Attendance,
+                Vacation,
+                Abcence,
+                SalaryMonth,
+                DaysValue,
+                RegularityIncentive,
+                ExpensiveIncetive,
+                ManagmentIncetive,
+                SkillIncentive,
+                Overtime,
+                Total1,
+                Insurance,
+                Sanctions_Delays,
+                Delays,
+                Deductions,
+                Clothes,
+                Loans,
+                Total2,
+                Total3,
+                Department,	
+                Year,
+                Month from SalarySheet where Year= ${$("#year").val()} and Month= ${$("#month").val()}`; ;
+
+            var d = readSQL(sql);
+            table.clear();
+            table.destroy();
+            $("tbody").html("");
+            for (let i = 0; i < d.length; i++) {
+                //console.log(d[i]);
+
+                $("tbody").append(`<tr>
+                        <td>
+                            <a href="/truant/Abscence?fileNo=`+ d[i].FileNumber + `&M=` + d[i].Month + `&Y=` + d[i].Year + `" target="_blank">
+                            `+ d[i].FileNumber + `
+                            </a>
+                        </td>
+                        <td style="white-space:nowrap">
+                            `+ d[i].Name + `
+                        </td>
+                        <td>
+                            `+ d[i].Attendance + `
+                        </td>
+                        <td>
+                            `+ d[i].Vacation + `
+                        </td>
+                        <td>
+                            `+ d[i].Abcence + `
+                        </td>
+                        <td>
+                            `+ d[i].SalaryMonth + `
+                        </td>
+                        <td>
+                            `+ d[i].DaysValue + `
+                        </td>
+                        <td>
+                            `+ d[i].RegularityIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].ExpensiveIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].ManagmentIncetive + `
+                        </td>
+                        <td>
+                            `+ d[i].SkillIncentive + `
+                        </td>
+                        <td>
+                            `+ d[i].Overtime + `
+                        </td>
+                        <td>
+                            `+ d[i].Total1 + `
+                        </td>
+                        <td>
+                            `+ d[i].Insurance + `
+                        </td>
+
+                        <td>
+                            `+ d[i].Delays + `
+                        </td>
+                        <td>
+                            `+ d[i].Deductions + `
+                        </td>
+                        <td>
+                            `+ d[i].Clothes + `
+                        </td>
+                        <td>
+                            `+ d[i].Loans + `
+                        </td>
+                        <td>
+                            `+ d[i].Total2 + `
+                        </td>
+                        <td>
+                            `+ d[i].Total3 + `
+                        </td>
+                        <td>
+                            `+ d[i].Department + `
+                        </td>
+                        <td>
+                            `+ d[i].Year + `
+                        </td>
+                        <td>
+                            `+ d[i].Month + `
+                        </td>
+                    </tr>`);
+            }
+            table = $('#example').DataTable({
+                orderCellsTop: true,
+                //fixedHeader: true, 
+                stateSave: true,
+                scrollX: true,
+                dom: 'QBlfrtip',
             });
         });
+    });
 
 </script>

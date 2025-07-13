@@ -32,26 +32,19 @@ namespace newHR.Controllers
 
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            //repeat state 
+            
+                return View();
+            
         }
         public ActionResult Log()
         {
-            return View();
+            
+                return View();
+           
         }
+
+        /**************************************/
         public ActionResult LogIn()
         {
 
@@ -69,7 +62,7 @@ namespace newHR.Controllers
                 SqlDataReader rdr = com.ExecuteReader();
                 while (rdr.Read())
                 {
-                 
+
 
                     UserId.Value = rdr["userId"].ToString();
                     UserName.Value = rdr["UserName"].ToString();
@@ -168,17 +161,18 @@ namespace newHR.Controllers
                                  ,token
                                 )
                                 VALUES
-                                ('"+
-                                 ds.Tables["data"].Rows[0]["Id"]+"','"+
-                                 ds.Tables["data"].Rows[0]["UserName"] + "','"+ 
-                                 Request.UserHostAddress + "','"+
-                                 GuidString+"'"+
+                                ('" +
+                                 ds.Tables["data"].Rows[0]["Id"] + "','" +
+                                 ds.Tables["data"].Rows[0]["UserName"] + "','" +
+                                 Request.UserHostAddress + "','" +
+                                 GuidString + "'" +
                                  ");"
                                 );
-                    HttpCookie token =new HttpCookie("token", GuidString);
+
+                    HttpCookie token = new HttpCookie("token", GuidString);
                     HttpCookie userName = new HttpCookie("UserName", ds.Tables["data"].Rows[0]["UserName"].ToString());
                     token.Expires = DateTime.Now.AddDays(1);
-                    userName.Expires= DateTime.Now.AddDays(1);
+                    userName.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Add(token);
                     Response.Cookies.Add(userName);
                     output = JsonConvert.SerializeObject(update.Tables[0]);
@@ -192,7 +186,7 @@ namespace newHR.Controllers
         {
             Response.Cookies["userName"].Expires = DateTime.Now.AddDays(-1);
             Response.Cookies["token"].Expires = DateTime.Now.AddDays(-1);
-            return RedirectToAction("log","home");
+            return RedirectToAction("log", "home");
         }
         public ActionResult test()
         {
@@ -203,7 +197,7 @@ namespace newHR.Controllers
             }
             catch (Exception)
             {
-                return RedirectToAction("Log","Home");
+                return RedirectToAction("Log", "Home");
             }
             if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
             {
@@ -211,10 +205,10 @@ namespace newHR.Controllers
             }
             else
             {
-                ViewBag.perms = static_class.o_Authrizes(Request.Cookies.Get("token").Value).AsEnumerable().ToList();
+                ViewBag.perms = static_class.o_Authrizes(Request.Cookies.Get("token").Value);//.AsEnumerable().ToList();
                 return View();
             }
-          // return Content(JsonConvert.SerializeObject(ds), "application/json");
+            // return Content(JsonConvert.SerializeObject(ds), "application/json");
         }
         public ActionResult meals()
         {
@@ -244,6 +238,7 @@ namespace newHR.Controllers
 
             return RedirectToAction("log");
         }
+
         DBContext db = new DBContext();
         public JsonResult dashboard()
         {
@@ -297,6 +292,18 @@ select count(*)cnt, 'depts' name from Departements
         }
         public ActionResult license()
         {
+            return View();
+        }
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
             return View();
         }
     }

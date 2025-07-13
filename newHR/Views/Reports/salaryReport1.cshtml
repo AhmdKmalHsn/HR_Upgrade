@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "salaryReport1";
+}
+
+<h2>salaryReport1</h2>
+
+@if (Request.Cookies["Reports_Abs"] == null)
+{
+    Response.Redirect("~/home/log");
+}
+@if (Int32.Parse(Request.Cookies["Reports_Abs"].Value) > 1)
+{
+
+}
+else
+{
+    Response.Redirect("~/home/Index");
+}
+
+<hr>
+<div id="container" style="overflow-x:auto">
+    <table id="example" class="display" style="width:100%" dir="rtl">
+
+    </table>
+</div>
+<script>
+    var q0 = `SELECT
+  t0.*,
+  t1.actual_salary_cnt,
+  t1.actual_salary_avg,
+  t1.actual_salary_min,
+  t1.actual_salary_max
+FROM (
+  SELECT
+    q.job_title
+   ,q.department
+   ,COUNT(q.salary) 'salary_cnt'
+   ,AVG(q.salary) 'salary_avg'
+   ,MIN(q.salary) 'salary_min'
+   ,MAX(q.salary) 'salary_max'
+  FROM (
+    SELECT
+      j.Name AS job_title
+     ,Departements.Name AS department
+     ,ISNULL(b.TotalSalary, 0)
+      + ISNULL(b.SkillIncentive, 0)
+      + ISNULL(b.ExpensiveLivingConditons, 0)
+      + ISNULL(b.RegularityIncentive, 0)
+      + ISNULL(b.IncentiveIncentiveForAbsence, 0) 'salary'
+    FROM dbo.Employees e
+    INNER JOIN dbo.JobTitles j
+      ON e.JobTitleId = j.Id
+    INNER JOIN dbo.BasicBayWorks b
+      ON b.EmployeeId = e.Id
+    INNER JOIN dbo.Personals p
+      ON e.PersonalId = p.Id
+    INNER JOIN dbo.Departements
+      ON e.DepartementId = Departements.Id
+    WHERE p.StatusId = 1
+    AND Departements.groups = 0) q
+  GROUP BY q.job_title
+          ,q.department
+  ) t0 LEFT  JOIN
+  (
+  SELECT
+  JobTitles.Name AS Job_title
+ ,ss.Department
+ ,COUNT(ss.Total3) AS actual_salary_cnt
+ ,AVG(ss.Total3) AS actual_salary_avg
+ ,MIN(ss.Total3) AS actual_salary_min
+ ,MAX(ss.Total3) AS actual_salary_max
+FROM dbo.SalarySheet ss
+LEFT OUTER JOIN dbo.Employees e ON ss.FileNumber = e.FileNumber
+INNER JOIN dbo.Personals ON e.PersonalId = Personals.Id
+INNER JOIN dbo.JobTitles ON e.JobTitleId = JobTitles.Id
+WHERE Personals.StatusId = 1 AND ss.Total3 >0
+AND ss.Year = 
+    (
+    SELECT
+      MAX(SalarySheet.Year) AS expr1
+    FROM dbo.SalarySheet
+    )
+AND ss.Month = 
+    (
+      SELECT
+        MAX(SalarySheet.Month) AS expr
+      FROM dbo.SalarySheet
+      WHERE SalarySheet.Year = 
+        (
+          SELECT
+            MAX(SalarySheet.Year) AS expr1
+          FROM dbo.SalarySheet
+        )
+    )
+ GROUP BY JobTitles.Name,ss.Department
+)t1 ON t0.job_title=t1.Job_title AND t0.department=t1.Department 
+  ORDER BY t0.job_title,t0.department`;
+    //console.log(q);
+    var v = readSQL(q0)
+    let html = `
+        <thead>
+            <tr>
+                <td>job_title</td>
+                <td>department</td>
+                <td>salary_cnt</td>
+                <td>salary_avg</td>
+                <td>salary_min</td>
+                <td>salary_max</td>
+                <td>actual_salary_cnt</td>
+                <td>actual_salary_avg</td>
+                <td>actual_salary_min</td>
+                <td>actual_salary_max</td>
+            </tr>
+        </thead>
+        <tbody>
+        `;
+
+    if (v.length == 0) {
+        html += `<tr><td colspan="8">لا توجد بيانات</td></tr>`;
+    }
+    else {
+        console.log(Object.keys(v[0]));
+        var columns = Object.keys(v[0]);
+        for (let i = 0; i < v.length; i++) 
+        {
+            console.log(v[i]);
+            html += `<tr>`;
+            
+            for (let j = 0; j < columns.length; j++) try{ html += `<td>${v[i][columns[j]]??''}</td>`} catch (e) { html += `<td></td>`; }
+            //html += `<td></td>`;
+            html += `</tr>`;
+        }
+        html += `</tbody></table>`;
+
+    $("#example").html(html)
+}
+
+    var tb = $('#example').DataTable({
+        "stateSave": true,
+        "destroy": true,
+        //"data": v.filter(w => EMPS.includes('' + w.FileNumber)),
+        //"columns": columns,
+        "dom": 'QBlfrtip',
+        "buttons": [
+            'colvis','copy', 'excel', 'print'
+        ],
+    });
+</script>

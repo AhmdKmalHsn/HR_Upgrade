@@ -1,12 +1,12 @@
 ﻿@if(Request.Cookies["Reports_Salary_Details"]==null)
 {
-//Response.Redirect("~/home/log");
+   Response.Redirect("~/home/log");
 }
 @if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>=2){
 
 }else
 {
-  // Response.Redirect("~/home/Index");
+   Response.Redirect("~/home/Index");
 }
 @using WebMatrix.Data;
 <h2>تقرير اجمالي الحضور</h2>
@@ -147,9 +147,11 @@
              
              <div class="col-4" >     
                 <select id="Y" class="form-control" style="margin:5px;float:right">
-                      <option>2023</option>
-                      <option>2022</option>
-                      <option>2021</option>
+                      <option value="2025">2025</option> 
+                      <option value="2024">2024</option> 
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                      <option value="2021">2021</option>
                 </select>
             </div>
              <div class="col-2" >     

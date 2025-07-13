@@ -1,0 +1,267 @@
+﻿
+<h2>الورديات</h2>
+
+  <!--
+    [          
+    {
+        "data": "ShiftId",
+        "title": "ShiftId",
+    },
+    {
+        "data": "ShiftName",
+        "title": "الوصف",
+    },
+    {
+        "data": "StartTime",
+        "title": "وقت البدأ",
+    },
+    {
+        "data": "EndTime",
+        "title": "وقت الانتهاء",
+    },
+    {
+        "data": "DailyHours",
+        "title": "عدد الساعات",
+    },
+    {
+        "data": "NoOfShifts",
+        "title": "العدد",
+    },
+    {
+        "data": "Shift2",
+        "title": "Shift 2",
+    },
+    {
+        "data": "Shift3",
+        "title": "Shift 3",
+    },
+    {
+        "data": "XDelayId",
+        "title": "التأخيرات",
+    },
+    {
+        "data": "XLeaveId",
+        "title": "الانصراف المبكر",
+    },
+    /*{
+        "data": "WeekendFromDay",
+        "title": "الاجازة من",
+    },
+    {
+        "data": "WeekendToDay",
+        "title": "الاجازة حتى",
+    },*/
+    {"defaultContent": "<button id='edt-btn' class='btn btn-success'>Edit</button>"}
+					
+];
+-->
+<div id=root>
+</div>
+<script>
+    var table,
+        data,
+        columns,
+        colObj,
+        types,
+        formHTML
+    $("#root").html('<button onclick="createFn()" class="btn btn-success" id=create>create</button><table id="rootTable" class="display" width=100%></table><div id="form"></div>');
+    table="shifts"
+    function readTable(t){
+         return readSQL("select * from "+t);
+    }
+    data=readTable(table)
+    
+    
+    columns=Object.keys(data[0])
+    //console.log(columns);
+    
+    colObj=columns.map(e=>e={data:e,title:e})
+    colObj.push({data:"Id",title:"edit",render:function(id){return '<button onclick="editFn('+id+')" class="btn btn-warning">Edit</button>'}})
+    colObj.push({data:"Id",title:"delete",render:function(id){return '<button onclick="deleteFn('+id+')" class="btn btn-danger">delete</button>'}})
+    
+    colObj[30]={data:"XDelayId",title:"XDelayId",render:function(id){return `<a target="_blank" href="/Delay/update?id=${id}" class="link">${id}</a>`}}
+    colObj[31]={data:"XLeaveId",title:"XLeaveId",render:function(id){return `<a target="_blank" href="/leave/update?id=${id}" class="link">${id}</a>`}}
+    
+    $("#rootTable").dataTable({
+        scrollX:true,
+        data:data,
+        columns:[1,2,7,12,13,19,20,21,30,31,32,33,34,35].map(x => colObj[x])//.slice(0,2).concat(colObj.slice(colObj.length-2,colObj.length))
+    });
+
+    types=readSQL(`
+    SELECT column_name 'Column_Name', data_type 'Data_Type'
+    FROM information_schema.columns
+    WHERE table_name = '${table}'
+    `)
+    //console.log(types);
+    columns=[];
+    for(var i=0;i<colObj.length;i++){
+        if(colObj[i].title!=='edit' && colObj[i].title !== 'delete')
+        {
+            //console.log(types.find(w=>w.Column_Name==colObj [i].title))
+            switch(types.find(w=>w.Column_Name==colObj[i].title).Data_Type)
+            {
+                case 'varchar': {columns.push({title:colObj[i].title,type:"text"})} break;
+                case 'nvarchar':{columns.push({title:colObj[i].title,type:"text"})} break;
+                case 'int': {columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'float':{columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'double': {columns.push({title:colObj[i].title,type:"number"})} break;
+                case 'datetime':{columns.push({title:colObj[i].title,type:"date"})} break;
+                case 'date': { columns.push({ title: colObj[i].title, type: "date" }) } break;
+                case 'time': { columns.push({ title: colObj[i].title, type: "time" }) } break;
+            }
+        }
+    }
+    //console.log(columns);
+    formHTML=''
+    for(var i=0;i<columns.length;i+=3)
+    {
+        formHTML += `<div class="row"><div class="col">`
+        try {
+            formHTML += `<div id="div_${columns[i].title}" class="form-floating mb-3">
+            <input type="${columns[i].type}" class="form-control" id="${columns[i].title}" placeholder="name@example.com">
+            <label for="${columns[i].title}">${columns[i].title}</label>
+            </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        try {
+            formHTML += `<div class="col">`
+            formHTML += `<div id="div_${columns[i + 1].title}" class="form-floating mb-3">
+            <input type="${columns[i + 1].type}" class="form-control" id="${columns[i + 1].title}" placeholder="name@example.com">
+            <label for="${columns[i + 1].title}">${columns[i + 1].title}</label>
+            </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        try {
+            formHTML += `<div class="col">`
+            formHTML += `<div id="div_${columns[i + 2].title}" class="form-floating mb-3">
+            <input type="${columns[i + 2].type}" class="form-control" id="${columns[i + 2].title}" placeholder="name@example.com">
+            <label for="${columns[i + 2].title}">${columns[i + 1].title}</label>
+            </div>`;
+            formHTML += `</div>`
+        } catch (e) { }
+        formHTML += `</div>`
+    }
+    formHTML+=`<div><button id=insertBtn onclick="insertFn()" class="btn btn-success">submit</btn>`
+    formHTML+=`<button id=updateBtn onclick="updateFn()" class="btn btn-warning">submit</btn></div>`
+    $("#form").html(formHTML);
+    $("#Id").attr("disabled","true");
+    
+    $("#form").dialog({
+        width:window.innerWidth*0.8,
+        autoOpen:false,
+        title:"form"
+    });
+    function deleteFn(id){
+            var sql="delete from "+table+" where id="+id;
+            console.log(sql);
+            if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+            else alert("خطأ");
+    }
+    function createFn(){
+        $("#Id").hide()
+        $("#insertBtn").show()
+        $("#updateBtn").hide()
+        $("#form").dialog("open");
+    }
+    function editFn(id){
+        var sql="select * from "+table+" where id="+id;
+        var arr= readSQL(sql)[0];
+        console.log(arr);
+        for (const property in arr) {
+            console.log(""+arr[property]);
+            $("#"+property).val(""+arr[property]).change();
+        }
+        $("#Id").show()
+        $("#insertBtn").hide()
+        $("#updateBtn").show()
+        $("#form").dialog("open");
+    }
+    function insertFn(){
+         var sql=`insert into ${table}(`
+         for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='Id')
+                sql+=columns[i].title+','
+            }
+            sql=sql.slice(0,-1);
+            sql+=")values("
+        for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='Id')
+                sql+="'"+$("#"+columns[i].title).val()+"',"
+            }
+            sql=sql.slice(0,-1);
+           sql+=")"
+         console.log(sql);
+         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+         else alert("خطأ");
+        
+    }
+    function updateFn (){
+        var sql = `update  ${table} set`
+            for(var i=0;i<columns.length;i++)
+                {
+                    if(columns[i].title!='Id')
+                    sql+=" "+columns[i].title+"= '"+$("#"+columns[i].title).val()+"',"
+                }
+            sql=sql.slice(0,-1);
+            sql+=" where Id="+$("#Id").val()
+         console.log(sql);
+         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+        else alert("خطأ");
+    }
+    function toSelect(dom,option){//`<div id="div_${columns[i].title}" class="form-floating mb-3">
+        var htmlOption= `<select class="form-control" id="${dom}" placeholder="name@example.com">`
+            for(var j=0;j<option.length;j++){
+                htmlOption+=`<option value="${option[j].id}">${option[j].name}</option>`
+            }
+         htmlOption+=`</select><label for="${dom}">${dom}</label>`;
+         $("#div_"+dom).html(htmlOption);
+    //</div>`;
+
+    }
+   /******/
+   /*var s=[
+   {"id":1,"name":"غير مسموح"},
+   {"id":2,"name":"قراءة"},
+   {"id":3,"name":"حذف"},
+   {"id":4,"name":"تعديل"},
+   ]
+    toSelect("Vacation",s);
+    toSelect('Mission', s);
+    toSelect('Attendance',s);
+    toSelect('OverTime' ,s);
+    toSelect('Salary',s);
+    toSelect('ClosingPeriod',s); 
+    toSelect('FingerMachine' ,s);
+    toSelect('Reports_Abs' ,s);
+    toSelect('Reports_Salary_Details',s); 
+    toSelect('Logs' ,s);
+    toSelect('TempShifts',s); 
+    toSelect('Employee' ,s);
+    toSelect('BasicBayWorks',s);
+    toSelect('Insurance',s);*/
+    //console.log(colObj);
+    let dts=readSQL(
+        `SELECT cast(id AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift2,0) AS VARCHAR(MAX))+','+CAST(ISNULL(s.Shift3,0) AS VARCHAR(MAX)) 'k',*
+        FROM Shifts s`
+   )
+   console.log(dts.length);
+   let filterd=[];
+   for(let i=0;i<dts.length;i++){
+       dts[i].k=dts[i].k.split(',').sort().join(',');
+       if(filterd.findIndex(w=>w.k==dts[i].k)==-1)
+       {
+           filterd.push(dts[i]);
+       }
+      
+   }
+   console.log(filterd.length); 
+   console.log(filterd);
+</script>
+
+
+
+
+

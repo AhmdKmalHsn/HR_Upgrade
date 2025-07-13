@@ -2,33 +2,33 @@
 @{
     ViewBag.Title = "Employees";
     var db = Database.Open("CS");
-	//var db2 = Database.Open("CS");
+    //var db2 = Database.Open("CS");
     var sql01 = "select ShiftId,ShiftName from shifts";
     var sql02 = "select Id,Name from InsuranceAuthorities";
 }
-    
-@if(Request.Cookies["Reports_Salary_Details"]==null)
-{
-Response.Redirect("~/home/log");
-}
-@if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>1){
 
-}else
+@if (Request.Cookies["Reports_Salary_Details"] == null)
 {
-   Response.Redirect("~/home/Index");
+    Response.Redirect("~/home/log");
+}
+@if (Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value) > 2)
+{
+
+}
+else
+{
+    Response.Redirect("~/home/Index");
 }
 <style>
-.form-floating label{
-/*right:0;*/
-}
-fieldset
-{
-    /*border:1px black solid;*/
-}
-.update-form
-{
-    
-}
+    .form-floating label {
+        /*right:0;*/
+    }
+
+    fieldset {
+        /*border:1px black solid;*/
+    }
+
+    .update-form {}
 </style>
 <h2>تقرير مفردات مرتب</h2>
 <hr>
@@ -46,140 +46,149 @@ fieldset
 <div id="update-form" class="update-form">
     <div class="container-fluid " dir=rtl>
         <fieldset>
-        <legend>البيانات الشخصية:</legend>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1  ">
-                    <input id=fileNo type=number class="form-control" readonly>
-                    <label class="label" for=fileNo dir=rtl>رقم الملف </label>
-                </div>
-            </div>
-            <div class=col-6>
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=Name type=text class="form-control" readonly>
-                    <label class="label " for=Name dir=rtl>الاسم</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-floating mb-1 mt-1">
-            <select id="shiftId" class="form-control" placeholder="">
-                <option style="" dir="rtl" value="null">بدون</option>
-                @foreach (var row in db.Query(sql01))
-                {
-                    <option style="" dir="rtl" value="@row.ShiftId">@row.ShiftId - @row.ShiftName</option>
-                }
-            </select>
-            <label for="shiftId"> الوردية</label>
-        </div>
-        </fieldset>
-        <fieldset>
-  <legend>المرتب:</legend>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=monthly type=number class="form-control" placeholder=" " >
-                    <label class="label" for=monthly dir=rtl>الراتب الشهري</label>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=annual type=number class="form-control" placeholder=" ">
-                    <label class="label " for=annual dir=rtl>الراتب السنوي</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-10">
-                        <div class="form-floating mb-1 mt-1 ">
-                            <input id=days type=number class="form-control" placeholder=" ">
-                            <label class="label" for=days dir=rtl>عدد الايام</label>
-                        </div>
-                    </div>
-                    <div class="col-1" style="display:flex;align-items: center;">+</div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-10">
-                        <div class=" form-floating mb-1 mt-1 ">
-                            <input id=const type=number class="form-control" placeholder=" ">
-                            <label class="label " for=const dir=rtl>قيمة ثابتة</label>
-                        </div>
-                    </div> 
-                    <div class="col-1" style="display:flex;align-items: center;" >=</div>
-                </div>              
-            </div>
-            <div class="col-4">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=regular type=number class="form-control"  readonly>
-                    <label class="label" for=regular dir=rtl>حافز الانتظام</label>
-                </div>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=skill type=number class="form-control" placeholder=" " >
-                    <label class="label" for=skill dir=rtl>حافز المهارة</label>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=living type=number class="form-control" placeholder=" ">
-                    <label class="label " for=living dir=rtl>حافز غلاء المعيشة</label>
-                </div>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=manage type=number class="form-control" placeholder=" " >
-                    <label class="label" for=manage dir=rtl>حافز مجلس الادارة</label>
-                </div>
-            </div>
-             <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=over type=number class="form-control" placeholder=" " >
-                    <label class="label" for=over dir=rtl>معدل  الاضافي</label>
-                </div>
-            </div>
-        </div>
-        </fieldset>
-        <fieldset>
-  <legend>التامين:</legend>
+            <legend>البيانات الشخصية:</legend>
             <div class="row">
-               <div class="col-4">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1  ">
+                        <input id=fileNo type=number class="form-control" readonly>
+                        <label class="label" for=fileNo dir=rtl>رقم الملف </label>
+                    </div>
+                </div>
+                <div class=col-6>
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=Name type=text class="form-control" readonly>
+                        <label class="label " for=Name dir=rtl>الاسم</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-1 mt-1">
+                <select id="shiftId" class="form-control" placeholder="">
+                    <option style="" dir="rtl" value="0">بدون</option>
+                    @foreach (var row in db.Query(sql01))
+                    {
+                        <option style="" dir="rtl" value="@row.ShiftId">@row.ShiftId - @row.ShiftName</option>
+                    }
+                </select>
+                <label for="shiftId"> الوردية</label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>المرتب:</legend>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=monthly type=number class="form-control" placeholder=" ">
+                        <label class="label" for=monthly dir=rtl>الراتب الشهري</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=annual type=number class="form-control" placeholder=" ">
+                        <label class="label " for=annual dir=rtl>الراتب السنوي</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="form-floating mb-1 mt-1 ">
+                                <input id=days type=number class="form-control" placeholder=" ">
+                                <label class="label" for=days dir=rtl>عدد الايام</label>
+                            </div>
+                        </div>
+                        <div class="col-1" style="display:flex;align-items: center;">+</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class=" form-floating mb-1 mt-1 ">
+                                <input id=const type=number class="form-control" placeholder=" ">
+                                <label class="label " for=const dir=rtl>قيمة ثابتة</label>
+                            </div>
+                        </div>
+                        <div class="col-1" style="display:flex;align-items: center;">=</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=regular type=number class="form-control" readonly>
+                        <label class="label" for=regular dir=rtl>حافز الانتظام</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=skill type=number class="form-control" placeholder=" ">
+                        <label class="label" for=skill dir=rtl>حافز المهارة</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=living type=number class="form-control" placeholder=" ">
+                        <label class="label " for=living dir=rtl>حافز غلاء المعيشة</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=manage type=number class="form-control" placeholder=" ">
+                        <label class="label" for=manage dir=rtl>حافز مجلس الادارة</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=over type=number class="form-control" placeholder=" ">
+                        <label class="label" for=over dir=rtl>معدل الاضافي</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>التامين:</legend>
+            <div class="row">
+                <div class="col-6">
                     <div class="form-floating mb-1 mt-1 ">
                         <input id=insu type=number class="form-control" placeholder=" ">
                         <label class="label" for=insu dir=rtl>الراتب التأميني</label>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class=" form-floating mb-1 mt-1 ">
                         <input id=insuNo type=number class="form-control" placeholder=" ">
                         <label class="label " for=insuNo dir=rtl>الرقم التاميني</label>
                     </div>
                 </div>
-                 <div class="col-4">
+
+            </div>
+            <div class="row">
+                <div class="col-6">
                     <div class=" form-floating mb-1 mt-1 ">
                         <select id=insuAuth class="form-control" placeholder=" ">
-                        <option style="" dir="rtl" value="null">بدون</option>
-                        @foreach (var row in db.Query(sql02))
-                        {
-                           <option style="" dir="rtl" value="@row.Id">@row.Name</option>
-                        }
+                            <option style="" dir="rtl" value="0">بدون</option>
+                            @foreach (var row in db.Query(sql02))
+                            {
+                                <option style="" dir="rtl" value="@row.Id">@row.Name</option>
+                            }
                         </select>
                         <label class="label " for=insuAuth dir=rtl>سلطة التأمين</label>
                     </div>
                 </div>
+                <div class="col-6">
+                    <!--div class=" form-floating mb-1 mt-1 ">
+                        <input id=insuPercent type=number class="form-control" placeholder=" ">
+                        <label class="label " for=insuNo dir=rtl>نسبة التامين</label>
+                    </div-->
+                </div>
             </div>
         </fieldset>
         <fieldset>
-  <legend>رصيد الاجازات:</legend>
+            <legend>رصيد الاجازات:</legend>
             <div class="row">
                 <div class="col-6">
                     <div class="form-floating mb-1 mt-1 ">
@@ -195,149 +204,178 @@ fieldset
                 </div>
             </div>
         </fieldset>
-        </div>
+        <fieldset>
+            <legend>الانتاج </legend>
+            <!--الانتاج-->
+            <div class="row m-2" dir=RTL>
+                <div class="col-2 "><label class="form-control"> الانتاج(عدد الايام)</label></div>
+                <div class="col-4 "><input id=proDays type=number class="form-control"></div>
+
+
+                <div class="col-2     "><label class="form-control">الانتاج (ثابت)</label></div>
+                <div class="col-4    "><input id=proFixed type=number class="form-control"></div>
+            </div>
+            <div class="row m-2" dir=RTL>
+                <div class="col-2"><label class="form-control">نوع الانتاج</label></div>
+                <div class="col-2"><input type="radio" name="proType" id=proMonthly>شهري</div>
+                <div class="col-2"><input type="radio" name="proType" id=proWeekly>اسبوعي</div>
+                <div class="col-2 "><label class="form-control"> ضمن المرتب</label></div>
+                <div class="col-4 "><input id=proSalary type=checkbox class=""></div>
+            </div>
+        </fieldset>
     </div>
+</div>
 </div>
 <!---->
 <!--dialog create-->
 <div id="create-form" class="create-form">
     <div class="container-fluid " dir=rtl>
         <fieldset>
-        <legend>البيانات الشخصية:</legend>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 input-group">
-                    <input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialogEmp.dialog('open')" />
-                    <input id=fileNo type=number class="form-control" readonly>
-                    <label class="label" for=fileNo dir=rtl>رقم الملف</label>
-                </div>
-            </div>
-            <div class=col-6>
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=Name type=text class="form-control" readonly>
-                    <label class="label " for=Name dir=rtl>الاسم</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-floating mb-1 mt-1">
-            <select id="shiftId" class="form-control" placeholder="">
-                <option style="" dir="rtl" value="null">بدون</option>
-                @foreach (var row in db.Query(sql01))
-                {
-                    <option style="" dir="rtl" value="@row.ShiftId">@row.ShiftId - @row.ShiftName</option>
-                }
-            </select>
-            <label for="shiftId"> الوردية</label>
-        </div>
-        </fieldset>
-        <fieldset>
-  <legend>المرتب:</legend>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=monthly type=number class="form-control" placeholder=" " >
-                    <label class="label" for=monthly dir=rtl>الراتب الشهري</label>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=annual type=number class="form-control" placeholder=" ">
-                    <label class="label " for=annual dir=rtl>الراتب السنوي</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-10">
-                        <div class="form-floating mb-1 mt-1 ">
-                            <input id=days type=number class="form-control" placeholder=" ">
-                            <label class="label" for=days dir=rtl>عدد الايام</label>
-                        </div>
+            <legend>البيانات الشخصية:</legend>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 input-group">
+                        <input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;"
+                            onclick="dialogEmp.dialog('open')" />
+                        <input id=fileNo type=number class="form-control" readonly>
+                        <label class="label" for=fileNo dir=rtl>رقم الملف</label>
                     </div>
-                    <div class="col-1" style="display:flex;align-items: center;">+</div>
+                </div>
+                <div class=col-6>
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=Name type=text class="form-control" readonly>
+                        <label class="label " for=Name dir=rtl>الاسم</label>
+                    </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-10">
-                        <div class=" form-floating mb-1 mt-1 ">
-                            <input id=const type=number class="form-control" placeholder=" ">
-                            <label class="label " for=const dir=rtl>قيمة ثابتة</label>
-                        </div>
-                    </div> 
-                    <div class="col-1" style="display:flex;align-items: center;" >=</div>
-                </div>              
+
+            <div class="form-floating mb-1 mt-1">
+                <select id="shiftId" class="form-control" placeholder="">
+                    <option style="" dir="rtl" value="0">بدون</option>
+                    @foreach (var row in db.Query(sql01))
+                    {
+                        <option style="" dir="rtl" value="@row.ShiftId">@row.ShiftId - @row.ShiftName</option>
+                    }
+                </select>
+                <label for="shiftId"> الوردية</label>
             </div>
-            <div class="col-4">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=regular type=number class="form-control"  readonly>
-                    <label class="label" for=regular dir=rtl>حافز الانتظام</label>
-                </div>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=skill type=number class="form-control" placeholder=" " >
-                    <label class="label" for=skill dir=rtl>حافز المهارة</label>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class=" form-floating mb-1 mt-1 ">
-                    <input id=living type=number class="form-control" placeholder=" ">
-                    <label class="label " for=living dir=rtl>حافز غلاء المعيشة</label>
-                </div>
-            </div>
-        </div>
-         <div class="row">
-            <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=manage type=number class="form-control" placeholder=" " >
-                    <label class="label" for=manage dir=rtl>حافز مجلس الادارة</label>
-                </div>
-            </div>
-             <div class="col-6">
-                <div class="form-floating mb-1 mt-1 ">
-                    <input id=over type=number class="form-control" placeholder=" " >
-                    <label class="label" for=over dir=rtl>معدل  الاضافي</label>
-                </div>
-            </div>
-        </div>
         </fieldset>
         <fieldset>
-  <legend>التامين:</legend>
+            <legend>المرتب:</legend>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=monthly type=number class="form-control" placeholder=" ">
+                        <label class="label" for=monthly dir=rtl>الراتب الشهري</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=annual type=number class="form-control" placeholder=" ">
+                        <label class="label " for=annual dir=rtl>الراتب السنوي</label>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-4">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="form-floating mb-1 mt-1 ">
+                                <input id=days type=number class="form-control" placeholder=" ">
+                                <label class="label" for=days dir=rtl>عدد الايام</label>
+                            </div>
+                        </div>
+                        <div class="col-1" style="display:flex;align-items: center;">+</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class=" form-floating mb-1 mt-1 ">
+                                <input id=const type=number class="form-control" placeholder=" ">
+                                <label class="label " for=const dir=rtl>قيمة ثابتة</label>
+                            </div>
+                        </div>
+                        <div class="col-1" style="display:flex;align-items: center;">=</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=regular type=number class="form-control" readonly>
+                        <label class="label" for=regular dir=rtl>حافز الانتظام</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=skill type=number class="form-control" placeholder=" ">
+                        <label class="label" for=skill dir=rtl>حافز المهارة</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class=" form-floating mb-1 mt-1 ">
+                        <input id=living type=number class="form-control" placeholder=" ">
+                        <label class="label " for=living dir=rtl>حافز غلاء المعيشة</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=manage type=number class="form-control" placeholder=" ">
+                        <label class="label" for=manage dir=rtl>حافز مجلس الادارة</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating mb-1 mt-1 ">
+                        <input id=over type=number class="form-control" placeholder=" ">
+                        <label class="label" for=over dir=rtl>معدل الاضافي</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>التامين:</legend>
+            <div class="row">
+                <div class="col-6">
                     <div class="form-floating mb-1 mt-1 ">
                         <input id=insu type=number class="form-control" placeholder=" ">
                         <label class="label" for=insu dir=rtl>الراتب التأميني</label>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class=" form-floating mb-1 mt-1 ">
                         <input id=insuNo type=number class="form-control" placeholder=" ">
                         <label class="label " for=insuNo dir=rtl>الرقم التاميني</label>
                     </div>
                 </div>
-                 <div class="col-4">
+
+            </div>
+            <div class="row">
+                <div class="col-6">
                     <div class=" form-floating mb-1 mt-1 ">
                         <select id=insuAuth class="form-control" placeholder=" ">
-                        <option style="" dir="rtl" value="null">بدون</option>
-                        @foreach (var row in db.Query(sql02))
-                        {
-                           <option style="" dir="rtl" value="@row.Id">@row.Name</option>
-                        }
+                            <option style="" dir="rtl" value="0">بدون</option>
+                            @foreach (var row in db.Query(sql02))
+                            {
+                                <option style="" dir="rtl" value="@row.Id">@row.Name</option>
+                            }
                         </select>
                         <label class="label " for=insuAuth dir=rtl>سلطة التأمين</label>
                     </div>
                 </div>
+                <div class="col-6">
+                    <!--div class=" form-floating mb-1 mt-1 ">
+                        <input id=insuPercent type=number class="form-control" placeholder=" ">
+                        <label class="label " for=insuNo dir=rtl>نسبة التامين</label>
+                    </div-->
+                </div>
             </div>
         </fieldset>
         <fieldset>
-  <legend>رصيد الاجازات:</legend>
+            <legend>رصيد الاجازات:</legend>
             <div class="row">
                 <div class="col-6">
                     <div class="form-floating mb-1 mt-1 ">
@@ -353,373 +391,457 @@ fieldset
                 </div>
             </div>
         </fieldset>
-        </div>
+        <fieldset>
+            <legend>الانتاج </legend>
+            <!--الانتاج-->
+            <div class="row m-2" dir=RTL>
+                <div class="col-2 "><label class="form-control"> الانتاج(عدد الايام)</label></div>
+                <div class="col-4 "><input id=proDays type=number class="form-control"></div>
+
+
+                <div class="col-2"><label class="form-control">الانتاج (ثابت)</label></div>
+                <div class="col-4"><input id=proFixed type=number class="form-control"></div>
+            </div>
+            <div class="row m-2" dir=RTL>
+                <div class="col-2"><label class="form-control">نوع الانتاج</label></div>
+                <div class="col-2"><input type="radio" name="proType" id=proMonthly>شهري</div>
+                <div class="col-2"><input type="radio" name="proType" id=proWeekly>اسبوعي</div>
+                <div class="col-2 "><label class="form-control"> ضمن المرتب</label></div>
+                <div class="col-4 "><input id=proSalary type=checkbox class=""></div>
+            </div>
+        </fieldset>
     </div>
+</div>
 </div>
 <!---->
 <script>
-    var sqlInsert,sqlUpdate,id;
-    const sql1 = `select filenumber,knownas name,(select name from Departements where DepartementId=Id)dept 
+    var sqlInsert, sqlUpdate, id;
+    const sql1 = `select    filenumber,
+                            knownas name,
+                            (select name from Departements where DepartementId=Id)dept 
 from employees e left join Personals p on e.PersonalId=p.Id left join BasicBayWorks b on e.id=b.EmployeeId 
 where b.id is null and p.StatusId=1`;
-    var q=
-`select distinct 
-		  e.Id,
-		  e.FileNumber ,
-		  e.KnownAs'الأسم',
-		  p.JoiningDate 'تاريخ التعيين',
-		  dept.Name 'القسم',
-          c.Name'الوظيفة',
-		  isNull(b.TotalSalary,0)'الاساسي',
-		  isNull(b.RegularityIncentive,0)'الانتظام', 
-		  b.ConstValue'قيمة ثابتة',
-		  b.NumberOfDays'عدد الأيام',
-		  isNull(b.ExpensiveLivingConditons,0)'غلاء المعيشة',
-		  isNull(b.SkillIncentive,0)'المهارة',
-		  isNull(b.IncentiveIncentiveForAbsence,0)'الادارة',
-		  isNull(i.EmployeeFixedSalary*0.11 ,0)'خصم التأمين',
-		  isNull(b.TotalSalary,0)+isNull(b.RegularityIncentive,0)+
-		  isNull(b.ExpensiveLivingConditons,0)+isNull(b.SkillIncentive,0)+
-		  isNull(b.IncentiveIncentiveForAbsence,0)-isNull(i.EmployeeFixedSalary*.11 ,0)
-		  'صافي المرتب'
-		  from Employees E left join 
-          Classes c on e.ClassId=c.Id left join
-		  Departements dept on dept.Id=e.DepartementId left join 
-		  Personals p on e.PersonalId=p.Id left join 
-		  Status s on s.Id =p.StatusId left join 
-		  BasicBayWorks b on E.Id=b.EmployeeId left join
-		  (select max(id)id,EmployeeId from InsuranceDetails group by EmployeeId)q on q.EmployeeId=e.id join 
-		  InsuranceDetails i on i.id=q.id 
-		  where p.StatusId=1`;
-//console.log(q);
-var v=readSQL(q)
-//console.log(v);	   
-		   var columns = [                  
-                    {
-                        "data": "Id",
-                        "title": "رقم العامل",
-                    },
-					{
-                        "data": "FileNumber",
-                        "title": "رقم الملف",
-                        
-                    },
-                    {
-                        "data": "الأسم",
-                        "title": "الاسم",
-                        
-                    },
-                    {
-                        "data": "تاريخ التعيين",
-                        "title": "تاريخ التعيين",
-						"render":function(a,b,c)
-						{
-						return a!=null?a.substr(0,10):a;
-						}
-                    },
-                    {
-                        "data": "القسم",
-                        "title": "القسم",
-                        
-                    },
-                    {
-                        "data": "الوظيفة",
-                        "title": "الوظيفة",
-                    },
-                    {
-                        "data": "الاساسي",
-                        "title": "الراتب الشهري"
-                    },
-                    {
-                        "data": "المهارة",
-                        "title": "حافزالمهارة",
-                        
-                    },
-                    {
-                        "data": "غلاء المعيشة",
-                        "title": "غلاء المعيشة",
-                        
-                    },
-                    {
-                        "data": "الادارة",
-                        "title": "حافز مجلس الادارة",
-                        
-                    },
-                    {
-                        "data": "قيمة ثابتة",
-                        "title": "قيمة ثابتة",
-                        "render":function(a,b,c)
-						{
-						 return '<b style:"color:blue;">'+(a==null?'':a)+'</b>'
-						}
-                    },
-                    {
-                        "data": "عدد الأيام",
-                        "title": "عدد الايام",
-                        "render":function(a,b,c)
-						{
-						 return '<b style:"font-size:24px;">'+(a==null?'':a)+'</b>'
-						}
-                    },
-					{
-                        "data": "الانتظام",
-                        "title": "حافز الانتظام",
-                        "render":function(a,b,c)
-						{
-						 return '<b style:"color:blue;">'+(a==null?'':a)+'</b>'
-						}
-                    },
-					{
-                        "data": "خصم التأمين",
-                        "title": "خصم التأمين"
-                       
-                    },
-					{
-                        "data": "صافي المرتب",
-                        "title": "صافي المرتب",
-                        "render":function(a,b,c)
-						{
-						 return '<b style:"color:blue;">'+(a<0?'':a)+'</b>'
-						}
-                    },
-					{"defaultContent": "<button id='edt-btn' class='btn btn-success'>Edit</button>"}
-					
-                  ];
-				  
-            console.log(columns);
-            var tb = $('#example').dataTable({
-                stateSave: true,
-                "destroy": true,
-                "data": v.filter(w =>EMPS.includes(''+w.FileNumber)),
-                "columns": columns,
-                dom: 'Blfrtip',
-                buttons: [
-                  'copy', 'excel', 'print'
-                ],
-            });
-$('#example tbody').on('click', "#edt-btn", function() {
-                  var gdata=readSQL(`
-                  select b.Id, 
-b.EmployeeId, 
-b.ShiftId, 
-b.MonthlyBasic, 
-b.AnnualBasic, 
-b.TotalSalary, 
-b.Overtime, 
-b.SkillIncentive, 
-b.ExpensiveLivingConditons, 
-b.RegularityIncentive, 
-b.IncentiveIncentiveForAbsence, 
-b.ConstValue, 
-b.NumberOfDays, 
-b.NumberOfVacationInYear, 
-b.NumberOfVacationInManth, 
-b.NumberOfStageVacations, 
-b.VacationDeferredDate, 
-b.MaxDeferredVacation,
-i.EmployeeFixedSalary'insuSalary',
-i.InsuranceNumber'insuNo',
-i.InsuranceAuthorityId 'insuAuth'
-from BasicBayWorks b ,(select max(id)id,EmployeeFixedSalary,InsuranceNumber,InsuranceAuthorityId from  InsuranceDetails where EmployeeId='`+$(this).closest('tr').find("td").eq(0).html()+`' group by EmployeeFixedSalary,InsuranceNumber,InsuranceAuthorityId) i
-where b.EmployeeId='`+$(this).closest('tr').find("td").eq(0).html()+`'`
-                  );
-        console.log(gdata[0]);
-    if (gdata.length > 0) {
-        $("#update-form #fileNo").val($(this).closest('tr').find("td").eq(1).html());
-        $("#update-form #name").val($(this).closest('tr').find("td").eq(2).html());
-        $("#update-form #shiftId").val(gdata[0].ShiftId );
-        $("#update-form #monthly").val( gdata[0].TotalSalary );
-        $("#update-form #annual").val(gdata[0].AnnualBasic );
-        $("#update-form #days").val(gdata[0].NumberOfDays );
-        $("#update-form #const").val(gdata[0].ConstValue );
-        $("#update-form #regular").val(gdata[0].RegularityIncentive);
-        $("#update-form #skill").val(gdata[0].SkillIncentive );
-        $("#update-form #living").val(gdata[0].ExpensiveLivingConditons );
-        $("#update-form #manage").val(gdata[0].IncentiveIncentiveForAbsence);
-        $("#update-form #over").val(gdata[0].Overtime );
-        $("#update-form #insu").val(gdata[0].insuSalary );
-        $("#update-form #insuNo").val(gdata[0].insuNo );
-        $("#update-form #insuAuth").val(gdata[0].insuAuth );
-        $("#update-form #balanceDate").val(gdata[0].VacationDeferredDate==null?"":gdata[0].VacationDeferredDate.substr(0,10));
-        $("#update-form #balance").val(gdata[0].NumberOfStageVacations );
+    var q =
+        `select distinct 
+e.Id,
+e.FileNumber ,
+e.KnownAs'الأسم',
+p.JoiningDate 'تاريخ التعيين',
+dept.Name 'القسم',
+c.Name'الوظيفة',
+isNull(b.TotalSalary,0)'الاساسي',
+isNull(b.RegularityIncentive,0)'الانتظام', 
+b.ConstValue'قيمة ثابتة',
+b.NumberOfDays'عدد الأيام',
+isNull(b.ExpensiveLivingConditons,0)'غلاء_المعيشة',
+isNull(b.SkillIncentive,0)'المهارة',
+isNull(b.IncentiveIncentiveForAbsence,0)'الادارة',
+isNull(i.EmployeeFixedSalary*0.11 ,0)'خصم التأمين',
+isNull(b.TotalSalary,0)+isNull(b.RegularityIncentive,0)+
+isNull(b.ExpensiveLivingConditons,0)+isNull(b.SkillIncentive,0)+
+isNull(b.IncentiveIncentiveForAbsence,0)-isNull(i.EmployeeFixedSalary*.11 ,0)'صافي المرتب',
+isNull(b.withinSalary,0)withinSalary,
+isNull(b.isProMonthly,0)isProMonthly,
+isNull(b.isProWeekly,0)isProWeekly,
+isNull(b.ProductivityDays,0)ProductivityDays,
+isNull(b.ProductivityFixed,0)ProductivityFixed
+from    
+Employees E left join 
+JobTitles c on c.Id=e.JobTitleId left join
+Departements dept on dept.Id=e.DepartementId left join 
+Personals p on e.PersonalId=p.Id left join 
+Status s on s.Id =p.StatusId left join 
+BasicBayWorks b on E.Id=b.EmployeeId left join
+(select max(id)id,EmployeeId from InsuranceDetails group by EmployeeId)q on q.EmployeeId=e.id join 
+InsuranceDetails i on i.id=q.id 
+where p.StatusId=1`;
+    //console.log(q);
+    var v = readSQL(q)
+    console.log(v);	   
+    var columns = [
+        {
+            "data": "Id",
+            "title": "رقم العامل",
+        },
+        {
+            "data": "FileNumber",
+            "title": "رقم الملف",
 
-        id = $(this).closest('tr').find("td").eq(0).text();
-        //console.log(sqlUpdate);
-        dialogUpd.dialog("open");
-    } else { 
-        alert("no basicPayWorks!");
-         }                   
-              });  
-var empTable = $("#empTable").dataTable({
-    data: readSQL(sql1),
-    columns: [
+        },
         {
-    title: "filenumber",
-    data:"filenumber",
-},
+            "data": "الأسم",
+            "title": "الاسم",
+
+        },
         {
-    title:"name",
-    data:"name",
-},
+            "data": "تاريخ التعيين",
+            "title": "تاريخ التعيين",
+            "render": function (a, b, c) {
+                return a != null ? a.substr(0, 10) : a;
+            }
+        },
         {
-    title: "choose",
-    data: "filenumber",
+            "data": "القسم",
+            "title": "القسم",
+
+        },
+        {
+            "data": "الوظيفة",
+            "title": "الوظيفة",
+        },
+        {
+            "data": "الاساسي",
+            "title": "الراتب الشهري",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "المهارة",
+            "title": "حافزالمهارة",
+
+        },
+        {
+            "data": "غلاء_المعيشة",
+            "title": "غلاء المعيشة",
+
+        },
+        {
+            "data": "الادارة",
+            "title": "حافز مجلس الادارة",
+
+        },
+        {
+            'title':"حوافز اخرى",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:blueviolet;">'+
+                    (
+                        row.الادارة+row.المهارة+row.غلاء_المعيشة
+                    ).toFixed(2)
+                    +'</b>';
+            }
+
+        },
+        {
+            "data": "قيمة ثابتة",
+            "title": "قيمة ثابتة",
+            "render": function (a, b, c) {
+                return '<b>' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "عدد الأيام",
+            "title": "عدد الايام",
+            "render": function (a, b, c) {
+                return '<b style="font-size:24px;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            "data": "الانتظام",
+            "title": "حافز الانتظام",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + (a == null ? '' : a) + '</b>'
+            }
+        },
+        {
+            'title':"اجمالي",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:blueviolet;">'+
+                    (
+                        row.الادارة+row.المهارة+row.غلاء_المعيشة+row.الانتظام+row.الاساسي
+                    ).toFixed(2)
+                        +'</b>';
+            }
+
+        },
+        
+         {
+            'title':"الانتاج",
+            data: null,
+            render: function (data, type, row, meta) {
+                return '<b style="color:orange;">'+
+                    ( 
+                        row.الاساسي/30 * row.ProductivityDays + row.ProductivityFixed     
+                    ).toFixed(2)
+                        +'</b>';
+            }
+
+        },
+        {
+            "data": "خصم التأمين",
+            "title": "خصم التأمين"
+
+        },
+        {
+            "data": "صافي المرتب",
+            "title": "صافي المرتب",
+            "render": function (a, b, c) {
+                return '<b style="color:blue;">' + 
+                (a < 0 ? '' : (parseFloat(a)+parseFloat(c.الاساسي/30 * c.ProductivityDays + c.ProductivityFixed)).toFixed(2)) + '</b>'
+            }
+        },
+        { "defaultContent": "<button id='edt-btn' class='btn btn-success'>Edit</button>" }
+
+    ];
+
+    console.log(columns);
+    var tb = $('#example').dataTable({
+        stateSave: true,
+        "destroy": true,
+        "data": v.filter(w => EMPS.includes('' + w.FileNumber)),
+        "columns": columns,
+        dom: 'QBlfrtip',
+        buttons: [
+            'copy', 'excel', 'print'
+        ],
+    });
+    /**workspace**/
     
-    render: function (a) {
-                return `<button class="btn btn-dark" onclick="$('#create-form #fileNo').val(${a}); $('#create-form #name').val($(this).closest('tr').find('td').eq(1).text());dialogEmp.dialog('close')" >choose</button>`
-}
-}
-]
-});
-var dialogEmp = $("#empContainer").dialog({
-    width: 500,
-    height: 600,
-    autoOpen: false
-});
-var dialogUpd = $( ".update-form" ).dialog({
-      autoOpen: false,
-      height: 850,
-      width: 850,
-      modal: true,
-      title: 'مفردات المرتب',
-      buttons: {
-        حفظ: function() {
-          update();
-          }
-      }
-    });
-    var dialogCrt = $(".create-form" ).dialog({
-      autoOpen: false,
-      height: 850,
-      width: 850,
-      modal: true,
-      title: 'انشاء مفردات المرتب',
-      buttons: {
-        حفظ: function() {
-          create();
+    $('#example tbody').on('click', "#edt-btn", function () {
+        var gdata = readSQL(`
+select  b.Id, 
+        b.EmployeeId, 
+        b.ShiftId, 
+        b.MonthlyBasic, 
+        b.AnnualBasic, 
+        b.TotalSalary, 
+        b.Overtime, 
+        b.SkillIncentive, 
+        b.ExpensiveLivingConditons, 
+        b.RegularityIncentive, 
+        b.IncentiveIncentiveForAbsence, 
+        b.ConstValue, 
+        b.NumberOfDays, 
+        b.NumberOfVacationInYear, 
+        b.NumberOfVacationInManth, 
+        b.NumberOfStageVacations, 
+        b.VacationDeferredDate, 
+        b.MaxDeferredVacation,
+        isnull(b.withinSalary,0) 'withinSalary',
+        isnull(b.isProMonthly,0) 'isProMonthly',
+        isnull(b.isProWeekly,0) 'isProWeekly',
+        isnull(b.ProductivityDays,0) 'ProductivityDays',
+        isnull(b.ProductivityFixed,0) 'ProductivityFixed',
+
+        i.EmployeeFixedSalary'insuSalary',
+        i.InsuranceNumber'insuNo',
+        i.InsuranceAuthorityId 'insuAuth'
+from BasicBayWorks b ,(select max(id)id,EmployeeFixedSalary,InsuranceNumber,InsuranceAuthorityId from  InsuranceDetails where EmployeeId='`+ $(this).closest('tr').find("td").eq(0).html() + `' group by EmployeeFixedSalary,InsuranceNumber,InsuranceAuthorityId) i
+where b.EmployeeId='`+ $(this).closest('tr').find("td").eq(0).html() + `'`
+        );
+        console.log(gdata[0]);
+        if (gdata.length > 0) {
+            $("#update-form #fileNo").val($(this).closest('tr').find("td").eq(1).html());
+            $("#update-form #name").val($(this).closest('tr').find("td").eq(2).html());
+            $("#update-form #shiftId").val(gdata[0].ShiftId);
+            $("#update-form #monthly").val(gdata[0].TotalSalary);
+            $("#update-form #annual").val(gdata[0].AnnualBasic);
+            $("#update-form #days").val(gdata[0].NumberOfDays);
+            $("#update-form #const").val(gdata[0].ConstValue);
+            $("#update-form #regular").val(gdata[0].RegularityIncentive);
+            $("#update-form #skill").val(gdata[0].SkillIncentive);
+            $("#update-form #living").val(gdata[0].ExpensiveLivingConditons);
+            $("#update-form #manage").val(gdata[0].IncentiveIncentiveForAbsence);
+            $("#update-form #over").val(gdata[0].Overtime);
+            $("#update-form #insu").val(gdata[0].insuSalary);
+            $("#update-form #insuNo").val(gdata[0].insuNo);
+            $("#update-form #insuAuth").val(gdata[0].insuAuth);
+            $("#update-form #balanceDate").val(gdata[0].VacationDeferredDate == null ? "" : gdata[0].VacationDeferredDate.substr(0, 10));
+            $("#update-form #balance").val(gdata[0].NumberOfStageVacations);
+            $("#update-form #proSalary").attr("checked",gdata[0].withinSalary);
+            $("#update-form #proMonthly").attr("checked",gdata[0].isProMonthly);
+            $("#update-form #proWeekly").attr("checked",gdata[0].isProWeekly);
+            $("#update-form #proDays").val(gdata[0].ProductivityDays);
+            $("#update-form #proFixed").val(gdata[0].ProductivityFixed);
+            id = $(this).closest('tr').find("td").eq(0).text();
+            //console.log(sqlUpdate);
+            dialogUpd.dialog("open");
+        } else {
+            alert("no basicPayWorks!");
         }
-      }
     });
-      $(".dt-button").addClass("btn btn-success") 
-      
-      $(".update-form #annual").on("keyup",function(){
-             $(".update-form #monthly").val($(".update-form #annual").val()/12);
-             $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val())/30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
-      });
-      $(".update-form #monthly").on("keyup",function(){
-             $(".update-form #annual").val($(".update-form #monthly").val()*12);
-             $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val())/30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
-      });
-      $(".update-form #days,.update-form #const").on("keyup",function(){
-             $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val())/30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
-      });
-       
-       $(".create-form #annual").on("keyup",function(){
-             $(".create-form #monthly").val($(".create-form #annual").val()/12);
-             $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val())/30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
-      });
-      $(".create-form #monthly").on("keyup",function(){
-             $(".create-form #annual").val($(".create-form #monthly").val()*12);
-             $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val())/30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
-      });
-      $(".create-form #days,.create-form #const").on("keyup",function(){
-             $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val())/30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
-      });
-      function convertToNull(e)
-      {
-         return (e==''?'NULL':e)
-      }
-      function convertToZero(e)
-      {
-         return (e==''?0:e)
-      }
-   
+    var empTable = $("#empTable").dataTable({
+        data: readSQL(sql1),
+        columns: [
+            {
+                title: "filenumber",
+                data: "filenumber",
+            },
+            {
+                title: "name",
+                data: "name",
+            },
+            {
+                title: "choose",
+                data: "filenumber",
 
-      function update(){
-    sqlUpdate=
-"begin transaction  " +
-" update BasicBayWorks set " +  
-" ShiftId=" +convertToNull($(".update-form #shiftId").val())+","+ 
-" MonthlyBasic=" +convertToNull($(".update-form #monthly").val() )+","+ 
-" AnnualBasic=" +convertToNull($(".update-form #annual").val() )+","+ 
-" TotalSalary=" +convertToNull($(".update-form #monthly").val() )+","+ 
-" Overtime=" +convertToNull($(".update-form #over").val() )+","+ 
-" SkillIncentive=" +convertToNull($(".update-form #skill").val() )+","+ 
-" ExpensiveLivingConditons=" +convertToNull($(".update-form #living").val() )+","+ 
-" RegularityIncentive=" +convertToNull($(".update-form #regular").val() )+","+ 
-" IncentiveIncentiveForAbsence=" +convertToNull($(".update-form #manage").val() )+","+ 
-" ConstValue=" +convertToNull($(".update-form #const").val() )+","+ 
-" NumberOfDays=" +convertToNull($(".update-form #days").val() )+","+ 
-" NumberOfStageVacations=" +convertToNull($(".update-form #balance").val())+","+ 
-" VacationDeferredDate='" +convertToNull($(".update-form #balanceDate").val() )+"'"+ 
-" where EmployeeId=" +id+
-" update InsuranceDetails set "  +
-" EmployeeFixedSalary=" +convertToNull($(".update-form #insu").val())+","+
-" InsuranceAuthorityId=" +convertToNull($(".update-form #insuAuth").val())+","+
-" InsuranceNumber=" +convertToNull($(".update-form #insuNo").val() )+
-" where EmployeeId="+id+
-" commit transaction ";
-    //console.log(sqlUpdate);
-    var res=excuteSQL(sqlUpdate);
-    console.log(res);
-    if(res==1)
-    {
-        alert("saved successfull!");
-        dialogUpd.dialog("close");
-    }else alert("error");
-}
-     function create(){
-    sqlInsert=
-" begin transaction  " +
-" declare @@id int=(select id from employees where filenumber="+$(".create-form #fileNo").val()+")"+
-" insert into BasicBayWorks( " +  
-" ShiftId ,"+
-" MonthlyBasic ,"+ 
-" AnnualBasic ,"+
-" TotalSalary ,"+ 
-" Overtime  ,"+ 
-" SkillIncentive ,"+ 
-" ExpensiveLivingConditons ,"+ 
-" RegularityIncentive ,"+ 
-" IncentiveIncentiveForAbsence ,"+ 
-" ConstValue ,"+ 
-" NumberOfDays ,"+ 
-" NumberOfStageVacations ,"+ 
-" VacationDeferredDate ,"+ 
-" EmployeeId ) values("+
- convertToNull($(".create-form #shiftId").val())+","+ 
- convertToNull($(".create-form #monthly").val() )+","+ 
- convertToNull($(".create-form #annual").val() )+","+ 
- convertToNull($(".create-form #monthly").val() )+","+ 
- convertToNull($(".create-form #over").val() )+","+ 
- convertToNull($(".create-form #skill").val() )+","+ 
- convertToNull($(".create-form #living").val() )+","+ 
- convertToNull($(".create-form #regular").val() )+","+ 
- convertToNull($(".create-form #manage").val() )+","+ 
- convertToNull($(".create-form #const").val() )+","+ 
- convertToNull($(".create-form #days").val() )+","+ 
- convertToNull($(".create-form #balance").val())+",'"+ 
- convertToNull($(".create-form #balanceDate").val() )+"',"+ 
-  "@@id)"+ 
-" insert into InsuranceDetails ( "  +
-" EmployeeFixedSalary ,"+
-" InsuranceAuthorityId,"+
-" InsuranceNumber ,"+
-" EmployeeId )values("+
- convertToNull($(".create-form #insu").val())+","+
- convertToNull($(".create-form #insuAuth").val())+","+
- convertToNull($(".create-form #insuNo").val() )+","+
-  "@@id)"+
-" commit transaction";
-    console.log(sqlInsert);
-    var res=excuteSQL(sqlInsert);
-    console.log(res);
-    if(res==1)
-    {
-        alert("saved successfull!");
-        dialogCrt.dialog("close");
-    }else alert("error");
-}
+                render: function (a) {
+                    return `<button class="btn btn-dark" onclick="$('#create-form #fileNo').val(${a}); $('#create-form #name').val($(this).closest('tr').find('td').eq(1).text());dialogEmp.dialog('close')" >choose</button>`
+                }
+            }
+        ]
+    });
+    var dialogEmp = $("#empContainer").dialog({
+        width: 500,
+        height: 600,
+        autoOpen: false
+    });
+    var dialogUpd = $(".update-form").dialog({
+        autoOpen: false,
+        height: 850,
+        width: 850,
+        modal: true,
+        title: 'مفردات المرتب',
+        buttons: {
+            حفظ: function () {
+                update();
+            }
+        }
+    });
+    var dialogCrt = $(".create-form").dialog({
+        autoOpen: false,
+        height: 850,
+        width: 850,
+        modal: true,
+        title: 'انشاء مفردات المرتب',
+        buttons: {
+            حفظ: function () {
+                create();
+            }
+        }
+    });
+    $(".dt-button").addClass("btn btn-success")
+
+    $(".update-form #annual").on("keyup", function () {
+        $(".update-form #monthly").val($(".update-form #annual").val() / 12);
+        $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val()) / 30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
+    });
+    $(".update-form #monthly").on("keyup", function () {
+        $(".update-form #annual").val($(".update-form #monthly").val() * 12);
+        $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val()) / 30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
+    });
+    $(".update-form #days,.update-form #const").on("keyup", function () {
+        $(".update-form #regular").val((parseFloat(convertToZero($(".update-form #days").val()) * convertToZero($(".update-form #monthly").val()) / 30) + parseFloat(convertToZero($(".update-form #const").val()))).toFixed(2));
+    });
+    $(".create-form #annual").on("keyup", function () {
+        $(".create-form #monthly").val($(".create-form #annual").val() / 12);
+        $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val()) / 30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
+    });
+    $(".create-form #monthly").on("keyup", function () {
+        $(".create-form #annual").val($(".create-form #monthly").val() * 12);
+        $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val()) / 30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
+    });
+    $(".create-form #days,.create-form #const").on("keyup", function () {
+        $(".create-form #regular").val((parseFloat(convertToZero($(".create-form #days").val()) * convertToZero($(".create-form #monthly").val()) / 30) + parseFloat(convertToZero($(".create-form #const").val()))).toFixed(2));
+    });
+    function convertToNull(e) {
+        return (e == ""||e == null ? "NULL" : "'"+e+"'")
+    }
+    function convertToZero(e) {
+        return (e == "" ? 0 : e)
+    }
+
+
+    function update() {
+        sqlUpdate =
+            "begin transaction  " +
+            " update BasicBayWorks set " +
+            " ShiftId=" + convertToNull($(".update-form #shiftId").val()) + "," +
+            " MonthlyBasic=" + convertToNull($(".update-form #monthly").val()) + "," +
+            " AnnualBasic=" + convertToNull($(".update-form #annual").val()) + "," +
+            " TotalSalary=" + convertToNull($(".update-form #monthly").val()) + "," +
+            " Overtime=" + convertToNull($(".update-form #over").val()) + "," +
+            " SkillIncentive=" + convertToNull($(".update-form #skill").val()) + "," +
+            " ExpensiveLivingConditons=" + convertToNull($(".update-form #living").val()) + "," +
+            " RegularityIncentive=" + convertToNull($(".update-form #regular").val()) + "," +
+            " IncentiveIncentiveForAbsence=" + convertToNull($(".update-form #manage").val()) + "," +
+            " ConstValue=" + convertToNull($(".update-form #const").val()) + "," +
+            " NumberOfDays=" + convertToNull($(".update-form #days").val()) + "," +
+            " NumberOfStageVacations=" + convertToNull($(".update-form #balance").val()) + "," +
+            " withinSalary='" + $(".update-form #proSalary").is(":checked") + "'," + /**/
+            " isProMonthly='" + $(".update-form #proMonthly").is(":checked") + "'," +
+            " isProWeekly='" + $(".update-form #proWeekly").is(":checked") + "'," +
+            " ProductivityDays=" + convertToNull($(".update-form #proDays").val()) + "," +
+            " ProductivityFixed=" + convertToNull($(".update-form #proFixed").val()) + "," +/**/
+            " VacationDeferredDate=" + convertToNull($(".update-form #balanceDate").val()) + "" +
+            " where EmployeeId=" + id +
+            " update InsuranceDetails set " +
+            " EmployeeFixedSalary=" + convertToNull($(".update-form #insu").val()) + "," +
+            " InsuranceAuthorityId=" + convertToNull($(".update-form #insuAuth").val()) + "," +
+            " InsuranceNumber=" + convertToNull($(".update-form #insuNo").val()) +
+            " where EmployeeId=" + id +
+            " commit transaction ";
+        /*console.log(sqlUpdate);
+        console.log($(".update-form #insuAuth").val())
+        console.log(convertToNull($(".update-form #insuAuth").val()))*/
+        var res = excuteSQL(sqlUpdate);
+        console.log(res);
+        if (res == 1) {
+            alert("saved successfull!");
+            dialogUpd.dialog("close");
+        } else alert("error");
+    }
+    function create() {
+        sqlInsert =
+            " begin transaction  " +
+            " declare @@id int=(select id from employees where filenumber=" + $(".create-form #fileNo").val() + ")" +
+            " insert into BasicBayWorks( " +
+            " ShiftId ," +//1
+            " MonthlyBasic ," +
+            " AnnualBasic ," +
+            " TotalSalary ," +
+            " Overtime  ," +
+            " SkillIncentive ," +
+            " ExpensiveLivingConditons ," +
+            " RegularityIncentive ," +
+            " IncentiveIncentiveForAbsence ," +
+            " ConstValue ," +
+            " NumberOfDays ," +
+            " NumberOfStageVacations ," +
+            " VacationDeferredDate ," +
+            " withinSalary," +
+            " isProMonthly," +
+            " isProWeekly," +
+            " ProductivityDays," +
+            " ProductivityFixed," +
+            " EmployeeId ) values(" +
+            convertToNull($(".create-form #shiftId").val()) + "," +
+            convertToNull($(".create-form #monthly").val()) + "," +
+            convertToNull($(".create-form #annual").val()) + "," +
+            convertToNull($(".create-form #monthly").val()) + "," +
+            convertToNull($(".create-form #over").val()) + "," +
+            convertToNull($(".create-form #skill").val()) + "," +
+            convertToNull($(".create-form #living").val()) + "," +
+            convertToNull($(".create-form #regular").val()) + "," +
+            convertToNull($(".create-form #manage").val()) + "," +
+            convertToNull($(".create-form #const").val()) + "," +
+            convertToNull($(".create-form #days").val()) + "," +
+            convertToNull($(".create-form #balance").val()) + "," +
+            convertToNull($(".create-form #balanceDate").val()) + ",'" +
+            $(".create-form #proSalary").is(":checked") + "','" + /**/
+            $(".create-form #proMonthly").is(":checked") + "','" +
+            $(".create-form #proWeekly").is(":checked") + "'," +
+            convertToNull($(".create-form #proDays").val()) + "," +
+            convertToNull($(".create-form #proFixed").val()) + "," + /**/
+            "@@id)" +
+            " insert into InsuranceDetails ( " +
+            " EmployeeFixedSalary ," +
+            " InsuranceAuthorityId," +
+            " InsuranceNumber ," +
+            " EmployeeId )values(" +
+            convertToNull($(".create-form #insu").val()) + "," +
+            convertToNull($(".create-form #insuAuth").val()) + "," +
+            convertToNull($(".create-form #insuNo").val()) + "," +
+            "@@id)" +
+            " commit transaction";
+        console.log(sqlInsert);
+        var res = excuteSQL(sqlInsert);
+        console.log(res);
+        if (res == 1) {
+            alert("saved successfull!");
+            dialogCrt.dialog("close");
+        } else alert("error");
+    }
 </script>
-
-

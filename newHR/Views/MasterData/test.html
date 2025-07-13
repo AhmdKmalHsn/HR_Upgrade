@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="form" class="ui-dialog-content ui-widget-content"
+        style="width: auto; min-height: 83px; max-height: none; height: auto;">
+        <div class="row">
+            <div class="col-6">
+                <div id="div_Id" class="form-floating mb-3">
+                    <input type="number" class="form-control" id="Id" placeholder="name@example.com"
+                        disabled="disabled">
+                    <label for="Id">Id</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_ShiftName" class="form-floating mb-3">
+                    <input type="text" class="form-control" id="ShiftName" placeholder="name@example.com">
+                    <label for="ShiftName">ShiftName</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_WeekendFromDay" class="form-floating mb-3">
+                    <select class="form-control" id="WeekendFromDay" placeholder="name@example.com">
+                    <option value="0">السبت</option>
+                        <option value="1">الاحد</option>
+                        <option value="2">الاثنين</option>
+                        <option value="3">الثلاثاء</option>
+                        <option value="4">الاربعاء</option>
+                        <option value="5">الخميس</option>
+                        <option value="6">الجمعة</option>
+                    </select>
+                    <label for="WeekendFromDay">WeekendFromDay</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_WeekendToDay" class="form-floating mb-3">
+                    <select class="form-control" id="WeekendToDay" placeholder="name@example.com">
+                        <option value="0">السبت</option>
+                        <option value="1">الاحد</option>
+                        <option value="2">الاثنين</option>
+                        <option value="3">الثلاثاء</option>
+                        <option value="4">الاربعاء</option>
+                        <option value="5">الخميس</option>
+                        <option value="6">الجمعة</option>
+                    </select>
+                    <label for="WeekendToDay">WeekendToDay</label>
+                </div>
+            </div>
+        
+           
+            <div class="col-6">
+                <div id="div_DailyHours" class="form-floating mb-3">
+                    <input type="number" class="form-control" id="DailyHours" placeholder="name@example.com">
+                    <label for="DailyHours">DailyHours</label>
+                </div>
+            </div>
+       
+            <div class="col-6">
+                <div id="div_StartTime" class="form-floating mb-3">
+                    <input type="time" class="form-control" id="StartTime" placeholder="name@example.com">
+                    <label for="StartTime">StartTime</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_EndTime" class="form-floating mb-3">
+                    <input type="time" class="form-control" id="EndTime" placeholder="name@example.com">
+                    <label for="EndTime">EndTime</label>
+                </div>
+            </div>
+            
+
+
+            <div class="col-6">
+                <div id="div_NoOfShifts" class="form-floating mb-3">
+                    <select class="form-control" id="NoOfShifts" placeholder="name@example.com">
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                    </select>
+                    <label for="NoOfShifts">NoOfShifts</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_Shift2" class="form-floating mb-3">
+                    <select class="form-control" id="Shift2" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="Shift2">Shift2</label>
+                </div>
+            </div>
+        
+            <div class="col-6">
+                <div id="div_Shift3" class="form-floating mb-3">
+                    <select  class="form-control" id="Shift3" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="Shift3">Shift3</label>
+                </div>
+            </div>
+            
+           
+        
+            <div class="col-6">
+                <div id="div_XDelayId" class="form-floating mb-3">
+                    <select class="form-control" id="XDelayId" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="XDelayId">DelayId</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_XLeaveId" class="form-floating mb-3">
+                    <select class="form-control" id="XLeaveId" placeholder="name@example.com">
+                    
+                    </select>
+                    <label for="XLeaveId">LeaveId</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="div_InOffset" class="form-floating mb-3">
+                    <input type="number" class="form-control" id="InOffset" value="0" placeholder="name@example.com">
+                    <label for="InOffset">InOffset</label>
+                </div>
+            </div>
+        
+            <div class="col-6">
+                <div id="div_OutOffset" class="form-floating mb-3">
+                    <input type="number" class="form-control" id="OutOffset" value="0" placeholder="name@example.com">
+                    <label for="OutOffset">OutOffset</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="col-6"></div>
+                <div><button id="insertBtn" onclick="insertFn()" class="btn btn-success"
+                        style="display: none;">submit</button><button id="updateBtn" onclick="updateFn()"
+                        class="btn btn-warning">submit</button></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+﻿
+    
+<div class="container">
+        <div class="card" dir="rtl">
+            <div class="card-header">
+                <h2> الورديات</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12" style="overflow: auto;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>اسم الوردية</th>
+                                    <th>عدد ساعات العمل</th>
+                                    <th>الحضور</th>
+                                    <th>الانصراف</th>
+                                    <th>التأخيرات</th>
+                                    <th>الانصراف المبكر</th>
+                                </tr>
+                            <tbody id="table_data">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get('q');
+        let filterd=readSQL(
+        `
+        SELECT s.* 
+        FROM Shifts s JOIN
+            (
+                SELECT id,s.Shift2,s.Shift3
+                FROM Shifts s 
+                WHERE id=${id}
+            )t0 ON s.id=t0.id OR  s.id=t0.shift2 OR  s.id=t0.Shift3
+        `
+    )
+       
+        filterd.map(x=>x.NoOfShifts=x.NoOfShifts+1);
+        console.log(filterd)
+        let html = '';
+        let cols = ["Id", "ShiftName", "DailyHours", "StartTime","EndTime","XDelayId","XLeaveId"];
+        for (let i = 0; i < filterd.length; i++) {
+            const ele = filterd[i];
+            html += "<tr>";
+            for (let j = 0; j < cols.length; j++) {
+                
+                if(cols[j]=="Id")html += '<td><a href="/masterdata/shift?q='+ (filterd[i][cols[j]] ?? '') + `">${ (filterd[i][cols[j]] ?? '')}</a></td>`;
+                else if(cols[j]=="XDelayId")html += '<td><a href="/Delay/Update?id='+ (filterd[i][cols[j]] ?? '') + `">${ (filterd[i][cols[j]] ?? '')}</a></td>`;
+                else if(cols[j]=="XLeaveId")html += '<td><a href="/Leave/Update?id='+ (filterd[i][cols[j]] ?? '') + `">${ (filterd[i][cols[j]] ?? '')}</a></td>`;
+                else html += "<td>" + (filterd[i][cols[j]] ?? '') + "</td>";
+            }
+            html += "</tr>";
+        }
+        $("#table_data").html(html);
+       
+    </script>   
+
+
+

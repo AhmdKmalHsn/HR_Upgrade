@@ -1,7 +1,4 @@
 ﻿
-@if(Request.Cookies["UserName"]==null){
-Response.Redirect("~/home/log");
-}
 <style>
     img, svg {
     vertical-align: middle;
@@ -9,16 +6,14 @@ Response.Redirect("~/home/log");
 }
 .color{
     padding: 8px;
-    /*background: linear-gradient(to right, orange, tomato,red);
-    transform: perspective(700px) rotateY(45deg);*/
+    
     cursor: pointer;
 }
 .color:hover{
-    /*transform: perspective(400px) rotateY(1deg);
-    padding-left: 5%;*/
+   
 }
 body{
- /*background-color: cornsilk;*/
+ 
 
 }
  @* my css update  *@
@@ -28,17 +23,19 @@ body{
 }
 
  body {
-    background: linear-gradient(145deg, #ccc, #ccc);
+   /* background: linear-gradient(145deg, #ccc, #ccc);*/
     /*background-color:gray ;*/
 }
 
 .sales{
        border-radius: 10px;
        box-shadow: 1px 1px 6px 1px black !important;
-
+       
 }
 .card{
     margin-bottom: 35px;
+    box-shadow: 0 0 10px 2px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
 .card .content{
     padding: 0px !important;
@@ -64,12 +61,9 @@ body{
  <br>
 
 <div class="container-fluid">
-
-
-
     <div class="row">
-        <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
-            <div  class="card color card-rounded" style="background-color:#007bff" >
+        <div class="col-sm-6 col-md-6 col-lg-3" >
+            <div  class="card color card-rounded" style="background-color:#FFdd00" >
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -89,7 +83,7 @@ body{
                 </div>
             </div>
         </div>
-        
+
         <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
             <div class="card color card-rounded" style="background-color:#ef5350">
                 <div class="content">
@@ -114,7 +108,7 @@ body{
         </div>
 
         <div class="col-sm-6 col-md-6 col-lg-3" data-anijs="if: scroll, on: window, do: rotateIn animated, before: scrollReveal, after: removeAnim">
-            <div class="card color card-rounded" style="background-color:#66bb6a">
+            <div class="card color card-rounded" style="background-color:#98ee9c;">
                 <div class="content">
                     <div class="row">
                         <div class="col-sm-4">
@@ -166,7 +160,7 @@ body{
                 <div class="col-md-6">
                     <div class="card">
                         <div class="content">
-                            <div class="detail details" style="background-color:#d52dd5">
+                            <div class="detail details" style="background-color:#c235c2d5;">
                                 <p class="detail-subtitle" style="font-size: 31px;font-weight: 700;padding-top: 24px;">عدد المتواجدين حاليا</p>
                                 <span id="attendId" class="number" style="font-size:100px"></span>
                             </div>
@@ -176,7 +170,7 @@ body{
                 <div class="col-md-6">
                     <div class="card">
                         <div class="content">                        
-							<div class="detail details" style="background-color:#0a58ca">
+							<div class="detail details" style="background-color:#78a5e7">
                                 <p class="detail-subtitle" style="font-size: 31px;font-weight: 700;padding-top: 24px;">عدد الحضور امس</p>
                                 <span id="attendYesterdayId" class="number" style="font-size:100px"></span>
                             </div>
@@ -205,27 +199,45 @@ body{
             </div>
         </div>
     </div>
+    <div class="row">
+         <div class="col-6">
+            <div class="card card-rounded">
+              <div class="card-header" style="font-size: 31px;font-weight: 700;padding-top: 24px;">متوسط بقاء العمال</div>
+              <div class="card-body">
+                  <div id="avg_emps_years" style="font-size:100px"></div>
+              </div>
+            </div>
+        </div>
+         <div class="col-6">
+            <div class="card card-rounded">
+              <div class="card-header" style="font-size: 31px;font-weight: 700;padding-top: 24px;">معدل تدوبر العمال</div>
+              <div class="card-body">
+                  <div id="emp_change_rate" style="font-size:100px"></div>
+              </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="row">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-12">
                     <div class="card">
                         <div class="content">
                             <canvas class="" id="EmployeesStatus"  ></canvas>
                         </div>
                     </div>
                 </div>
-                <!--div class="col-md-6 ">
+                <div class="col-md-6 ">
                     <div class="card">
                         <div class="content">                        
 							<div class="detail" style="background-color:violet">
-                                
+                                 <canvas class="" id="EmployeesStatus"  ></canvas>
                             </div>
                         </div>
                     </div>
-                </div-->
+                </div>
             </div>
         </div>
     </div>
@@ -545,20 +557,17 @@ var pieChart = new Chart(pieChartCanvas, {
     }
 </script>
 <script>
-sql3="select count(*) as cnt from Attendances where cast(DateFrom as date)=cast(GETDATE() as date) and TimeTo=''";
+sql3="select count(*) as cnt from Attendances a where a.TimeFrom IS NOT NULL AND a.TimeTo IS NOT NULL AND cast(DateFrom as date)=cast(GETDATE() as date) and TimeTo=''";
 $("#attendId").html(readSQL(sql3)[0].cnt);
-$("#attendYesterdayId").html(readSQL("select count(*) as cnt from Attendances where cast(DateFrom as date)=cast(dateadd(day,-1,GETDATE()) as date)")[0].cnt);
+$("#attendYesterdayId").html(readSQL("select count(*) as cnt from Attendances a where a.TimeFrom IS NOT NULL AND a.TimeTo IS NOT NULL  AND cast(DateFrom as date)=cast(dateadd(day,-1,GETDATE()) as date)")[0].cnt);
 </script>
 <script>
-    sqlInOut = `select qin.*,qout.cnt 'cnt2' from
-(select datepart(YEAR,JoiningDate)yer, datepart(MONTH,JoiningDate)mon, count(*)cnt from Personals group by datepart(YEAR,JoiningDate), datepart(MONTH,JoiningDate)) qin left join
-(select DATEPART(YEAR,TerminationDate)yer,DATEPART(MONTH,TerminationDate)mon,COUNT(*)cnt from Generals  group by DATEPART(YEAR,TerminationDate),DATEPART(MONTH,TerminationDate))qout on (qin.yer=qout.yer and qin.mon=qout.mon)
-where qin.yer=DATEPART(year,getdate())
-order by  qin.yer,qin.mon`;
+    sqlInOut = `select * from join_term order by  yer,mon
+`;
 
-   
+    console.log(sqlInOut)   
     var jsonfile = readSQL(sqlInOut);
-
+    console.log(jsonfile)  
     var labels = jsonfile.map(function (e) {
         return e.mon;
     });
@@ -577,12 +586,12 @@ order by  qin.yer,qin.mon`;
             {
                 label: 'مستجد',
                 data: data,
-                backgroundColor: 'rgba(0, 255, 105, 0.3)'
+                backgroundColor: 'rgba(0, 255, 105, 0.7)'
             },
             {
                 label: 'تارك العمل',
                 data: data2,
-                backgroundColor: 'rgba(204, 119, 0, 0.3)'
+                backgroundColor: 'rgba(254, 19, 0, 0.7)'
             }
             ]
         }
@@ -591,31 +600,7 @@ order by  qin.yer,qin.mon`;
     var chart = new Chart(document.getElementById("in_out"), config);
     
     $(window).scroll(function(){
-        //var x=$("#test").position();
-        /*var y= document.querySelector("#test").getBoundingClientRect();
-         var options = {};
-        //console.log(); // );
-        console.log(y.bottom);
-        if(y.bottom<window.innerHeight && y.top>0 )
-        {
-            console.log("true");
-            $("#test").fadeIn(1000); 
-            //$("#test").show( "Drop", options, 500, callback );
-        }
-        else
-        {
-            console.log("false");
-            $("#test").fadeOut();
-            //$("p").fadeIn(1000);
-        }
-        /*function callback() {
-      setTimeout(function() {
-        $( "#test:visible" ).removeAttr( "style" ).fadeOut();
-      }, 1000 );
-      };*/
-        /*console.log(self.innerHeight);
-        console.log(parent.innerHeight);
-        console.log(top.innerHeight);*/
+        
     });
     var avg=readSQL(`
      select sum(datediff(day,DateOfBirth,getdate())/365.25)/count(*) avg_ages,sum(datediff(day,JoiningDate,getdate())/365.25)/count(*) avg_years
@@ -624,9 +609,66 @@ order by  qin.yer,qin.mon`;
                     join Administrations adm on adm.id=emp.AdministrationId	
                     join Addresses adr on adr.id=emp.AddressId	
                     join Generals gen on gen.id=emp.GeneralId
-where per.StatusId=1 and  DepartementId<>351
+where per.StatusId=1 and  DepartementId<>351 --and groups=0
     `);
 
     $("#avg_ages").html(avg[0].avg_ages.toFixed(2))
     $("#avg_years").html(avg[0].avg_years.toFixed(2))
+    const empChangeRate=readSQL(`
+declare @@d date=cast(DATEPART(year, getdate()) as varchar(4))+'-01-01'
+select(select count(*) from 
+(select	e.FileNumber,p.JoiningDate,g.TerminationDate ,p.StatusId,
+		case
+			when p.StatusId=1 then 'inside'
+			when p.JoiningDate>g.TerminationDate then 'inside'
+			when p.JoiningDate<=g.TerminationDate then 'outside'
+			else 'undefined'
+		end statu
+from	employees e join 
+		personals p on e.PersonalId=p.id join 
+		generals g on e.GeneralId=g.Id
+where	(p.JoiningDate<@@d and g.TerminationDate between @@d and cast(DATEPART(year, getdate()) as varchar(4))+'-12-31') 
+
+)q
+)*100/
+(select count(*)cntAll from 
+(select	e.FileNumber,p.JoiningDate,g.TerminationDate ,p.StatusId,
+		case
+			when p.StatusId=1 then 'inside'
+			when p.JoiningDate>g.TerminationDate then 'inside'
+			when p.JoiningDate<=g.TerminationDate then 'outside'
+			else 'undefined'
+		end statu
+from	employees e join 
+		personals p on e.PersonalId=p.id join 
+		generals g on e.GeneralId=g.Id
+where	(p.JoiningDate is not null) 
+
+)q
+where (q.statu<>'undefined' and StatusId=1  and @@d > q.JoiningDate )
+     or(q.statu<>'undefined' and StatusId<>1 and @@d between q.JoiningDate and q.TerminationDate )
+) 'percent'		
+    `);
+$("#emp_change_rate").html(empChangeRate[0].percent.toFixed(2)+'%')
+let avg_emps_years=readSQL(`
+select  FileNumber,
+		p.JoiningDate,isnull(g.TerminationDate,getdate()) TerminationDate ,
+datediff(MINUTE,p.JoiningDate,isnull(g.TerminationDate,getdate())) diff 
+from Employees e left join 
+	 Personals p on e.PersonalId =p.id  left join 
+	 Generals g on e.GeneralId=g.Id
+	 where  not(TerminationDate is null and StatusId<>1) and 
+			not(TerminationDate is null and StatusId=1)
+`)
+let sum = 0;
+
+// calculate sum using forEach() method
+avg_emps_years.forEach( num => {
+  sum += num.diff;
+})
+
+//console.log() 
+
+$("#avg_emps_years").html((sum/60/24/avg_emps_years.length).toFixed(0) )
+
 </script>

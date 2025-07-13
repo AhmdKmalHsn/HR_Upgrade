@@ -1001,6 +1001,7 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <None Include="Properties\PublishProfiles\ahmd.pubxml" />
+    <None Include="Properties\PublishProfiles\IIS Upgrade.pubxml" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1187,14 +1188,9 @@
     <Content Include="Views\SSE\Index.cshtml" />
     <Content Include="Views\MasterData\Index.cshtml" />
     <Content Include="Views\Noti\Index.cshtml" />
-    <Content Include="Views\MasterData\jobs.cshtml" />
-    <Content Include="Views\MasterData\insuAuth.cshtml" />
-    <Content Include="Views\MasterData\depts.cshtml" />
-    <Content Include="Views\MasterData\edus.cshtml" />
     <Content Include="Views\Request\Index.cshtml" />
     <Content Include="Views\Home\license.cshtml" />
     <Content Include="Views\CRUD\Index.cshtml" />
-    <Content Include="Views\aa\Edit.cshtml" />
     <Content Include="Views\Reports\CutsReport.cshtml" />
     <Content Include="Views\Reports\paymentsDept.cshtml" />
     <Content Include="Views\CRUD\simplest.cshtml" />
@@ -1224,6 +1220,18 @@
     <Content Include="Views\Shared\_NavBar.cshtml" />
     <Content Include="Views\Shared\_Libs.cshtml" />
     <Content Include="Views\Shared\_NotAuthorized.cshtml" />
+    <Content Include="Views\Reports\salaryReport1.cshtml" />
+    <Content Include="Views\Reports\Report1.cshtml" />
+    <Content Include="Views\Reports\Report2.cshtml" />
+    <Content Include="Views\Reports\Report3.cshtml" />
+    <Content Include="Views\MasterData\BasicPayWorks.cshtml" />
+    <Content Include="Views\MasterData\Employees.cshtml" />
+    <Content Include="Views\MasterData\JobHistory.cshtml" />
+    <Content Include="Views\MasterData\OfficialVacations.cshtml" />
+    <Content Include="Views\MasterData\Shift.cshtml" />
+    <Content Include="Views\MasterData\Shifts.cshtml" />
+    <Content Include="Views\MasterData\Shifts_index.cshtml" />
+    <Content Include="Views\MasterData\Shift_entry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

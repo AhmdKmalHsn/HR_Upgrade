@@ -19,14 +19,6 @@ else
 @using WebMatrix.Data;
 
 <head>
-    <!--script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/searchbuilder/1.3.4/js/dataTables.searchBuilder.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.3.4/css/searchBuilder.dataTables.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css"/-->
     <style>
         .table-fixed {
             background-color: #fbfbfb;
@@ -58,13 +50,33 @@ else
 <hr>
 <br>
 <div id="container">
-    <table id="example" class="display" style="width:100%" dir="rtl"></table>
+    <table id="example" class="display" style="width:100%" dir="rtl">
+
+    </table>
 </div>
 <!-- Modal -->
 @if (Int32.Parse(Request.Cookies["OverTime"].Value) > 2)
 {
+    <div class="enter modal fade" id="entermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">الدخول</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (Int32.Parse(Request.Cookies["OverTime"].Value) > 2)
+{
     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -124,9 +136,7 @@ else
                     <div class="modal-footer">
                         <button id="add" type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">add</button>
                         <button id="delete" style="float:left" type="button" class="btn btn-danger btn-lg"
-                                data-bs-dismiss="modal">
-                            delete
-                        </button>
+                            data-bs-dismiss="modal">delete</button>
                     </div>
                 </div>
             </div>
@@ -192,13 +202,38 @@ else
                     </table>
                     <div class="modal-footer">
                         <button id="add1" type="button" class="btn btn-secondary btn-lg"
-                                data-bs-dismiss="modal">
-                            add
-                        </button>
+                            data-bs-dismiss="modal">add</button>
                         <button id="delete1" style="float:left" type="button" class="btn btn-danger btn-lg"
-                                data-bs-dismiss="modal">
-                            delete
-                        </button>
+                            data-bs-dismiss="modal">delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (Int32.Parse(Request.Cookies["Vacation"].Value) > 2)
+{
+    <div class="colors modal fade" id="colorModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle">highlights</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                    <div class=row>
+                        <div class=col-3 >fileNo :</div>
+                        <div class=col-9 ><input type="text" id="fileNo" readonly></div>
+                    </div>
+                    <div class=row>
+                        <div class=col-3 >color :</div>
+                        <div class=col-3 ><input type="color" id="color-picker"></div>
+                        <div class=col-3 ><input onclick="changeColor()" class="save"  type="submit" class="btn btn-success"  value="save"></div>
+                    </div>
+                    <div class="modal-footer">
+                        
                     </div>
                 </div>
             </div>
@@ -324,13 +359,9 @@ else
                     </div-->
                     <div class="modal-footer">
                         <button id="add" onclick="ins_vacation()" type="button" class="btn btn-success  "
-                                data-bs-dismiss="modal">
-                            أضافة
-                        </button>
+                            data-bs-dismiss="modal">أضافة</button>
                         <button id="delete" onclick="del_vacation()" style="float:left" type="button"
-                                class="btn btn-danger  " data-bs-dismiss="modal">
-                            حذف
-                        </button>
+                            class="btn btn-danger  " data-bs-dismiss="modal">حذف</button>
                     </div>
                 </div>
             </div>
@@ -374,8 +405,8 @@ else
         }
         let sql = `declare  @@sh int=${sh},@@off int=${off},@@part float =${part}
     select cast(dateadd(MINUTE,DailyHours*@@part*60*(@@off-1),StartTime)as time(0))s ,
-    cast(dateadd(MINUTE,DailyHours*@@part*60*(@@off),StartTime)as time(0))e
-    from Shifts
+    cast(dateadd(MINUTE,DailyHours*@@part*60*(@@off),StartTime)as time(0))e 
+    from Shifts 
     where ShiftId=@@sh`;
         //console.log(sql);
         if (parseFloat($("#vacValue").val()) != 1 /*&& parseInt($("#type").val())==3*/) {
@@ -421,7 +452,7 @@ else
         var sql = `
         insert into Absences(DateFrom,TimeFrom,TimeTo,AbsenceTypeId,EmployeeId,daypart,Ref1,Ref2)
         values('${$("#dt").val()}', '${$("#vacFrom").val()}', '${$("#vacTo").val()}', ${type}, (select id from Employees where FileNumber=${data.fileNo}) ,'${$("#vacValue").val()}','${ref1}', '${ref2}') `;
-        console.log(sql);
+        console.log(sql);ch()
         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
         else alert("خطأ");
         search();
@@ -446,17 +477,30 @@ else
             }
         });
     }
+    var jobs=readSQL("select  (select name from jobtitles where id=JobTitleId)'job',FileNumber from employees where personalid in (select id from personals where statusid=1)");
+    console.log(jobs);
+    
     function search() {
         var columns = [];
         $.ajax({
-            url: "/reports/getAllBydepartment",
+            url: "getAllBydepartment",
             data: { date: $('#dt').val(), dept: $('#dept').val() },
             method: "post",
             success: function (data) {
                 response = data;
-                $.each(data[0], function (key, item) {
+                $.each(response, function (key, item) {
+                    try
+                    {
+                        if(item.deptName=='التدريب')
+                            item['deptName']+=' - '+jobs.find(x=>x.FileNumber == item.fileNo).job
+                    }catch(ex)
+                    {
+                        console.log(ex)
+                    }
+                    //else item['job']=''
+                    //
                 });
-                console.log(response)
+                
                 createDataTable();
             },
             error:
@@ -488,6 +532,11 @@ else
                     "data": "deptName",
                     "title": "القسم"
                 },
+                /*{
+                    "data": "job",
+                    "title": "الوظيفة"
+
+                },*/
                 {
                     "data": "timeFrom",
                     "title": "الدخول",
@@ -516,33 +565,34 @@ else
                     "data": "vaction",
                     "title": "الاجازة",
                     "render": function (data, type, row, meta) {
-                        if (data == 1) return '<b style="">' + data + '</b>';
+                        if (data == 1) return '<b style>' + data + '</b>';
                         else if (data == .5) return '<b style="">' + data + '</b>';
                         else if (data == .25) return '<b style="">' + data + '</b>';
                         else return data
                     }
                 },
+                (parseInt(@Request.Cookies["Vacation"].Value) > 2) ?
                 {
                     "data": "fileNo",
-                    "title": "تغيير",
-                    "render": function (e) {
-                        return `<input type="color"  onchange="changeColor()" />`
+                    "title": "تغيير اللون",
+                    "render": function (e) 
+                    {
+                        return `<button style="background-color:;color:#FFF" class="btn btn-light" type="button"  /*onchange="changeColor()"*/ /> <svg  xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></button>`                       
                     }
 
-                },
-                {
-                    "data": "color",
-                    "title": "color",
-                }
+                }:{ "defaultContent": "" }
             ],
-            dom: 'Blfrtip',
+            dom: 'َQBlfrtip',
+            
             buttons: [
                 'copy', 'excel', 'print'
             ],
+            
             "createdRow": function (row, data, index) {
-                console.log(data["color"])
-                $(row).css("background-color", data["color"])
+                //console.log(data["color"])
+                if(parseInt(@Request.Cookies["Vacation"].Value) > 2) $(row).css("background-color", data["color"])
             }
+            
         });
     }
     function addAddition(from1, fileNo1, hoursNo1, offset1) {
@@ -561,7 +611,7 @@ else
             method: "post",
             type: "json",
             success: function (data) {
-                console.log("");
+                //console.log("");
                 //search();
                 //دالة جديدة علي json محلي
                 /*Date
@@ -699,6 +749,28 @@ else
         data = table.row(this).data();
         var index = table.column(this).index();
         console.log(data);
+        /*if (index == 3) { 
+            console.log("enter");
+            //color
+            $('.colors #fileNo').val(data.fileNo);
+            $('.colors #color-picker').val(data.color);
+           
+            $('.enter').modal('show');
+        }
+        if (index == 4) {
+            //color
+            //$('.colors #fileNo').val(data.fileNo);
+           // $('.colors #color-picker').val(data.color);
+            console.log("exit");
+            //$('.colors').modal('show');
+        }*/
+        if (index == 8) {
+            //color
+            $('.colors #fileNo').val(data.fileNo);
+            $('.colors #color-picker').val(data.color);
+            
+            $('.colors').modal('show');
+        }
         if (index == 7) {
             //الاجازة
             v1 = [
@@ -778,17 +850,16 @@ else
     });
 </script>
 <script>
-    function changeColor(/*clr,fn*/){
-        alert()
-       /* let sql=`update employees set color=${clr.value} where filenumber=${fn}`;
+   $(".save").click(()=>{ 
+        let sql=`update employees set color='${$(".colors #color-picker").val()}' where filenumber=${$(".colors #fileNo").val()}`;
         console.log(sql);
         if(excuteSQL(sql)==1){
             alert("saved success!");
-
+            search();
         }else
         {
             alert("error!")
-        }*/
+        }
 
-    }
+    });
 </script>

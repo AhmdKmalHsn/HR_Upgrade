@@ -1,4 +1,4 @@
-﻿@if (Request.Cookies["UserName"] == null || Request.Cookies["UserName"].Value == "")
+﻿@if (Request.Cookies["UserName"] == null)
 {
     Response.Redirect("~/home/Index");
 }
@@ -6,14 +6,16 @@
     <link rel="stylesheet" href="~/Assets/Attendance.css">
 </head>
 
-<h2>جدول الحضور</h2>
-<hr>
+@*<h1>من فضلك انتظر ........</h1>
 
+*@
+<h2>2 جدول الحضور</h2>
+<hr>
 <div id="empContainer" title="بيانات العمال">
     <table id=empTable style="width:100%"></table>
 </div>
 
-<form class="p-2" action="" method="post" onsubmit="getTable(); return false;">
+<form style="" class="p-2" action="" method="post" onsubmit="getTable(); return false;">
     <div class="container mx-auto">
         <div class="row row-reversed">
             <div class="col-1 p-1">
@@ -21,7 +23,7 @@
             </div>
             <div class="col-6 p-1">
                 <div class="input-group">
-                    <input id="FN" type="number" class="form-control" />
+                    <input id="FN" type="number" class="form-control" value="10002" />
                     <input id="FNChoose" type="button" class="btn btn-outline-dark" value="&#9776;" onclick="dialog.dialog('open')" />
                 </div>
             </div>
@@ -53,6 +55,8 @@
             </div>
             <div class="col-6 p-1">
                 <select id="Y" class="form-control">
+                    <option value="2025">2025</option> 
+                    <option value="2024">2024</option>
                     <option value="2023">2023</option>
                     <option value="2022">2022</option>
                 </select>
@@ -66,7 +70,7 @@
 
     </div>
 </form>
-
+<h1>
 <div id="personal_data" class="container mx-auto">
 </div>
 <div id="loader"><img src="~/1.gif"></div>
@@ -658,9 +662,10 @@ function userLog()
             } 
     }
 </script>
-<script src="~/Assets/AttendanceSetup.js?version=4.5"></script>
-<script src="~/Assets/Attendance.js?version=4.5"></script>
+<script src="~/Assets/AttendanceSetup.js?version=9.3"></script>
+<script src="~/Assets/Attendance.js?version=9.3"></script>
 <script>
+    //window.location.href = "/Truant/Abscence";
     var q = window.location.href;
     var url = new URL(q);
     var fileNo = url.searchParams.get("fileNo");
