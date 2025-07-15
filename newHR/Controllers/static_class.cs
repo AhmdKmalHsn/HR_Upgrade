@@ -14,10 +14,11 @@ namespace newHR.Controllers
     public static class static_class
     {
         public static ActionResult GetView(
-        this Controller controller,
-        string module = "test",
-        HttpRequestBase httpRequest = null,
-        RouteData routeData = null)
+                                            this Controller controller,
+                                            string module = "test",
+                                            HttpRequestBase httpRequest = null,
+                                            RouteData routeData = null
+                                            )
         {
             // Use provided parameters or fall back to controller's context
             httpRequest = httpRequest ?? controller.Request;
@@ -36,7 +37,7 @@ namespace newHR.Controllers
             // Set permissions if not login view
             if (viewInfo[0] != "Log")
             {
-                controller.ViewBag.perms = static_class.o_Authrizes(token);
+                controller.ViewBag.perms = static_class.Authrizes(token); /**///ConvertToJsonWithNamedRows(static_class.Authrizes(token), "module_name");
             }
 
             // Return the appropriate view
@@ -46,6 +47,35 @@ namespace newHR.Controllers
                 ViewData = controller.ViewData,
                 TempData = controller.TempData
             };
+        }
+
+        public static Dictionary<string, Dictionary<string, object>>ConvertToJsonWithNamedRows(DataTable dataTable, string keyColumnName)
+        {
+            if (dataTable == null)
+                throw new ArgumentNullException(nameof(dataTable));
+
+            if (!dataTable.Columns.Contains(keyColumnName))
+                throw new ArgumentException($"Column '{keyColumnName}' not found in DataTable");
+
+            // Create a dictionary to hold our rows with the key
+            var dict = new Dictionary<string, Dictionary<string, object>>();
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string key = row[keyColumnName].ToString();
+                var rowDict = new Dictionary<string, object>();
+
+                foreach (DataColumn col in dataTable.Columns)
+                {
+                    rowDict[col.ColumnName] = row[col];
+                }
+
+                dict[key] = rowDict;
+            }
+
+            // Serialize to JSON
+            
+            return dict;
         }
         /************************** crud ************************/
         static public DataSet getbysql(string sql)
@@ -140,26 +170,27 @@ namespace newHR.Controllers
             return ds;
         }
         /************************* auth *************************/
-        static public DataSet Authrizes(string token)
+        static public DataTable Authrizes(string token)
         {
 
             string sql =
-                $@"SELECT  m.ModuleName 'module_name',
+                $@"SELECT ml.name 'module_name',
                           ISNULL(m.url,'')'module_url',
-                          [access]  'p_access',	
-                          [read]	'p_read',	
-                          [create]	'p_create',	
-                          [update]	'p_update',	
-                          [delete]	'p_delete',
+                          ISNULL([access],'false')  'p_access',	
+                          ISNULL([read],'false')	'p_read',	
+                          ISNULL([create],'false')	'p_create',	
+                          ISNULL([update],'false')	'p_update',	
+                          ISNULL([delete],'false')	'p_delete',
                           u.login_to,
                           u.login_permit
                     FROM AK_Users u JOIN 
                          AK_Roles r ON u.RoleId = r.Id JOIN
                          AK_Roles_lines rl ON r.Id = rl.role_id JOIN
-                         AK_Modules m ON rl.module_line_id = m.Id
+                         AK_Modules_lines ml ON rl.module_line_id = ml.id JOIN
+                         AK_modules m ON m.id=ml.module_id
                     WHERE u.token='{token}'";
 
-            return static_class.getbysql(sql);
+            return static_class.getbysql(sql).Tables["data"];
 
         }
         static public DataTable o_Authrizes(string token)

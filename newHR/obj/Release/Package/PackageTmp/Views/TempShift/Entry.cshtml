@@ -1,127 +1,116 @@
 ﻿<style>
-    #loader
-    {
-        position:fixed;
-        top:0;
-        width:100%;
-        height:100%;
+    #loader {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
         display: none;
     }
-    #loader_img
-    {
-        width:100%;
-        height:100%;
+
+    #loader_img {
+        width: 100%;
+        height: 100%;
     }
-   /* .tabHead{
-        background-color: wheat;
-        display: flex;
-        flex-direction: row-reverse;
-    }
-    .tab{
-        background-color: wheat;
-    }
-    .tab-btn
-    {
-        padding: 8px;
-        border:1px red solid;
-        cursor:pointer;
-    }*/
 </style>
 
-<div class="container">
-    <div class="row">
+<div class="container" style="text-align:right">
+    <div class="row ">
         <div class="col-6 form-floating mb-1 mt-1">
-            <input id="dateFrom" type="date" class="form-control" value='@DateTime.Now.ToString("yyyy-MM-dd")' placeholder=" " />
-            <label for="dateFrom">Date From</label>
+            <input id="dateTo" type="date" class="form-control" value='@DateTime.Now.ToString("yyyy-MM-dd")'
+                placeholder=" " />
+            <label for="dateTo">الي</label>
         </div>
         <div class="col-6 form-floating mb-1 mt-1">
-            <input id="dateTo" type="date" class="form-control" value='@DateTime.Now.ToString("yyyy-MM-dd")' placeholder=" " />
-            <label for="dateTo">Date To</label>
+            <input id="dateFrom" type="date" class="form-control" value='@DateTime.Now.ToString("yyyy-MM-dd")'
+                placeholder=" " />
+            <label for="dateFrom">من</label>
         </div>
     </div>
- 
+
     <div class="tabs">
         <ul>
-             <li><a href="#tabs-1">وردية أحتياطية</a></li>
-             <li><a href="#tabs-2">أجازة</a></li>
-             <li><a href="#tabs-3">مأمورية</a></li>
+            <li><a href="#tabs-1">وردية أحتياطية</a></li>
+            <li><a href="#tabs-2">أجازة</a></li>
+            <li><a href="#tabs-3">مأمورية</a></li>
         </ul>
-    <div id="tabs-1">
-        <h2>تسجيل وردية احتياطية</h2>
-    <div class="row">
-        <div class="col-12 form-floating mb-1 mt-1">
-           <select id=shiftId class=form-control >
-               
-                   <script>
-                        var dom=''
-                        readSQL(`select shiftId,shiftName from shifts`).map(function(i){
-                           dom+= `<option value=${i.shiftId}>${i.shiftId}-${i.shiftName}</option>`
-                        });
-                        $("#shiftId").html(dom);
-                   </script>
-               
-           </select>
-           <label for="dateFrom">الوردية</label>
+        <div id="tabs-1">
+            <h2>تسجيل وردية احتياطية</h2>
+            <div class="row">
+                <div class="col-12 form-floating mb-1 mt-1">
+                    <select id=shiftId class=form-control>
+
+                        <script>
+                            var dom = ''
+                            readSQL(`select shiftId,shiftName from shifts`).map(function (i) {
+                                dom += `<option value=${i.shiftId}>${i.shiftId}-${i.shiftName}</option>`
+                            });
+                            $("#shiftId").html(dom);
+                        </script>
+
+                    </select>
+                    <label for="dateFrom">الوردية</label>
+                </div>
+            </div>
+            <button id="choose" class="btn btn-outline-dark m-1">choose</button><button id="submit"
+                class="btn btn-outline-primary m-1">submit</button>
+            <input type=checkbox id=dateFilter> filter by date
+            <div class="result">
+                <!--Result Here-->
+            </div>
+        </div>
+        <div id="tabs-2">
+            <h2>تسجيل اجازة خلال فترة</h2>
+        </div>
+        <div id="tabs-3">
+            <h2>تسجيل مأمورية خلال فترة</h2>
         </div>
     </div>
-    <button id="choose" class="btn btn-outline-dark m-1">choose</button><button id="submit" class="btn btn-outline-primary m-1">submit</button>
-    <div class="result">
-        <!--Result Here-->
-    </div>
-    </div>
-    <div id="tabs-2">
-             <h2>تسجيل اجازة خلال فترة</h2>
-    </div>
-    <div id="tabs-3">
-            <h2>تسجيل مأمورية خلال فترة</h2>
-    </div>
-    </div>
-   <div class="dialogEmp">
-    <table id="allEmpTable" class="display">
+    <div class="dialogEmp">
+        <table id="allEmpTable" class="display" style="width: 100%;">
 
-    </table>
-    
-   </div>
+        </table>
+
+    </div>
 </div>
 <div id="loader"><img id="loader_img" src="~/1.gif"></div>
 <script>
-    $( ".tabs" ).tabs();
+    $(".tabs").tabs();
     var data = readSQL(`select e.Id,e.FirstName+' '+e.MidelName+' '+e.LastName'Name',e.FileNumber,d.Name'Dept',b.ShiftId from employees e left join BasicBayWorks b on b.EmployeeId=e.id left join Departements d on e.DepartementId=d.Id left join personals p on p.id=e.personalid where p.statusid=1 `);
     console.log(data);
-   var table= $("#allEmpTable").DataTable({
-        data:data,
+    var table = $("#allEmpTable").DataTable({
+        data: data,
         columns: [
-                     { data: "Id", title: '' },
-                     { data: "Id", title: "Id" },
-                     { data: "Name", title: "name" },
-                     { data: "FileNumber", title: "File Number" },
-                     { data: "Dept", title: "Department" },
-                     { data: "ShiftId", title: "Shift Id" },
-                    
+            { data: "Id", title: '' },
+            { data: "Id", title: "Id" },
+            { data: "Name", title: "name" },
+            { data: "FileNumber", title: "File Number" },
+            { data: "Dept", title: "Department" },
+            { data: "ShiftId", title: "Shift Id" },
+
         ],
         'columnDefs': [
-      {
-          'targets': 0,
-          'checkboxes': {
-              'selectRow': true
-          }
-      }
+            {
+                'targets': 0,
+                'checkboxes': {
+                    'selectRow': true
+                }
+            }
         ],
-   'select': {
-        'style': 'multi'
-    },
-   'order': [[1, 'asc']] 
+        'select': {
+            'style': 'multi'
+        },
+        'order': [[1, 'asc']]
     });
-   
-    $('#submit').on('click', function(e){
+
+    $('#submit').on('click', function (e) {
         var rows_selected = table.columns(0).checkboxes.selected()[0];
         //console.log(rows_selected.length);
         let fail = 0, success = 0;
-        
+
         if (rows_selected.length > 0) {
             for (var i = 0; i < rows_selected.length; i++) {
                 //console.log(rows_selected[i]);
-              let sqlx= `
+                let sqlx = `
  declare  @@f date='${$("#dateFrom").val()}', @@t date='${$("#dateTo").val()}', @@emp int='${rows_selected[i]}', @@sh int=${$("#shiftId").val()};
 declare @@dt date=@@f
 while @@dt<=@@t
@@ -138,7 +127,7 @@ update  Attendances set ShiftId=@@sh
 where employeeid=@@emp and DateFrom=@@dt
 set @@dt=dateadd(Day,1,@@dt);
 end
-end` 
+end`
                 //console.log(sqlx);
                 if (excuteSQL(sqlx) == 1) success++;
                 else fail++;
@@ -146,40 +135,65 @@ end`
             }
         }
 
-        
-        
+
+
         var checker = setInterval(check, 1500);
         function check() {
 
-            if (rows_selected.length == (parseFloat(fail) + parseFloat(success)))
-            {
+            if (rows_selected.length == (parseFloat(fail) + parseFloat(success))) {
                 alert(`compelete! success:${success} fail:${fail}`);
                 clearInterval(checker);
             }
-            else
-            {
+            else {
                 //play();
             }
         }
-        
+
     });
     $(".dialogEmp").dialog({
-        autoOpen:false,
-        width:900,
-        height:700,
-        title:"Select Employee",
+        autoOpen: false,
+        width: 900,
+        height: 700,
+        title: "Select Employee",
     });
-    $("#shiftId").on('change',function(){
-        var data=readSQL(`select distinct FileNumber,KnownAs,(select name from Departements where id=DepartementId)'dept' from Attendances a left join Employees e on e.id=a.EmployeeId where ShiftId=${$("#shiftId").val()}`);
-        var dom='<table class="table">'
-        data.map(function(i){
-                        dom+= `<tr><td>${i.FileNumber}</td><td>${i.KnownAs}</td><td>${i.dept}</td></tr>`
-        });
-        dom+='</table>'
+    $("#shiftId").on('change', function () {
+        var data, dom;
+        if ($("#dateFilter").is(":checked")) {
+            data = readSQL(`
+        select  a.DateFrom,FileNumber,KnownAs,(select name from Departements where id=DepartementId)'dept' 
+        from Attendances a left join Employees e on e.id=a.EmployeeId 
+        where a.DateFrom >='${$("#dateFrom").val()}' and  a.DateFrom <='${$("#dateTo").val()}' and ShiftId=${$("#shiftId").val()} order by DateFrom`);
+            dom = '<table class="table">'
+
+            data.map(function (i) {
+                dom += `<tr><td>${i.DateFrom.substr(0,10)}</td><td>${i.FileNumber}</td><td>${i.KnownAs}</td><td>${i.dept}</td><td><button class="btn btn-success" onclick="remove('${i.DateFrom.substr(0,10)}',${i.FileNumber})">remove</button></td></tr>`
+            });
+            dom += '</table>'
+        }
+        else {
+            data = readSQL(`select distinct FileNumber,KnownAs,(select name from Departements where id=DepartementId)'dept' from Attendances a left join Employees e on e.id=a.EmployeeId where ShiftId=${$("#shiftId").val()}`);
+            dom = '<table class="table">'
+
+            data.map(function (i) {
+                dom += `<tr><td>${i.FileNumber}</td><td>${i.KnownAs}</td><td>${i.dept}</td></tr>`
+            });
+            dom += '</table>'
+        }
+
         $(".result").html(dom);
+        //$(".result").DataTable();
     });
-    $("#choose").click(function(){
-         $(".dialogEmp").dialog("open");
+    $("#choose").click(function () {
+        $(".dialogEmp").dialog("open");
     });
     //#result
+    function remove(d,f)
+    {
+         /*console.log(`update attendances set ShiftId=NULL where datefrom='${d}' and employeeid=(select id from employees where filenumber=${f})`);
+       */
+        if (excuteSQL(`update attendances set ShiftId=NULL where datefrom='${d}' and employeeid=(select id from employees where filenumber=${f})`) == 1) 
+        alert(`success`)
+        else alert(`fail`);
+        
+    }
 </script>

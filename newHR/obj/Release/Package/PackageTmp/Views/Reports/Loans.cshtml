@@ -9,9 +9,6 @@ Response.Redirect("~/home/log");
    Response.Redirect("~/home/Index");
 }
 
-@{
-    ViewBag.Title = "payments";
-}
 
 @{
     ViewBag.Title = "Loans";
@@ -20,63 +17,88 @@ Response.Redirect("~/home/log");
 <h2>تقرير السلف</h2>
 <hr>
 <div id="container" style="overflow-x:auto">
-    <table id="example" class="display" style="width:100%" dir="rtl"></table>
+    <table id="example" class="display" style="width:100%" dir="rtl">
+        
+    </table>
 </div>
 <script>
-    var q0 = `select * from AK_LOANS_TOTAL`;
+    var q0 = `with data as(
+select id,Date DueDate,Amount,Amount/RecurringOneTimeId installment,RecurringOneTimeId,EmployeeId
+from Deductions 
+where   PaymentDeductionId=1 /*and EmployeeId=5505*/
+union All
+select id,DATEADD(month,+1,DueDate)DueDate,Amount,installment,RecurringOneTimeId-1,EmployeeId
+from data 
+where /*Date>='2024-01-01' and  PaymentDeductionId=1 and EmployeeId=5505 and*/ RecurringOneTimeId>1
+)
+select  	min(DueDate)firstDate,max(DueDate)LastDate ,Amount,installment,max(RecurringOneTimeId)NUM,
+(select FileNumber  from employees where id=EmployeeId)fileNo,
+(select KnownAs from employees where id=EmployeeId)name,
+(select name from Departements where id=(select DepartementId from employees where id=EmployeeId))department
+
+from data 
+where DueDate>=GETDATE()
+group by  id,	Amount,	installment,	EmployeeId`;
     var q1 = `select * from AK_LOANS_TOTAL where estimate<>0 order by date `;
 //console.log(q);
 var v=readSQL(q0)
-console.log(v);
-		  var columns = [
-                    {
-                        "data": "FileNumber",
-                        "title": "رقم الملف",
-                       
-                    },
-                    {
-                        "data": "name",
-                        "title": "الاسم",
-                        
-                    },
-					{
-                        "data": "dept",
-                        "title": "القسم",   
-                    },
-                    {
-                        "data": "date",
-                        "title": "تاريخ",
-						"render":function(a,b,c)
-						{
-						return a!=null?a.substr(0,10):a;
-						}
-                    },
-                    {
-                        "data": "months",
-                        "title": "months",
-                    },
-                    {
-                        "data": "total",
-                        "title": "total"
-                    },
-                    {
-                        "data": "payed",
-                        "title": "payed",
-                        
-                    },
-                    {
-                        "data": "estimate",
-                        "title": "estimate",
-                    },
-                  ];
+        let html=`
+        <thead>
+            <tr>
+                <td>رقم الملف</td>
+                <td>الاسم</td>
+                <td>القسم</td>
+                <td>القسط</td>
+                <td>المبلغ المتبقي</td>
+                <td>تاريخ البدأ</td>
+                <td>تاريخ الانتهاء</td>
+                <td> عدد الشهور المتبقية</td>
+            </tr>
+        </thead>
+        <tbody>
+        `;
+		  
 
-            console.log(columns);
-            var tb = $('#example').dataTable({
+            console.log(v[0]);
+            let sum=0;
+            for(let i=0;i<=v.length;i++)
+            {
+                //;
+                try
+                {
+                    console.log(v[i].fileNo);
+                    html+=`<tr>
+                 <td>${v[i].fileNo}</td>
+                 <td>${v[i].name}</td>
+                 <td>${v[i].department}</td>
+                 <td>${v[i].installment.toFixed(2)}</td>
+                 <td>${(v[i].installment*v[i].NUM).toFixed(2)}</td>
+                 <td>${v[i].firstDate.substr(0,10)}</td>
+                 <td>${v[i].LastDate.substr(0,10)}</td>
+                 <td>${v[i].NUM}</td>
+                 </tr>
+                 ` 
+                 sum+=(v[i].installment*v[i].NUM)
+                }
+                catch(e)
+                {
+                    console.log(e);
+                }  
+            }
+            html+=`</tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">الاجمــــــالي</td>
+                <td>${sum.toFixed(2)}</td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>`;
+            $("#example").html(html)
+            var tb = $('#example').DataTable({
                 stateSave: true,
                 "destroy": true,
-                "data": v.filter(w =>EMPS.includes(w.FileNumber)),
-                "columns": columns
             });
+            
     
 </script>
 

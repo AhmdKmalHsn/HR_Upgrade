@@ -1,17 +1,13 @@
 ﻿@using WebMatrix.Data;
-
-
 @if(Request.Cookies["Logs"]==null)
 {
 Response.Redirect("~/home/log");
 }
 @if(Int32.Parse(Request.Cookies["Logs"].Value)>1){
-
 }else
 {
    Response.Redirect("~/home/Index");
 }
-
 @{
     var u = Request.Cookies["UserId"].Value;
     var db = Database.Open("CS");    
@@ -371,6 +367,8 @@ else alert(" خطأ ");
 }
 function getdata(user_id)
 {
+    $("#tags1").html("");
+    $("#tags2").html("");
 var sql1=`select Id,
        UserName,
        password,

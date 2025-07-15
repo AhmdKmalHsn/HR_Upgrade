@@ -4,21 +4,33 @@
             justify-content: center;
             direction: rtl;
         }
+
+        .mytable {
+            border: 1px solid aliceblue;
+            background-color: aliceblue;
+            width: 95%;
+            margin: auto;
+        }
+
+        td {
+            text-align: center;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
-<h2>AttendanceNew</h2>
+<h2>الانتاج الاسبوع</h2>
 
 <div class="card container-fluid mx-lg-auto" style="width: 50%;">
-       <div class="row">
+    <div class="row">
         <div class="col-3  p-1">
             القسم
         </div>
         <div class="col-9  p-1">
-            <select  id="dept" class="form-control">
+            <select id="dept" class="form-control">
                 <script>
-                    var Deptdata = readSQL("select Id,name from departements");
-                    console.log(Deptdata);
+                    var Deptdata = readSQL("select Id,name from departements order by name");
+                    //console.log(Deptdata);
                     var htmlDom = "";
                     for (var i = 0; i < Deptdata.length; i++) {
                         htmlDom += `<option value=${Deptdata[i].Id}>${Deptdata[i].name}</option>`
@@ -33,7 +45,7 @@
             من
         </div>
         <div class="col-9  p-1">
-            <input type="date" id="dateFrom" class="form-control">
+            <input type="date" id="dateFrom" class="form-control" dir="rtl">
         </div>
     </div>
     <div class="row">
@@ -41,7 +53,7 @@
             الي
         </div>
         <div class="col-9 p-1">
-            <input type="date" id="dateTo" class="form-control">
+            <input type="date" id="dateTo" class="form-control" dir="rtl">
         </div>
     </div>
     <div class="row">
@@ -51,20 +63,33 @@
     </div>
 </div>
 <div id=loader style="display:none;position: fixed;top: 65px;left: 0;width: 100%;margin: auto;">
-        <img src="~/1.gif" style="width:100%;height:100%;">
+    <img src="~/1.gif" style="width:100%;height:100%;">
 </div>
-<div id="mytable"></div>
+
+<div class="mycard"></div>
+<div>
+    <button id=btnExport class="btn btn-success" style="">export excel</button>
+    <!--button id=btnPrint class="btn btn-info" style="">export pdf</button-->
+</div>
+<div id="mytable">
+
+</div>
+
 <script>
-   var ajax;
-   function getTable()
-    {
-        var result=[];
-        var EmpData=readSQL(`select FileNumber from employees e left join personals p on p.id=e.PersonalId where p.StatusId=1 and departementId=${$("#dept").val()}`);
+    var ajax;
+    function getTable() {
+        $("#loader").css("display", "block");
+        var req = [], result = [];
+        var EmpData = readSQL(`select FileNumber from employees e left join personals p on p.id=e.PersonalId where p.StatusId=1 and departementId=${$("#dept").val()}`);
         console.log(EmpData);
         for (let i = 0; i < EmpData.length; i++) {
-             result.push(readSQL(`
+            req.push($.ajax({
+                url: "/SQL/Read",
+                //async: false,
+                data: {
+                    sql: `
                 declare @@dateFrom date='${$("#dateFrom").val()}' ,@@dateTo date='${$("#dateTo").val()}',@@fno int=${EmpData[i].FileNumber};
-                with month_cte as
+                 with month_cte as
                 ( 
                 select @@dateFrom dateDay
                 union All
@@ -72,59 +97,264 @@
                 from month_cte
                 where dateDay<@@dateTo
                 )
-                select datename(DW,dateDay)name,
+                select @@fno fno,
+                    (select knownas from employees where filenumber=@@fno)name,
+                    datename(DW,dateDay)Dayname,
                     dateDay,
+                    dbo.Ak_Month_Vacs_due(ab.DateFrom,(select id from employees where filenumber=@@fno))vacs_due,
+                    isnull((SELECT a.weekend_cancel FROM Attendances a WHERE a.DateFrom=dateDay AND a.EmployeeId=ak.EmployeeId),0)'weekend_cancel',
                     isnull(abc,0)abc,
-                    isnull(att,0)att,
-                    1-isnull(att,0)-isnull(abc,0) no 
+                    case
+					  when attvalue >0 then AttValue
+					  else 
+						case 
+							 when isnull(att,0)<0then 0 
+							 else isnull(att,0)
+						end 
+					end'att',
+                    1-
+					case
+					  when attvalue >0 then AttValue
+					  else 
+						case 
+							 when isnull(att,0)<0then 0 
+							 else isnull(att,0)
+						end 
+					end
+					-isnull(abc,0) 'no' 
                 from month_cte left join 
                 Ak_ATT_SH(@@dateFrom,@@dateTo,@@fno)ak on month_cte.dateDay=ak.date left join 
                     (
-                    select  Employeeid ,sum(daypart) abc,DateFrom from Absences where AbsenceTypeId not in(4,11)group by EmployeeId,DateFrom
-                    ) ab on ab.EmployeeId=ak.EmployeeId and DateFrom=date`
-            ));
+                    select  Employeeid ,sum(daypart) abc,DateFrom 
+                    from Absences 
+                    where AbsenceTypeId not in(4,11) and EmployeeId=(select id from employees where filenumber=@@fno) 
+                    group by EmployeeId,DateFrom
+                    ) ab on ab.DateFrom=month_cte.dateDay`
+                },
+                success: function (res) {
+                    result.push(JSON.parse(res));
+                },
+            })
+            )
         }
-        console.log(result);
+        $.when.apply($, req).done(function () {
+            console.log('complete');
+            console.log(result)
+            result=result.filter(w=>w!=null)
+            console.log(result)
+            display(result)
+            $("#loader").css("display", "none");
+        });
+
     }
-    
-   function display(res) {
-       var v = JSON.parse(res);
-       console.log(v);
-       var html = '<table class="table"><thead style="position:sticky;top: 0;">';
-       html += '<tr style="background-color:darkorange;">';
-       html += '<td class="--bs-cyan" style="background-color:">DayName</td>';
-       html += '<td style="background-color:">dateDay</td>';
-       html += '<td style="background-color:">TimeFrom</td>';
-       html += '<td style="background-color:">TimeTo</td>';
-       html += '<td style="background-color:">att</td>';
-       html += '<td style="background-color:">abs</td>';
-       html += '<td style="background-color:">vacDay</td>';
-       html += '<td style="background-color:">lateHours</td>';
-       html += '<td style="background-color:">leaveHours</td>';
-       html += '<td style="background-color:">overTimeHour</td>';
-       html += '<td style="background-color:">AbsenceType</td>';
-       html += '</tr></thead><tbody>';
 
-       for (var i = 0; i < v.length; i++)
-       {
-           var abs = (1 - v[i]["att"] - v[i]["vacDay"]).toFixed(2);
-           if(v[i]["weekend"]==0)html += '<tr>'; else html += '<tr style="background-color:#05F548">';
-           html += '<td class="--bs-cyan" style="background-color:">' + v[i]["DayName"] + '</td>';
-           html += '<td style="background-color:">' + v[i]["dateDay"].substr(0, 10) + '</td>';
-           html += '<td style="background-color:">' + (v[i]["TimeFrom"] == null ? '' : v[i]["TimeFrom"]) + '</td>';
-           html += '<td style="background-color:">' + (v[i]["TimeTo"]== null ? '' : v[i]["TimeTo"]) + '</td>';
-           html += '<td style="background-color:lime">' + (v[i]["att"]== null ? '' : v[i]["att"]<= 0 ? '' :v[i]["att"]) + '</td>';
-           html += '<td style="background-color:red">' + (abs>0?abs:'')+ '</td>';
-           html += '<td style="background-color:yellow">' +(v[i]["vacDay"]== null ? '' : v[i]["vacDay"]<= 0 ? '' :v[i]["vacDay"]) + '</td>';
-           html += '<td style="background-color:cyan">' + (v[i]["lateHours"] == null ? '' : v[i]["lateHours"] <= 0 ? '' : v[i]["lateHours"]) + '</td>';
-           html += '<td style="background-color:teal">' + (v[i]["leaveHours"] == null ? '' : v[i]["leaveHours"] <= 0 ? '' : v[i]["leaveHours"]) + '</td>';
-           html += '<td style="background-color:gold">' + (v[i]["overTimeHour"] == null ? '' : v[i]["overTimeHour"] <= 0 ? '' : v[i]["overTimeHour"]) + '</td>';
-           html += '<td style="background-color:gray">' + (v[i]["AbsenceType"] == null ? '' : v[i]["AbsenceType"] ) + '</td>';
-           html += '</tr>';
-       }
-       html += '</tbody></table>';
-       $("#mytable").html(html);
-   }
+    function display(res) {
+        let HtmlWeeks1 = '', HtmlWeeks2 = '';
+        var html = '<table class="table table-hover mytable"><thead>';
+        html += '<tr style="background-color:skyblue">';
+        html += '<td rowspan=3 style="background-color:">#</td>';
+        html += '<td rowspan=3 style="background-color:">File Number</td>';
+        html += '<td rowspan=3 style="background-color:">Name</td>';
+
+        html += '<td rowspan=3 style="background-color:">حضور</td>';
+        html += '<td rowspan=3 style="background-color:">اجازة</td>';
+        html += '<td rowspan=3 style="background-color:">غياب</td>';
+        
+        html += '</tr><tr id="Row1"></tr><tr id="Row2"></tr></thead><tbody>';
+
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i]);
+            res[i].map((e)=>{
+                if(e.abc+e.att>1)
+                {
+                    e.abc=e.abc;
+                    e.att=1-e.abc;
+                }
+            })
+            let d = calc(res[i]);
+            
+            if (i == 0) {
+                for (let k = 0; k < d.Atts.length; k++)HtmlWeeks1 += '<td style="border: 1px black solid;" colspan=1>الاسبوع ' + (k + 1) + '</td>';
+                for (let k = 0; k < d.Atts.length; k++)HtmlWeeks2 += '<td style="border: 1px black solid;">الحضور</td>';
+            }
+            $(".mycard").html('<h1> الفترة</h1>' +
+                '<h4>' + d.Date + '</h4>'
+            );
+            let att = 0, abc = 0;
+            if (d.Vac <= 1.75) {
+                att = d.Att + d.Vac;
+                abc = d.Abc
+            }
+            else {
+                att = d.Att + 1.75;
+                abc = d.Abc + d.Vac - 1.75;
+            }
+
+            html += '<tr style="/*background-color:darkorange;*/">';
+            html += '<td  rowspan=1 style="background-color:">' + (i + 1) + '</td>';
+            html += '<td  rowspan=1 style="background-color:">' + (d.FileNumber) + '</td>';
+            html += '<td  rowspan=1 style="background-color:">' + (d.Name) + '</td>';
+
+            html += '<td rowspan=1 style="background-color:#56af87">' + (d.Att) + '</td>';
+            html += '<td rowspan=1 style="background-color:#878711">' + (d.Vac) + '</td>';
+            html += '<td rowspan=1 style="background-color:#cc2589">' + (d.Abc) + '</td>';
+
+            let monthVac = 0,
+                permVac = 1.75;
+
+            for (let j = 0; j < d.Atts.length; j++) {
+                monthVac += d.Vacs[j];
+                let att = 0, abc = 0;
+                console.log(d.Atts[j]+'---'+d.Vacs[j]+'---')
+                att=d.Atts[j]+d.Vacs[j]
+                html += '<td style="background-color:#55d8">' + (att) + '</td>';
+            } 
+            html += '</tr>';
+        }
+       
+        //html += '<tr><td>' + ((att * 100) / (att + abc)).toFixed(2) + '%</td><td>' + ((abc * 100) / (att + abc)).toFixed(2) + '%</td></tr>';
+        html += '</tbody></table>';
+        $("#mytable").html(html);
+        $("#Row1").html(HtmlWeeks1);
+        $("#Row2").html(HtmlWeeks2);
+        
+    }
+
+
+    function calc(arr) {
+
+        let aAll = 0,//for All Days
+            vAll = 0,
+            nAll = 0;
+        let aWek = [],//for only week
+            vWek = [],
+            nWek = [];
+        let aTmp = 0,//for temp count/sum
+            vTmp = 0,
+            nTmp = 0;
+        try{
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].Dayname == 'Friday' && arr[i].weekend_cancel != 1) {
+                //if the day is Friday and weekend_cancel=1 then do nothing.
+                //do nothing. 
+            }
+            else {
+                    arr[i].abc = arr[i].abc <0 ? 0 : arr[i].abc ;
+                    arr[i].att = arr[i].att <0 ? 0 : arr[i].att ;
+                    arr[i].no = arr[i].no <0 ? 0 : arr[i].no ;
+                if ((arr[i].Dayname == 'Thursday') || i == arr.length - 1) {
+                    vAll += arr[i].abc;
+                    aAll += arr[i].att;
+                    nAll += arr[i].no;
+                   
+                    if((arr[i].vacs_due-arr[i].abc)<=1.75 && arr[i].abc>0)
+                    { 
+                        if(arr[i].vacs_due<=1.75)
+                        {
+                            vTmp +=arr[i].abc;
+                        }
+                        else
+                        {
+                            vTmp +=(1.75-(arr[i].vacs_due-arr[i].abc))
+                        }
+                    }
+                    else
+                    {
+                        vTmp +=0;
+                    }
+                    aTmp += arr[i].att;
+                    nTmp += arr[i].no;
+                        aWek.push(aTmp),
+                        vWek.push(vTmp),
+                        nWek.push(nTmp)
+                        aTmp = 0,
+                        vTmp = 0,
+                        nTmp = 0;
+                }
+                else {
+                    vAll += arr[i].abc;
+                    aAll += arr[i].att;
+                    nAll += arr[i].no;
+                    if((arr[i].vacs_due-arr[i].abc)<=1.75 && arr[i].abc>0)
+                    { 
+                        if(arr[i].vacs_due<=1.75)
+                        {
+                            vTmp +=arr[i].abc;
+                        }
+                        else
+                        {
+                            vTmp +=(1.75-(arr[i].vacs_due-arr[i].abc))
+                        }
+                    }
+                    else
+                    {
+                        vTmp +=0;
+                    }
+                                        //vTmp += ((arr[i].vacs_due-arr[i].abc)>1.75)?0:arr[i].abc>0?(1.75-(arr[i].vacs_due-arr[i].abc)):0;
+                    aTmp += arr[i].att;
+                    nTmp += arr[i].no;
+                }
+            }
+        }
+        
+        return {
+            FileNumber: arr[0].fno,
+            Name: arr[0].name,
+            Date: "" + arr[0].Dayname + " " + arr[0].dateDay.substr(0, 10) + " : " + arr[arr.length - 1].Dayname + " " + arr[arr.length - 1].dateDay.substr(0, 10),
+            Day: "",
+            Att: aAll,
+            Vac: vAll,
+            Abc: nAll,
+            Atts: aWek,
+            Vacs: vWek,
+            Abcs: nWek,
+        }
+        }catch(ex){return null;}
+    }  
 </script>
+<script src="/Assets/tableToExcel.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btnExport").click(function () {
+            let table = document.getElementsByTagName("table");
+            console.log(table);
+            //debugger;
+            TableToExcel.convert(table[0], {
+                name: `Productivity-${new Date().getDate()}.xlsx`,
+                sheet: {
+                    name: 'sheet1'
+                }
+            });
+        });
+    });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+    function CreatePDFfromHTML() {
+        var HTML_Width = $("#mytable").width();
+        var HTML_Height = $("#mytable").height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + (top_left_margin * 2);
+        var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
 
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
 
+        html2canvas($("#mytable")[0]).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/jpeg", 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+            for (var i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+            }
+            pdf.save("Your_PDF_Name.pdf");
+            $("#mytable").hide();
+        });
+    }
+    $("#btnPrint").click(function () {
+        CreatePDFfromHTML();
+    });
+</script>

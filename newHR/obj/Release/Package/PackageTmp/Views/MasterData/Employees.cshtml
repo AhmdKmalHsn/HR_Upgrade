@@ -1,0 +1,982 @@
+﻿@using WebMatrix.Data;
+@{
+    ViewBag.Title = "Employees";
+    var db = Database.Open("CS");
+    var sql01 = "select id,name from departements";
+    var sql02 = "select id,name from jobtitles";
+    var sql03 = "select id,name from status";
+    var sqlEdu = "select id,name from EducationalStatus";
+}
+@if (Request.Cookies["Logs"] == null)
+{
+    Response.Redirect("~/home/log");
+}
+@if (Int32.Parse(Request.Cookies["Logs"].Value) < 2)
+{
+    Response.Redirect("~/home/Index");
+}
+<style>
+    label.form-control {
+        background-color: darkgray;
+    }
+
+    .small-card {
+        background-color: rgb(169, 226, 226);
+        font-size: larger;
+        border: 1.1rem;
+        box-shadow: 0 1 1 1;
+    }
+
+    input[type="date"]::-webkit-datetime-edit,
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-clear-button {
+        color: #fff;
+        position: relative;
+    }
+
+    input[type="date"]::-webkit-datetime-edit-year-field {
+        position: absolute !important;
+        border-left: 1px solid #8c8c8c;
+        padding: 2px;
+        color: #000;
+        left: 56px;
+    }
+
+    input[type="date"]::-webkit-datetime-edit-month-field {
+        position: absolute !important;
+        border-left: 1px solid #8c8c8c;
+        padding: 2px;
+        color: #000;
+        left: 26px;
+    }
+
+
+    input[type="date"]::-webkit-datetime-edit-day-field {
+        position: absolute !important;
+        color: #000;
+        padding: 2px;
+        left: 4px;
+
+    }
+</style>
+<h2>بيانات العاملين</h2>
+<hr>
+<div id="loader"
+    style="position: absolute; width: 100%; z-index: 100; height: 0px; background-color: rgb(255, 255, 255); display: block;">
+    <img src="/1.gif" style="margin:auto; ">
+</div>
+<div id="my_tabs">
+    <button id="create" data-bs-toggle="modal" data-bs-target=".modal" class="btn btn-dark" onclick="  
+            $('#createBtn').show();
+            $('#updateBtn').hide();
+            $('input').val('');
+            $('select').val(-1);
+            $('textarea').val('');
+            $('#img').attr('src', '');">
+        انشاء
+    </button>
+    <hr>
+    <br>
+    <div id="container" style="overflow-x:auto" style="width:100%;">
+        <table id="example" class="display" style="width:100%;"></table>
+    </div>
+</div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">بيانات العاملين</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="dialog-form">
+                    <div class="container-fluid float-right">
+                        <!-- #region -->
+                        <div class="row m-2">
+                            <div class="col-3 ps-4" style="position: relative;">
+                                <img id="img" src="" alt="no pics" style="
+                                position: absolute;
+                                top: 0;
+                                left: 11px;
+                                width: 87%;
+                                height: 98%; border-raduis:10px;box-shadow:4px 4px 10px black;" srcset="">
+                                <input type="file" id="FileUpload1" style="width:0px;height:0px;" />
+                            </div>
+                            <div class="col-9">
+                                <div class="row mb-2" dir=RTL>
+                                    <div class="col-3"><label class="form-control">رقم الملف </label></div>
+                                    <div class="col-9"><input id=fileNo type=number class="form-control"></div>
+                                </div>
+                                <div class="row mb-2" dir=RTL>
+                                    <div class="col-3"><label class="form-control"> الاسم</label></div>
+                                    <div class="col-9"><input id=name type=text class="form-control"></div>
+                                </div>
+
+                                <div class="row mb-2" dir=RTL>
+                                    <div class="col-3"><label class="form-control"> القسم</label></div>
+                                    <div class="col-9">
+                                        <select id="deptId" class="form-control">
+                                            <option style="text-align:right" value="0">بدون</option>
+                                            @foreach (var row in db.Query(sql01))
+                                            {
+                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control"> الوظيفة</label></div>
+                                    <div class="col-4">
+                                        <select id="jobId" class="form-control">
+                                            <option style="text-align:right" value="0">بدون</option>
+                                            @foreach (var row in db.Query(sql02))
+                                            {
+                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control"> التعليم</label></div>
+                                    <div class="col-4">
+                                        <select id="eduId" class="form-control">
+                                            <option style="text-align:right" value="0">بدون</option>
+                                            @foreach (var row in db.Query(sqlEdu))
+                                            {
+                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="tabs">
+                            <ul>
+                                <li><a href="#tab-0">البيانات الشخصية</a></li>
+                                <li><a href="#tab-1">العمل</a></li>
+                                <li><a href="#tab-2">المرتب</a></li>
+                                <li><a href="#tab-4">التامينات</a></li>
+                                <li><a href="#tab-5">بيانات الاتصال</a></li>
+                                <li><a href="#tab-6">الملاحظات</a></li>
+                                <li><a href="#tab-7">الملفات</a></li>
+
+                            </ul>
+                            <div id="tab-0" style="margin-top: 40px;">
+                                @*>البيانات الشخصية<*@
+                                <div class="row m-2" dir=RTL>
+
+                                    <div class="col-2"><label class="form-control"> تاريخ الميلاد</label></div>
+                                    <div class="col-4"><input id=birthDate type=date class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control">الخدمة العسكرية </label></div>
+                                    <div class="col-4">
+                                        <select id="militId" class="form-control">
+                                            <option style="text-align:right" value="0">تم</option>
+                                            <option style="text-align:right" value="1">لم يتم</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-2"><label class="form-control"> رقم البطاقة</label></div>
+                                    <div class="col-4"><input id=idNo type=text class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control">الديانة</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="xreligion">
+                                            <option value="مسلم">مسلم</option>
+                                            <option value="مسيحي">مسيحي</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control">EmployeeGroup</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="EmployeeGroupId">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control">EmployeeSubGroup</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="EmployeeSubGroupId">
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-2"><label class="form-control">Level</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="LevelId">
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-2"><label class="form-control">Location</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="LocationId">
+
+                                        </select>
+                                    </div>
+                                    <!-- new attributes -->
+                                    
+    
+    
+    
+
+                                    <div class="col-2"><label class="form-control">Grade</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="GradeId">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control">class</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="classid">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control">Employee Type</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="TypeEmployeeId">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-2"><label class="form-control">Company</label></div>
+                                    <div class="col-4">
+                                        <select class="form-control" id="CompanyId">
+
+                                        </select>
+                                    </div>
+                                    <!-- end new attributes -->
+
+                                </div>
+                            </div>
+                            <div id="tab-1" style="margin-top: 40px;">
+                                @*>العمل<*@
+                                <div class="row m-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control"> تاريخ التعيين</label></div>
+                                    <div class="col-4"><input id=joinDate type=date class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control"> الحالة</label></div>
+                                    <div class="col-4">
+                                        <select id="statusId" class="form-control">
+                                            @foreach (var row in db.Query(sql03))
+                                            {
+                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-2"><label class="form-control"> تاريخ ترك العمل</label></div>
+                                    <div class="col-4"><input id=TerminationDate type=date class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control">سبب ترك العمل</label></div>
+                                    <div class="col-4"><textarea id="TerminationReason" rows="3"
+                                            class="form-control"></textarea></div>
+
+                                </div>
+
+                            </div>
+                            <div id="tab-2" style="margin-top: 40px;">
+                                @*>المرتب<*@
+                                <div class="row m-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control">كود البنك 1</label></div>
+                                    <div class="col-4"><input id=bankCode type=number class="form-control"></div>
+                                    <div class="col-2"><label class="form-control">كود البنك 2</label></div>
+                                    <div class="col-4"><input id=bankCode2 type=number class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control"> تاريخ رصيد الاجازات</label></div>
+                                    <div class="col-4"><input id=deferredDate type=date class="form-control"></div>
+                                    <div class="col-2"><label class="form-control"> رصيد الاجازات الاول</label></div>
+                                    <div class="col-4"><input id=deferredDays type=number class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control"> shift </label></div>
+                                    <div class="col-4">
+                                        <select id=shift class="form-control"></select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="tab-4" style="margin-top: 40px;">
+                                @*>التامينات<*@
+                                <div class="row m-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control"> رقم التامين</label></div>
+                                    <div class="col-2"><input id=insNo type=number class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control"> الاجر التاميني</label></div>
+                                    <div class="col-2"><input id=insSalary type=number class="form-control" value="0">
+                                    </div>
+
+                                    <div class="col-2"><label class="form-control"> نسبة التأمين</label></div>
+                                    <div class="col-2"><input id=insPercent type=number class="form-control"></div>
+                                </div>
+                            </div>
+                            <div id="tab-5" style="margin-top: 40px;">
+                                @*>بيانات الاتصال<*@
+                                <div class="row m-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control">التليفون </label></div>
+                                    <div class="col-4"><input id=phoneNo type=text class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control">تليفون الشركة</label></div>
+                                    <div class="col-4"><input id=phoneNo2 type=text class="form-control"></div>
+
+                                    <div class="col-2"><label class="form-control">Email</label></div>
+                                    <div class="col-4"><input id="Email" type="email" type=text class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row m-2" dir=RTL>
+                                    <div class="col-2"><label class="form-control">Street</label></div>
+                                    <div class="col-10"><textarea class="form-control" rows="3"
+                                            id="HomeStreet"></textarea></div>
+
+                                    <div class="col-2"><label class="form-control">City</label></div>
+                                    <div class="col-4"><select class="form-control" id="HomeCityId"></select></div>
+
+                                    <div class="col-2"><label class="form-control">Country</label></div>
+                                    <div class="col-4"><select class="form-control" id="HomeCountryId"></select></div>
+
+                                </div>
+                            </div>
+                            <div id="tab-6" style="margin-top: 40px;">
+                                @*>الملاحظات<*@
+                                <div class="row m-2" dir=RTL>
+
+                                    <div class="col-2">
+                                        <label class="form-control">Division</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <textarea id=Division type=text class="form-control"></textarea>
+                                    </div>
+
+                                    <div class="col-2">
+                                        <label class="form-control">SubDivision</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <textarea id=SubDivision type=text class="form-control"></textarea>
+                                    </div>
+
+                                    <div class="col-2">
+                                        <label class="form-control">PersonalArea</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <textarea id=PersonalArea type=text class="form-control"></textarea>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-control">PersonalSubArea</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <textarea id=PersonalSubArea type=text class="form-control"></textarea>
+                                    </div>
+                                     <div class="col-2">
+                                        <label class="form-control">Visa</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <textarea id="AccountNo" type=text class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab-7" style="margin-top: 40px;">
+                                @*>الملفات<*@
+                                <div class="row m-2" dir=RTL></div>
+                            </div>
+                        </div> @* end of tabs *@              
+                        <!-- #region -->
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id=createBtn onclick="create()" class="btn btn-primary">انشاء</button>
+                    <button id=updateBtn onclick="save()" class="btn btn-primary">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let image;
+        let sqlUpdate,
+            v,
+            all,
+            id;
+        $(".dt-button").addClass("btn btn-info");
+
+        function val(a) {
+            return (a == "" || a == undefined) ? `NULL` : `'${a}'`
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "GetEmployees",
+            dataType: "Json",
+            success: function (response) {
+                $("#loader").css("display", "none");
+                all = JSON.parse(response);
+                console.log(all);
+                var tb = $('#example').DataTable({
+                    fixedHeader: {
+                        header: true,
+                    },
+                    scrollX: true,
+                    stateSave: true,
+                    "destroy": true,
+                    "data": all,
+                    "columns": columns,
+                    dom: 'BQlfrtip',
+                    buttons: [
+                        'colvis', 'copy', 'excel', 'print'
+                    ],
+                    order: [[0, 'desc']]
+                });
+
+            }
+        });
+
+        var columns = [
+            {
+                data: "Id",
+                title: "id",
+            },
+            {
+                data: "FileNumber",
+                title: "رقم الملف",
+            },
+            {
+                data: "name",
+                title: "الأسم",
+            },
+            {
+                data: "dept",
+                title: "القسم",
+            },
+            {
+                data: "job",
+                title: "الوظيفة",
+            },
+            {
+                data: "DateOfBirth",
+                title: "تاريخ الميلاد",
+                render: function (a) {
+                    return a == null ? '' : a.substr(0, 10);
+                },
+                visible: false
+            },
+            {
+                data: "age",
+                title: "العمر",
+            },
+            {
+                data: "JoiningDate",
+                title: "تاريخ الالتحاق",
+                render: function (a) {
+                    return a == null ? '' : a.substr(0, 10);
+                },
+                visible: false
+            },
+            {
+                data: "MobilePhone",
+                title: "التليفون",
+                visible: false
+            },
+            {
+                data: "HomePhone",
+                title: "تليفون الشركة",
+                visible: false
+            },
+            {
+                data: "IDNo",
+                title: "رقم البطاقة",
+                visible: false
+            },
+            {
+                data: "Education",
+                title: "التعليم",
+            },
+            {
+                data: "status",
+                title: "حالة العمل",
+                visible: false
+            },
+            {
+                data: "EmployeeFixedSalary",
+                title: "حالة التأمين",
+                render: function (a) {
+                    return a == 0 || a == null ? 'غير مؤمن' : 'مؤمن'
+                },
+                visible: false
+            },
+            {
+                data: "EmployeeFixedSalary",
+                title: "الاجر التاميني",
+                visible: false
+            },
+            {
+                data: "InsuranceNumber",
+                title: "رقم التأمين",
+                visible: false
+            },
+            {
+                data: "Percentage",
+                title: "نسبة التأمين",
+                visible: false
+            },
+            {
+                data: "AccountNo",
+                title: "Visa",
+                //visible: false
+            },
+            {
+                data: "BankCode",
+                title: "BankCode1",
+                visible: false
+            },
+            {
+                data: "BankCode2",
+                title: "BankCode2",
+                visible: false
+            },
+
+            {
+                data: "shift",
+                title: "الوردية",
+                visible: false
+            },
+            {
+                data: "religion",
+                title: "الديانة",
+                visible: false
+            },
+            {
+                data: "Division",
+                title: "Division",
+                visible: false
+            },
+            {
+                data: "SubDivision",
+                title: "SubDivision",
+                visible: false
+            },
+            {
+                data: "PersonalArea",
+                title: "PersonalArea",
+                visible: false
+            },
+            {
+                data: "PersonalSubArea",
+                title: "PersonalSubArea",
+                visible: false
+            },
+            {
+                data: "Email",
+                title: "Email",
+                visible: false
+            },
+            {
+                data: "EmployeeGroup",
+                title: "EmployeeGroup",
+                visible: false
+            },
+            {
+                data: "EmployeeSubGroup",
+                title: "EmployeeSubGroup",
+                visible: false
+            },
+            {
+                data: "HomeCity",
+                title: "HomeCity",
+                visible: false
+            },
+            {
+                data: "HomeCountry",
+                title: "HomeCountry",
+                visible: false
+            },
+            {
+                data: "HomeStreet",
+                title: "HomeStreet",
+                visible: false
+            },
+            {
+                data: "Level",
+                title: "Level",
+                visible: false
+            },
+            {
+                data: "Location",
+                title: "Location",
+                visible: false
+            },
+            {
+                data: "TerminationDate",
+                title: "TerminationDate",
+                render: function (a) {
+                    return a == null ? '' : a.substr(0, 10);
+                },
+                visible: false
+            },
+            {
+                data: "TerminationReason",
+                title: "TerminationReason",
+                visible: false
+            },
+            {
+                data: "deferredDate",
+                title: "deferredDate",
+                render: function (a) {
+                    return a == null ? '' : a.substr(0, 10);
+                },
+                visible: false
+            },
+            {
+                data: "deferredDays",
+                title: "deferredDays",
+                visible: false
+            },
+
+            (parseInt(@Request.Cookies["Reports_Salary_Details"].Value) == 4) ?
+                {
+                    "title": "Edit",
+                    "data": "Id",
+                    render: (a) => {
+                        return "<button id='edt-btn' data-bs-toggle='modal'  data-bs-target='.modal'  class='btn btn-success' onclick=filterData(" + a + ") >show</button>"
+                    }
+                } :
+                {
+                    "title": "Edit", "defaultContent": ""
+                }
+        ];
+
+
+
+        function upload() {
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                //fileData.append('username', "Dillion");
+                image = files[0].name;
+                //console.log(files[0].name);
+                $.ajax({
+                    url: '/Home/UploadFiles',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result) {
+                        console.log(result);
+                        $("#img").attr("src", window.location.protocol + "//" + window.location.host + "/uploads/" + files[0].name);
+                    },
+                    error: function (err) {
+                        console.log(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+
+            }
+        }
+
+        function save() {
+            if (id == undefined) {
+                alert("select employee first!");
+                return;
+            }
+            
+            sqlUpdate =
+                "begin transaction  " +
+
+                " update Employees  " +
+                " set  " +
+                " KnownAs=" + val($("#name").val()) +
+                " ,FileNumber=" + val($("#fileNo").val()) +
+                " ,image=" + val(image) +
+                " ,BankCode=" + val($("#bankCode").val()) +
+                " ,BankCode2=" + val($("#bankCode2").val()) +
+                " ,departementId=" + val($("#deptId").val()) +
+                " ,JobTitleId=" + val($("#jobId").val()) +
+                " ,TypeEmployeeId=" + val($("#TypeEmployeeId").val()) +
+                " ,CompanyId=" + val($("#CompanyId").val()) +
+                " ,classid=" + val($("#classid").val()) +
+                " ,LocationId=" + val($("#LocationId").val()) +
+                " where  id=" + id +
+
+                " update basicbayworks " +
+                " set  " +
+                " shiftid=" + val($("#shift").val()) +
+                " ,VacationDeferredDate=" + val($("#deferredDate").val()) +
+                " ,NumberOfStageVacations=" + val($("#deferredDays").val()) +
+                " ,GradeId=" + val($("#GradeId").val()) +
+                " ,LevelId=" + val($("#LevelId").val()) +
+                " where employeeid=" + id +
+
+                " update Personals " +
+                " set  " +
+                " JoiningDate=" + val($("#joinDate").val()) +
+                " ,DateOfBirth=" + val($("#birthDate").val()) +
+                " ,MaritalStatus=" + val($("#militId").val()) +
+                " ,Division=" + val($("#Division").val()) +
+                " ,SubDivision=" + val($("#SubDivision").val()) +
+                " ,PersonalArea=" + val($("#PersonalArea").val()) +
+                " ,PersonalSubArea=" + val($("#PersonalSubArea").val()) +
+                " ,EmployeeGroupId=" + val($("#EmployeeGroupId").val()) +
+                " ,EmployeeSubGroupId=" + val($("#EmployeeSubGroupId").val()) +
+                " ,xreligionid=(select id from xreligions where name=" + val($("#xreligion").val()) + ")" +
+                " ,StatusId=" + val($("#statusId").val()) +
+                " where Id=(select PersonalId from Employees where  id=" + id + ") " +
+
+                ` update finances 
+                 set  
+                 AccountNo=${val($("#AccountNo").val())}
+                 where Id=(select financeId from Employees where  id=${id})`+
+                
+                " update Addresses " +
+                " set " +
+                " MobilePhone=" + val($("#phoneNo").val()) +
+                " ,HomePhone=" + val($("#phoneNo2").val()) +
+                " ,Email=" + val($("#Email").val()) +
+                " ,HomeCityId=" + val($("#HomeCityId").val()) +
+                " ,HomeCountryId=" + val($("#HomeCountryId").val()) +
+                " ,HomeStreet=" + val($("#HomeStreet").val()) +
+                " where id=(select AddressId from Employees where  id=" + id + ") " +
+
+                " update Generals  " +
+                " set  " +
+                " IDNo=" + val($("#idNo").val()) +
+                " ,TerminationDate=" + val($("#TerminationDate").val()) +
+                " ,TerminationReason=" + val($("#TerminationReason").val()) +
+                " ,EducationStatusId=" + val($("#eduId").val()) +
+
+                " where id=(select GeneralId from Employees where  id=" + id + ") " +
+
+                " update InsuranceDetails set " +
+                " EmployeeFixedSalary=" + val($("#insSalary").val()) +
+                " ,Percentage=" + val($("#insPercent").val()) +
+                " ,InsuranceNumber=" + val($("#insNo").val()) +
+                " where EmployeeId=" + id +
+
+                " commit transaction ";
+            console.log(sqlUpdate);
+            var res = excuteSQL(sqlUpdate);
+
+            if (res == 1) {
+                alert("saved successfull!");
+                //dialog.dialog("close");
+                $(".modal").modal('hide');
+                location.reload();
+            }
+            else {
+                alert("error!");
+                //dialog.dialog("close");
+            }
+        }
+        function create() {
+/*
+            GradeId
+    classid
+    TypeEmployeeId
+    CompanyId*/
+            var sqlCreate =
+                "begin transaction  " +
+
+                "INSERT INTO Personals (JoiningDate ,DateOfBirth ,MaritalStatus ,xreligionid ,StatusId,Division,SubDivision,PersonalArea,PersonalSubArea,EmployeeGroupId,EmployeeSubGroupId) values (" +
+                val($("#joinDate").val()) + ", " +
+                val($("#birthDate").val()) + ", " +
+                val($("#militId").val()) + "," +
+                "(select id from xreligions where name=" + val($("#xreligion").val()) + ")," +
+                val($("#statusId").val()) + ", " +
+                val($("#Division").val()) + ", " +
+                val($("#SubDivision").val()) + ", " +
+                val($("#PersonalArea").val()) + ", " +
+                val($("#PersonalSubArea").val()) + ", " +
+                val($("#EmployeeGroupId").val()) + ", " +
+                val($("#EmployeeSubGroupId").val()) + ") " +
+
+                "INSERT INTO  Addresses (MobilePhone,HomePhone,Email,HomeCityId,HomeCountryId,HomeStreet) values (" +
+                val($("#phoneNo").val()) + "," +
+                val($("#phoneNo2").val()) + "," +
+                val($("#Email").val()) + "," +
+                val($("#HomeCityId").val()) + "," +
+                val($("#HomeCountryId").val()) + "," +
+                val($("#HomeStreet").val()) + ")" +
+
+                "INSERT INTO Generals  (IDNo ,EducationStatusId,TerminationDate ,TerminationReason) values (" +
+                val($("#idNo").val()) + "," +
+                val($("#eduId").val()) + "," +
+                val($("#TerminationDate").val()) + "," +
+                val($("#TerminationReason").val()) + ") " +
+
+                `INSERT INTO Finances(GrossOrNet,AccountNo) VALUES(1,${val($("#AccountNo").val())}) ` +
+
+                "insert into Remarks(JobDescription) values(null) " +
+
+                "insert into Administrations(PreviousYearsOfExperience) values(null) " +
+
+                "INSERT INTO Employees (employeeno,KnownAs,FileNumber,image,BankCode,BankCode2,departementId,JobTitleId,LocationId,classid,TypeEmployeeId,CompanyId,[PersonalId],[FinanceId],[AdministrationId],[AddressId],[GeneralId],[RemarkId]) values (" +
+                "(select top(1) employeeno+1 from employees order by employeeno desc), " +
+                val($("#name").val()) + ", " +
+                val($("#fileNo").val()) + ", " +
+                val(image) + ", " +
+                val($("#bankCode").val()) + ", " +
+                val($("#bankCode2").val()) + ", " +
+                val($("#deptId").val()) + ", " +
+                val($("#jobId").val()) + ", " +
+                val($("#LocationId").val()) + "," +
+                val($("#classid").val()) + "," +
+                val($("#TypeEmployeeId").val()) + "," +
+                val($("#CompanyId").val()) + ", " +
+                "(SELECT IDENT_CURRENT('personals')), " +
+                "(SELECT IDENT_CURRENT('finances')), " +
+                "(SELECT IDENT_CURRENT('administrations')), " +
+                "(SELECT IDENT_CURRENT('addresses')), " +
+                "(SELECT IDENT_CURRENT('generals')), " +
+                "(SELECT IDENT_CURRENT('remarks'))) " +
+
+                "INSERT INTO InsuranceDetails (EmployeeId ,EmployeeFixedSalary ,InsuranceNumber,Percentage ) values (  " +
+                "(SELECT IDENT_CURRENT('employees'))," +
+                val($("#insSalary").val()) + "," +
+                val($("#insNo").val()) + "," +
+                val($("#insPercent").val()) + ") " +
+
+                "INSERT INTO  basicbayworks (EmployeeId ,shiftid ,VacationDeferredDate,NumberOfStageVacations ,LevelId ) values (" +
+                "(SELECT IDENT_CURRENT('employees'))," +
+                val($("#shift").val()) + "," +
+                val($("#deferredDate").val()) + "," +
+                val($("#deferredDays").val()) + "," +
+                val($("#LevelId").val()) + ") " +
+
+                "commit transaction ";
+
+            console.log(sqlCreate);
+            var res = excuteSQL(sqlCreate);
+
+            if (res == 1) {
+                alert("saved successfull!");
+                //dialog.dialog("close");
+                $(".modal").modal('hide');
+                location.reload();
+            } else {
+                alert("error!");
+                //dialog.dialog("close");
+            }
+        }
+
+        $('#img').click(function () {
+            $("#FileUpload1").click();
+        });
+        $("#FileUpload1").change(function () {
+            upload();
+        });
+
+        function filterData(e) {
+            var f = all.filter(w => w.Id == e)[0]
+            console.log(f)
+            id = e;
+            $("#fileNo").val(f.FileNumber);
+            $("#name").val(f.name);
+            $("#birthDate").val(f.DateOfBirth == null ? '' : f.DateOfBirth.substr(0, 10));
+            $("#joinDate").val(f.JoiningDate == null ? '' : f.JoiningDate.substr(0, 10));
+            $("#phoneNo").val(f.MobilePhone);
+            $("#phoneNo2").val(f.HomePhone);
+            $("#idNo").val(f.IDNo);
+            $("#bankCode").val(f.BankCode);
+            $("#bankCode2").val(f.BankCode2);
+            $("#xreligion").val(f.religion);
+            $("#insNo").val(f.InsuranceNumber);
+            $("#insSalary").val(f.EmployeeFixedSalary);
+            $("#insPercent").val(f.Percentage);
+            $("#deptId").val(f.dept_id);
+            $("#jobId").val(f.JobTitleId);
+            $("#militId").val(f.MaritalStatus);
+            $("#statusId").val(f.status_id);
+
+            $("#PersonalArea").val(f.PersonalArea);
+            $("#PersonalSubArea").val(f.PersonalSubArea);
+            $("#Division").val(f.Division);
+            $("#SubDivision").val(f.SubDivision);
+
+            $('#eduId').val(f.EducationId);
+
+            $('select#jobId option').filter(function () {
+                return $(this).text() === f.job;
+            }).prop('selected', true);
+            $('select#deptId option').filter(function () {
+                return $(this).text() === f.dept;
+            }).prop('selected', true);
+            image = f.Image;
+            $("#img").attr("src", window.location.protocol + "//" + window.location.host + "/Uploads/" + f.Image);
+
+            $("#Email").val(f.Email);
+            $("#HomeCityId").val(f.HomeCityId);
+            $("#HomeCountryId").val(f.HomeCountryId);
+            $("#HomeStreet").val(f.HomeStreet);
+            $("#EmployeeGroupId").val(f.EmployeeGroupId);
+            $("#EmployeeSubGroupId").val(f.EmployeeSubGroupId);
+            $("#LevelId").val(f.LevelId);
+            $("#LocationId").val(f.LocationId);
+            $("#AccountNo").val(f.AccountNo);
+            $("#GradeId").val(f.GradeId);
+            $("#classid").val(f.classid);
+            $("#TypeEmployeeId").val(f.TypeEmployeeId);
+            $("#CompanyId").val(f.CompanyId);
+
+            $("#TerminationDate").val(f.TerminationDate == null ? '' : f.TerminationDate.substr(0, 10));
+            $("#TerminationReason").val(f.TerminationReason);
+            $("#shift").val(f.shift);
+            $("#deferredDate").val(f.deferredDate == null ? '' : f.deferredDate.substr(0, 10));
+            $("#deferredDays").val(f.deferredDays);
+
+            $('#createBtn').hide();
+            $('#updateBtn').show();
+        }
+
+        function draw_option(data, selector) {
+            if (data != null) {
+                var html = '';
+                for (var i = 0; i < data.length; i++) {
+                    html += `<option value="${data[i].id}">${data[i].text}</option>`
+                }
+                $(selector).html(html);
+                $(selector).val(-1);
+            }
+        }
+
+        var HomeCities_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from homecities");
+        var HomeCountries_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from homecountries");
+
+        var EmployeeGroups_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from EmployeeGroups");
+        var EmployeeSubGroups_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from EmployeeSubGroups");
+        var Levels_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+LevelName 'text' from Levels");
+        var Locations_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from Locations");
+        
+        var types_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from TypeEmployees");
+        var companies_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from Companies");
+        var classes_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from Classes");
+        var Grade_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+Name 'text' from Grades");
+        
+        var shifts_list = readSQL("select id,cast(id AS Nvarchar(Max))+' - '+shiftName 'text' from shifts");
+
+
+        draw_option(HomeCities_list, "#HomeCityId");
+        draw_option(HomeCountries_list, "#HomeCountryId");
+        draw_option(EmployeeGroups_list, "#EmployeeGroupId");
+        draw_option(EmployeeSubGroups_list, "#EmployeeSubGroupId");
+        draw_option(Levels_list, "#LevelId");
+        draw_option(Locations_list, "#LocationId");
+        draw_option(types_list, "#TypeEmployeeId");
+        draw_option(companies_list, "#CompanyId");
+        draw_option(classes_list, "#classid");
+        draw_option(Grade_list, "#GradeId");
+        draw_option(shifts_list, "#shift");
+
+        //$('select').select2();
+        $('#tabs').tabs();
+    </script>

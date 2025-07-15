@@ -2,21 +2,27 @@
 @{
     ViewBag.Title = "SalaryIndex";
 }
+@if (Request.Cookies["UserName"] == null)
+{
+    Response.Redirect("~/home/Index");
+}
+@if(Int32.Parse(Request.Cookies["ClosingPeriod"].Value) <= 2){
+    Response.Redirect("~/home/Index");
+}
 <script>
     var all = [];
 </script>
 @{
+    
     var db1 = Database.Open("CS");
 	var db2 = Database.Open("CS");
-    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
+    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId<3 and DepartementId is not null order by FileNumber";
 	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id /*where p.StatusId<>3*/ order by FileNumber";
 }
 <script>
 @foreach (var row in db1.Query(selectQueryString1))
 {
-
-        @:all.push({fileNo:@row.fn,dept:@row.deptId})
-
+    @:all.push({fileNo:@row.fn,dept:@row.deptId})
 } 
 </script>
 
@@ -155,10 +161,10 @@
         </tr>
     </table>
     <div class="dialogDept">
-    <table id="allDeptTable" class="display">
+    <table id="allDeptTable" class="display" style="width:100%">
 
     </table>
-   </div>
+    </div>
     <div id="loader" style="display: none;">
         <center><img src="~/1.gif" /></center>
     </div>
@@ -170,6 +176,7 @@
                 </tr>
 
                 <tr>
+                    <td rowspan="2" style="vertical-align: middle;">القسم</td>
                     <td rowspan="2" style="vertical-align: middle;">رقم الملف</td>
                     <td rowspan="2" style="vertical-align: middle;">الاسم</td>
                     <td rowspan="2" style="vertical-align: middle;"> ايام الحضور</td>
@@ -208,8 +215,8 @@
         
     </div>
 
-<script src="~/Assets/AttendanceSetup.js?version=3.4"></script>
-<script src="~/Assets/Attendance.js?version=3.3"></script>
+<script src="~/Assets/attendanceSetup2.js?version=9.5.1"></script>
+<script src="~/Assets/attendance2.js?version=9.5.1"></script>
 <script> 
 var department = [],dept=[];
 
@@ -232,19 +239,19 @@ $('#ok').click(function () {
             }
         }
         res = [];
-        console.log(department)
+        //console.log(department)
         dept=[]
         for(var i=0;i<department.length;i++){
             
             dept.push(department[i].fileNo);
         }
-        console.log(dept)
+        //console.log(dept)
         $('#loader').show();
         getArray(dept,$("#M").val(),$("#Y").val()); 
     });
 /*begin multiselect*/
 var data = readSQL(`select d.Id,d.Name'Dept' from Departements d`);
-    console.log(data);
+    //console.log(data);
    var table= $("#allDeptTable").DataTable({
         data:data,
         columns: [
@@ -270,7 +277,7 @@ var data = readSQL(`select d.Id,d.Name'Dept' from Departements d`);
                 autoOpen:false,
                 width:900,
                 height:700,
-                title:"Select Employee",
+                title:"Select Departments",
             }); 
     $('#Depts').on('click', function(e){
         $(".dialogDept").dialog('open');
@@ -280,6 +287,8 @@ var salaries = [];
 
 function displayAllMonth(res) // المواصبة بالقسم
 {
+    console.log("ahmdkmal")
+    console.log(res)
     //res=res.sort((a,b) => (parseInt(a.filenumber) > parseInt(b.filenumber)) ? 1 : ((parseInt(b.filenumber) > parseInt(a.filenumber)) ? -1 : 0))
     salaries=[];
                     $('#loader').hide();
@@ -289,7 +298,8 @@ for(var i=0;i<res.length;i++){
     // if(EMPS.includes('' + res.fileNo))
     let s=salary(res[i]);
     salaries.push({salary:s,data:res[i]});
-    htmlDom+='<tr><td><a href=/attTable/index?fileNo='+s.fileNo+'&M='+$("#M").val()+'&Y='+$("#Y").val()+' target="_blank">'+
+    htmlDom+='<tr><td>'+res[i].all.dept
+        +'</td><td><a href=/truant/Abscence?fileNo='+s.fileNo+'&M='+$("#M").val()+'&Y='+$("#Y").val()+' target="_blank">'+
     s.fileNo+'</a></td><td >' +
     s.name+'</td><td >' +
     s.att + '</td><td >' +
@@ -376,14 +386,22 @@ $("#Add").click(function () {
             Insurance,
             Deductions,
             Delays,
-
             Clothes,
             Loans,
             Total2,
             Total3,
             Department,	
             Year,
-            Month
+            Month,
+            [attSum] , 
+            [absSum] , 
+            [vacSum] , 
+            [errandSum] , 
+            [sepcialSum] , 
+            [overtimeSum] , 
+            [lateSum] , 
+            [leaveSum],
+            [deductionSum]
 )
 values
             (`+
@@ -403,21 +421,28 @@ values
             res[i].salary.insu + "," +
             res[i].salary.sanctions + "," +
             res[i].salary.delays + "," +
-            //res[i].salary.deduction+","+
             res[i].salary.clothes + "," +
             res[i].salary.loans + "," +
             res[i].salary.total2 + "," +
             res[i].salary.total3 + ",'" +
             res[i].data.all.dept + "'," +
             $('#Y').val() + "," +
-            $('#M').val() + //",'" +
-            //JSON.stringify(res[i].data.days) + "'" +
-            ") insert into AttTable(SalarySheetId,[Dayname],TimeFrom,TimeTo,[abs],att,dateDay,errand,lateHours,leaveHours,overTimeHour,vacDay,weekend)values ";
+            $('#M').val() + ",'" +
+            res[i].data.total.attSum + "','" +
+            res[i].data.total.absSum + "','" +
+            res[i].data.total.vacSum + "','" +
+            res[i].data.total.errandSum + "','" +
+            res[i].data.total.specialSum + "','" +
+            res[i].data.total.overSum + "','" +
+            res[i].data.total.lateSum + "','" +
+            res[i].data.total.leaveSum + "','" +
+            res[i].data.total.dValue +"'" +
+            ") insert into AttTable(SalarySheetId,[Dayname],TimeFrom,TimeTo,[abs],att,dateDay,errand,lateHours,leaveHours,overTimeHour,vacDay,weekend,special)values ";
             var sql2=''
             for(var j=0;j<res[i].data.days.length;j++)
             {
-                if(j==0)sql2 += "((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" +(res[i].data.days[j].errand=="&#10003"?1:0)  + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" +(res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay + "','" + res[i].data.days[j].weekend + "')" 
-                else sql2 += ",((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" + (res[i].data.days[j].errand=="&#10003"?1:0) + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" + (res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay + "','" + res[i].data.days[j].weekend + "')" 
+                if(j==0)sql2 += "((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" +(res[i].data.days[j].errand=="&#10003"?1:0)  + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" +(res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay  + "','" + res[i].data.days[j].weekend+ "','" + res[i].data.days[j].special + "')" 
+                else sql2 += ",((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" + (res[i].data.days[j].errand=="&#10003"?1:0) + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" + (res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay + "','" + res[i].data.days[j].weekend + "','" + res[i].data.days[j].special + "')" 
             }
             sql+=sql2+" commit transaction";
            //console.log(sql);
@@ -440,244 +465,10 @@ values
          promises.push(request);
      }
     $.when.apply(null, promises).always(function () {
-         console.log('All Done successfull!');
+         alert('All Done successfull!');
      });
        // console.log(excuteSQL(sql));
     
 });
 </script>
-<script>
-/**************display()**************/
-/*
- function display1(Days)
-          {
-            var html = '',
-               ActualAttSum=0
-               attSum=0 ,
-               absSum=0 ,
-               vacSum=0 ,
-               vacSum3=0 ,
-               vacSum5=0 ,
-               vacSum6=0 ,
-               vacSum12=0 ,
-               vacSum13=0 ,
-               vacSum14=0 ,
-               vacSum15=0 ,
-               lateSum=0 ,
-               leaveSum=0 ,
-               overSum =0,
-               missionSum=0,
-               specSum=0,
-               deduSum=0;
-              //var diffDay = getDayData(Days[i].fileNo);
-if (Days.length > 30) {
-     Days[Days.findIndex((w) => w.weekend ==1)].att = 0  
- } 
-for (var i = 0; i < Days.length; i++)
-    {
-         
-         if (Days[i].weekend == 1)
-         {
-             var j=i, k=i;
-             if (i == 0)
-             {
-                 
-             }
-             else if (i == Days.length - 1)
-             {
-             }
-             else
-             {
-                 while (Days[j].weekend == 1) {
-                     j--;
-                 }
-                 while (Days[k].weekend == 1) {
-                     k++;
-                 }
-                 if (Days[j].att > 0 || Days[k].att > 0) {
-                     Days[i].att = 1;
-                     Days[i].abs = 0;
-                 }
-                 else {
-                     Days[i].att = 0;
-                     Days[i].abs = 1;
-                 }
-             }
-             
-         }
-              attSum+=Days[i].att ;
-              absSum+=Days[i].abs ;
-              vacSum+=Days[i].vac ;
-              switch(Days[i].vacTypeId)
-              {
-                  case 3:vacSum3+=Days[i].vac; break;//سنوية
-                  case 5:vacSum5+=Days[i].vac; break;//بدون خصم
-                  case 6:vacSum6+=Days[i].vac; break;//رسمية
-                  case 12:vacSum12+=Days[i].vac; break;//من رصيد قادم
-                  case 13:vacSum13+=Days[i].vac; break;//بالخصم
-                  case 14:vacSum14+=Days[i].vac; break;//بدل جمعة
-                  case 15:vacSum15+=Days[i].vac; break;//بدل تطبيق
-              }
-            if(Days[i].late>0)
-            {
-                deduSum+=(lateSum==2?1:0);
-                if(lateSum+parseFloat(Days[i].late) <=2)
-                {
-                    lateSum+=parseFloat(Days[i].late);
-                }
-                else
-                {
-                    if(lateSum<2)deduSum++;
-                }
-            }
-            var dValue = 0;
-            switch (deduSum % 3) {
-                case 0: dValue = parseInt(deduSum / 3) * 1.75; break;
-                case 1: dValue = parseInt(deduSum / 3) * 1.75 + .25; break;
-                case 2: dValue = parseInt(deduSum / 3) * 1.75 + .75; break;
 
-            }
-              leaveSum += (Days[i].leave==-1?0:Days[i].leave);
-              overSum += Days[i].overtime ;
-              missionSum += (Days[i].mission==1?1:0);
-              specSum += (Days[i].specialValue==-1?0:Days[i].specialValue);
-             
-              if(Days[i].weekend==0) html+='<tr>';
-                  else html+='<tr style="background-color:lightgreen">';
-              html+='<td>'+Days[i].day+'</td>'+
-                    '<td>'+Days[i].date+'</td>'+
-                    '<td onclick="selectIN(this)">'+Days[i].timeIn+'</td>'+
-                    '<td onclick="selectOUT(this)">'+Days[i].timeOut+'</td>'+
-                    '<td style="background-color: #27b527">'+(Days[i].att==0?'':Days[i].att)+'</td>'+
-                    '<td style="background-color: #dc3545">'+(Days[i].abs==0?'':Days[i].abs)+'</td>'+
-                    '<td style="background-color: #ffc107">'+(Days[i].vac==0?'':Days[i].vac)+'</td>'+
-                    '<td style="background-color: #df14c1">'+(Days[i].late==0||Days[i].late==-1?'':Days[i].late)+'</td>'+
-                    '<td style="background-color: #1196dd">'+(Days[i].leave==0||Days[i].leave==-1?'':Days[i].leave)+'</td>'+
-                    '<td style="background-color: #8907ff">'+(Days[i].overtime==0?'':Days[i].overtime)+'</td>'+
-                    '<td style="background-color: #77abbd" onclick="selectMission(this)">'+(Days[i].mission==1?'<svg xmlns="http://www.w3.org/2000/svg" color="green" width="30" height="30" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>':'')+'</td>'+
-                    '<td style="background-color: #0277bd" onclick="selectMission(this)">'+(Days[i].specialValue==0 ?'': Days[i].specialValue==-1?'<svg xmlns="http://www.w3.org/2000/svg" color="red" width="30" height="30" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>':Days[i].specialValue)+'</td>'+
-                    '</tr>';
-            }
-
-if (Days.length > 30)
-{
-    if (Days.find(w=>w.weekend == 1).att == 1) ActualAttSum = attSum - 1;
-    else ActualAttSum = attSum;
-}
-if (Days.length<30 )
-{
-     ActualAttSum +=(30-Days.length);
-     attSum += (30-Days.length) ;
-}
-
-            return {
-                ActualAttSum: ActualAttSum,
-                attSum: attSum,
-                absSum: absSum,
-                vacSum: vacSum,
-                vacSum3: vacSum3,
-                vacSum5: vacSum5,
-                vacSum6: vacSum6,
-                vacSum12: vacSum12,
-                vacSum13: vacSum13,
-                vacSum14: vacSum14,
-                vacSum15: vacSum15,
-                lateSum: lateSum,
-                leaveSum: leaveSum,
-                overSum: overSum,
-                missionSum: missionSum,
-                specSum: specSum,
-                dValue: dValue,
-            }
-           
-          }
-        /***************************/
-
-</script>
-<script>
-/*
-function getDayData(fn, d1,d2)//حساب بيانات يوم 
-{
-        var sqlcom = `select *
-from
-(
-select FileNumber,
-       cast(DateTime as date)'date',
-	   cast(DateTime as time(0))time ,
-	   type
- from AClogs ac
- where FileNumber=${fn}
-
- union
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeFrom,'In'
- from Attendances a
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeFrom is not null and TimeFrom <> ''
-
- union
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
- from Attendances a
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> ''
-
- union
-
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	timefrom,'In'
- from Absences ab
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId in(4,11)
-
- UNION
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
- from Absences ab
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId in(4,11)
-
- ) q where date >='${d1}' and date <='${d2}'  order by date, time,Type desc`;
-        return readSQL(sqlcom);
-}//حساب بيانات يوم 
-function reSet(data) //تصفية البيانات               
-{
-    var array2 = []
-    if (data != null && data.length > 2)
-    {
-        
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].type == "In") {
-                if (i > 0) {
-                    if (data[i - 1].type != data[i].type) {
-                        array2.push(data[i]);
-                    }
-                } else array2.push(data[i]);
-            }
-            if (data[i].type == "Out") {
-                if (i < data.length - 1) {
-                    if (data[i].type != data[i + 1].type) {
-                        array2.push(data[i]);
-                    }
-                } else array2.push(data[i]);
-            }
-        }
-        if (array2.length > 0) if (array2[0].type == 'out') array2 = array2.slice(1)
-        if (array2.length > 0) if (array2[array2.length - 1].type == 'in') array2 = array2.slice(0, array2.length - 1)
-       
-    }
-    return array2;
-    }//تصفية البيانات    
-function reCalc(array2)//حساب الفرق
-    {
-        var absTime = 0;
-        if (array2.length > 2) {
-            for (var i = 1; i < array2.length; i += 2) {
-                if (i < array2.length - 1) {
-                    var d1 = new Date(array2[i].date.substr(0, 10) + ' ' + array2[i].time);
-                    var d2 = new Date(array2[i + 1].date.substr(0, 10) + ' ' + array2[i + 1].time);
-                    absTime += (d2.getHours() * 60 + d2.getMinutes()) - (d1.getHours() * 60 + d1.getMinutes())
-                    //console.log("absTime "+ absTime);
-                }
-            }
-        }
-        return absTime;
-    }//حساب الفرق  
-*/
-</script>

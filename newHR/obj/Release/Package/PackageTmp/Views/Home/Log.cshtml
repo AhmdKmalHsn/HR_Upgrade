@@ -1,40 +1,40 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Log";
     Layout = null;
 }
-@Html.Partial("~/views/shared/_libs.cshtml");
 
 <style>
-   body {
+    body {
         margin: 0;
         padding: 0;
         font-family: sans-serif;
-        overflow: hidden;
+        overflow: auto;
+        background-color: #3b5998;
+        /* Facebook blue */
     }
 
     .card {
         margin-bottom: 20px;
         border: none;
-        background: linear-gradient(to right, #b92b27, #1565c0);
+        background-color: #f7f7f7;
+        /* Light grey */
     }
 
     .box {
         width: 650px;
         padding: 35px;
-        
-        background: #191919;
+        background: #ffffff;
+        /* White */
         text-align: center;
         transition: 0.25s;
-       
         margin: 5% auto;
         border-radius: 10px;
-        height: 655px;
-        box-shadow: 4px 2px 2px 4px white;
+        box-shadow: 4px 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .text-muted {
-        color: brown !important;
+        color: #8b9dc3 !important;
+        /* Light blue */
         font-size: 27px;
     }
 
@@ -45,11 +45,13 @@
         display: block;
         margin: 20px auto;
         text-align: center;
-        border: 2px solid #3498db;
+        border: 2px solid #3b5998;
+        /* Facebook blue */
         padding: 10px 10px;
         width: 375px;
         outline: none;
-        color: white;
+        color: #3b5998;
+        /* Facebook blue */
         border-radius: 24px;
         transition: 0.25s;
         margin-top: 39px;
@@ -57,17 +59,18 @@
     }
 
     .box h1 {
-        color: white;
+        color: #3b5998;
+        /* Facebook blue */
         text-transform: uppercase;
         font-weight: 800;
         font-size: 41px;
-        text-shadow: 4px 2px 2px red;
     }
 
     .box input[type="text"]:focus,
     .box input[type="password"]:focus {
         width: 300px;
-        border-color: #2ecc71;
+        border-color: #8b9dc3;
+        /* Light blue */
     }
 
     .box input[type="submit"] {
@@ -76,10 +79,12 @@
         display: block;
         margin: 20px auto;
         text-align: center;
-        border: 2px solid #2ecc71;
+        border: 2px solid #8b9dc3;
+        /* Light blue */
         padding: 14px 40px;
         outline: none;
-        color: white;
+        color: #3b5998;
+        /* Facebook blue */
         border-radius: 24px;
         transition: 0.25s;
         cursor: pointer;
@@ -88,17 +93,48 @@
     }
 
     .box input[type="submit"]:hover {
-            background: #2ecc71;
-        }
+        background: #8b9dc3;
+        /* Light blue */
+    }
 
     .forgot {
         text-decoration: underline;
     }
 
+    ul.social-network {
+        list-style: none;
+        display: inline;
+        margin-left: 0 !important;
+        padding: 0;
+    }
+
+    ul.social-network li {
+        display: inline;
+        margin: 0 5px;
+    }
+
+    .social-network a.icoFacebook:hover {
+        background-color: #3b5998;
+        /* Facebook blue */
+    }
+
+    .social-network a.icoTwitter:hover {
+        background-color: #33ccff;
+    }
+
+    .social-network a.icoGoogle:hover {
+        background-color: #bd3518;
+    }
+
+    .social-network a.icoFacebook:hover i,
+    .social-network a.icoTwitter:hover i,
+    .social-network a.icoGoogle:hover i {
+        color: #fff;
+    }
 
     a.socialIcon:hover,
     .socialHoverClass {
-        color: #44BCDD;
+        color: #44bcdd;
     }
 
     .social-circle li a {
@@ -127,7 +163,6 @@
     .social-circle i {
         color: #fff;
         transition: all 0.8s;
-        transition: all 0.8s;
     }
 
     img {
@@ -135,44 +170,76 @@
         height: 100px;
         border-radius: 50%;
         box-shadow: 1px 1px 4px 3px powderblue;
-        
     }
 </style>
 <main>
-    <div class="card">
-        <div class="card-header">
-            
-        </div>
-        <div class="card-body">
-            <h1>تسجيل الدخول</h1>
-            <form id="login-form" method="post" class="box">
-                <img class="mb-4" src="~/assets/img/logo.jpg" alt="" width="72" height="57">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col">
+                <!-- <div class="card">
+                <div class="card-body"> -->
+                <form id="login-form" action="/home/login" method="post" class="box">
+                    <img class="mb-4" src="~/assets/img/group.png" alt="Logo" width="72" height="57">
+                    <h1>تسجيل الدخول</h1>
+                    <p class="text-muted">من فضلك ادخل البيانات</p>
+                    <input type="text" name="UserName" placeholder="اسم المستخدم">
+                    <input type="password" name="Password" placeholder="الباسورد">
+                    <input type="submit" value="تسجيل">
+                </form>
 
-                <p class="text-muted">من فضلك ادخل البيانات </p>
-                <input type="text" name="username" placeholder="اسم المستخدم">
-                <input type="password" name="password" placeholder="الباسورد">
-                @* <a class="forgot text-muted" href="#">Forgot password?</a>  *@
-                <input type="submit" name="" value="تسجيل" href="#">
-            </form>
+                <!-- </div>
+            </div> -->
+            </div>
         </div>
-
     </div>
 </main>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
 <script>
-    $("#login-form").submit((e) =>{
+    $("#login-form").submit((e) => {
         e.preventDefault();
+
+        // Prevent the default form submission
+
         //console.log($("#login-form").serializeArray())
-        console.log($("#login-form").serialize())
+        console.log($("#login-form").serialize());
         $.ajax({
-            url: "ak_login?" + $("#login-form").serialize(),
+            url: "/home/login",
+            type: "POST",
+            data: $("#login-form").serialize(),
             success: (res) => {
                 console.log(res);
-                if (res[0].status=="success")
-                {
-                    location.href="/home/test";
-                }
+                $.ajax({
+                    url: "ak_login?" + $("#login-form").serialize(),
+                    success: (res) => {
+                        console.log(res);
+                        if (res[0].status == "success") {
+                            location.href = "/home/";
+                        }
+                        else {
+                            alert(res[0].message)
+                        }
+                    },
+                    fail: (res) => {
+                        console.log(res)
+                        //console.log(res)
+                        //alert(JSON.parse(res.responseText).status[0].message)
+                    },
+                    error: (res) => {
+                        //console.log(res.responseText)
+                        console.log(res)
+                        //alert(JSON.parse(res.responseText).status[0].message)
+                    }
+                })
             },
-            error: (res) => { console.log(res) }
-        })
+            error: (res) => {
+                console.log(res);
+                alert("An error occurred while processing your request.");
+            }
+        });
+        /*e.preventDefault();
+        //console.log($("#login-form").serializeArray())
+        console.log($("#login-form").serialize())
+        */
     })
 </script>

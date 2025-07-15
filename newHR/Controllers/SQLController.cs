@@ -25,6 +25,7 @@ namespace newHR.Controllers
         public JsonResult Read(string sql)
         {
             SqlCommand com = new SqlCommand(sql);
+            com.CommandTimeout = 60;
             return Json(db.toJSON(db.getData(com)), JsonRequestBehavior.AllowGet);
         }
         public JsonResult ReadSQL(string sql)

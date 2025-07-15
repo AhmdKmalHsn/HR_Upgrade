@@ -1,13 +1,50 @@
 ﻿<p>demo:</p>
+<div class=row>
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=departements">الاقسام</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=jobTitles">الوظائف</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=educations">التعليم</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=sanctions_reasons">اسباب الجزاء</a>
+    </div>
+</div>
+<div class=row>
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=AK_menu">القائمة</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=AK_modules">الوحدات</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=AK_forms">النماذج</a>
+    </div>
+
+    <div class=col>
+        <a class="btn btn-success" href="/crud/simplest?table=AK_fields">الحقول</a>
+    </div>
+</div>
+<div id="form">
+
+</div>
 <script>
-    let sqlR = ``
+    let sqlR = `select `
     let sqlC = ``
     let sqlU = ``
     let sqlD = ``;
-    let table = "id";
-    let columns = ["Id", "name"].map((col) => {
+    let table = "JobTitles";
+    /*let columns = ["Id"].map((col) => {
         return col.toLowerCase()
-    });
+    });*/
     var url = new URL(window.location.href);
     var page = url.searchParams.get("page");
 
@@ -16,19 +53,36 @@
         console.log(page);
     } else
     {
-        console.err("page not set")
+        console.log("page not set")
     }
-    /************** helper function *****************/
-    function log(ex) { console.log(ex); }
-    function value(ex) { return ex !== null ? ex : ""; }
-    /***********************/
-    let types = readSQL(`SELECT column_name 'Column_Name', data_type 'Data_Type'
-            FROM information_schema.columns
+   
+    let lines = readSQL(`SELECT *
+            FROM AK_simple
             WHERE table_name = '${table}'`)
-            //log(types);
-            function filter(t,c)
-            {
-                return types.filter(w=>c.includes(w.Column_Name.toLowerCase()))
-            }
-    log(filter(table, columns))
+    const result = Object.groupBy(lines, ({ row_no }) => row_no);
+    lines.forEach((e,i)=> {if(i==0)sqlR+=`${e.Col_Name} `; sqlR+=`,${e.Col_Name} `})
+    //sqlR+=
+
+    let linesArr=Object.keys(result).map(w=>w=parseInt(w)).sort();
+    //console.log(linesArr)
+    let htmlForm='<form style="padding:12px;border:1px solid black">'
+    for(let i=0;i<linesArr.length;i++)
+        {
+            htmlForm+='<div class=row>'
+                   let row=lines.filter(w=>w.row_no==linesArr[i]);
+                   //console.log(row)
+                   for(let j=0;j<row.length;j++)
+                   {
+                    htmlForm+=
+                `<div class="${row[i].col_class}">
+                    <div id="" class="form-floating mb-3">
+                        <input type="${row[i].Col_Type}" class="form-control" id="${row[i].Col_Name}" placeholder="name@example.com">
+                        <label for="${row[i].col_title}">${row[i].col_title}</label>
+                    </div>
+                </div>`;
+                     //console.log(j)
+                   }  
+            htmlForm+='</div>'
+        }
+        $("#form").html(htmlForm);
 </script>

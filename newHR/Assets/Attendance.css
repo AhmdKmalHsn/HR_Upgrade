@@ -15,7 +15,9 @@ td {
 
 #loader {
     display: none;
-    z-index: 5;
+    z-index: 100;
+    position:absolute;
+    width:100%;
 }
 
 .sticky {
@@ -49,8 +51,8 @@ tr:nth-child(even) {
 th {
     border-bottom:4px double black;
     text-align:center;
-    vertical-align:central;
-    font-weight:900;
+    vertical-align:middle;
+    /*font-weight:900;*/
 }
 
 tr {
@@ -58,7 +60,9 @@ tr {
 }
 td {
     text-align:center;
-    vertical-align:central;
+    vertical-align:middle;
+    /*max-width: 10px; ;*/
+    font-size: larger;
 }
 
 tr:hover {
@@ -66,8 +70,8 @@ tr:hover {
         position: relative;
 }
 @font-face {
-  /* font-family: myFirstFont;
-   src: url(webfonts/Cairo-Bold.ttf);*/
+   font-family: myFirstFont;
+   src: url(webfonts/Cairo-Bold.ttf);
 }
 
 * {
@@ -77,7 +81,7 @@ tr:hover {
     cursor:pointer;
 }
 #mytable {
-    width:90%;
+    width:95%;
     margin-bottom: 1rem;
     color: #212529;
     vertical-align: middle;

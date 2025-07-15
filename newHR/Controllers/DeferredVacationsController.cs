@@ -75,13 +75,13 @@ SELECT
                 {
                     lst.Add(new VacationsModel
                     {
-                        fileNumber =  rdr["FileNumber"] != "" ? Convert.ToInt32(rdr["FileNumber"]) : 0,
+                        fileNumber =  rdr["FileNumber"].ToString() != "" ? Convert.ToInt32(rdr["FileNumber"].ToString()) : 0,
                         name = rdr["name"].ToString(),
-                        abcenceDays = rdr["vacation"] != "" ? Convert.ToDecimal(rdr["vacation"]) : 0,
+                        abcenceDays = rdr["vacation"].ToString() != "" ? Convert.ToDecimal(rdr["vacation"].ToString()) : 0,
                         departmentId = rdr["Dept"].ToString(),
-                        availableDays = rdr["availableVacation"] != "" ? Convert.ToDecimal(rdr["availableVacation"]) : 0,
+                        availableDays = rdr["availableVacation"].ToString() != "" ? Convert.ToDecimal(rdr["availableVacation"].ToString()) : 0,
                         deferredDate = rdr["deferredDate"].ToString(),
-                        deferredDays = rdr["deferredVacation"] != "" ? Convert.ToDecimal(rdr["deferredVacation"]) : 0
+                        deferredDays = rdr["deferredVacation"].ToString() != "" ? Convert.ToDecimal(rdr["deferredVacation"].ToString()) : 0
                     });
                 }
                 return lst;
@@ -148,19 +148,18 @@ SELECT ISNULL(AB.vacation,0)vacation,
                 {
                     lst.Add(new VacationsModel
                     {
-                        fileNumber = rdr["FileNumber"] != "" ? Convert.ToInt32(rdr["FileNumber"]) : 0,
+                        fileNumber = rdr["FileNumber"].ToString() != "" ? Convert.ToInt32(rdr["FileNumber"].ToString()) : 0,
                         name = rdr["name"].ToString(),
-                        abcenceDays = rdr["vacation"] != "" ? Convert.ToDecimal(rdr["vacation"]) : 0,
+                        abcenceDays = rdr["vacation"].ToString() != "" ? Convert.ToDecimal(rdr["vacation"].ToString()) : 0,
                         departmentId = rdr["Dept"].ToString(),
-                        availableDays = rdr["availableVacation"] != "" ? Convert.ToDecimal(rdr["availableVacation"]) : 0,
+                        availableDays = rdr["availableVacation"].ToString() != "" ? Convert.ToDecimal(rdr["availableVacation"].ToString()) : 0,
                         deferredDate = rdr["deferredDate"].ToString(),
-                        deferredDays = rdr["deferredVacation"] != "" ? Convert.ToDecimal(rdr["deferredVacation"]) : 0
+                        deferredDays = rdr["deferredVacation"].ToString() != "" ? Convert.ToDecimal(rdr["deferredVacation"].ToString()) : 0
                     });
                 }
                 return lst;
             }
         }
-
         public List<truant> VactionInMonth(int M, int Y)
         {
             DateTime d1 = new DateTime(M > 1 ? Y : Y - 1, M > 1 ? M - 1 : 12, 26);
@@ -207,7 +206,6 @@ SELECT ISNULL(AB.vacation,0)vacation,
                 return lst;
             }
         }
-
         public int updateDate(int FN, DateTime d)
         {
             string sql = @"update BasicBayWorks set VacationDeferredDate=@DT

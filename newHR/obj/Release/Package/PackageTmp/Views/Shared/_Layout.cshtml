@@ -1,88 +1,5 @@
-﻿<!html lang="en" class="h-100">
-<head>
-    <meta http-equiv="Cache-Control" content="no-store" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/leaf.svg">
-   
-   @Html.Partial("~/views/shared/_Libs.cshtml");
-
-    <style>
-        #sidebar {
-            display: none;
-        }
-
-        .dropbtn {
-            background-color: rgba(0, 0, 0, 0);
-            color: #aaa;
-            padding: 10px;
-            font-size: 22px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            color: #d9d9d9;
-            background-color: #191919;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-            .dropdown-content a {
-                color: white;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-                text-align: right;
-            }
-
-                .dropdown-content a:hover {
-                    background-color: #515151;
-                }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown:hover .dropbtn {
-            color: #F1F1F1;
-        }
-
-        .navbar-nav > li {
-            font-size: 22px;
-            font-weight: 500;
-        }
-
-
-        .upcolerli {
-            color: blue !important;
-            font-weight: 600 !important;
-            font-size: 18px !important;
-            border-radius: 6px !important;
-        }
-
-        #sidebar ul li a {
-            font-size: 17px !important;
-            color: #671e1e;
-            text-decoration: none;
-        }
-
-        }
-
-        .detail-subtitle {
-            color: gold !important;
-        }
-    </style>
-</head>
+﻿<html lang="en" class="h-100">
+@Html.Partial("_Header")
 <script>
     var EMPS = [];
     var s = null;
@@ -95,10 +12,18 @@
 {
     userId = Int32.Parse(Request.Cookies["UserId"].Value);
 }
+else
+{
+    Response.Redirect("~/home/log");
+}
+
 <script>
     var EMPS = [];
+    var ROLES = [];
     EMPS = EmpGet(@userId);
-    //console.log(EMPS);
+    ROLES = RolesGet(@userId);
+    console.log(ROLES);
+    console.log(EMPS);
     var sql = `
     select e.FileNumber,a.* from Attendances a join Employees e on a.EmployeeId=e.id
 where (TimeFrom='' or TimeTo='') and DateFrom<dateadd(day,-3,GETDATE())
@@ -114,10 +39,10 @@ and
 <body class="d-flex flex-column h-100">
     <div id="page" style="display: block">
         <div class="wrapper">
-            @Html.Partial("~/views/shared/_SideBar.cshtml");
+            @Html.Partial("_SideBar")
             <div id="bodywrapper" class="container-fluid showhidetoggle">
-                @Html.Partial("~/views/shared/_NavBar.cshtml");
-                <div class="content">
+                @Html.Partial("_NavBar");
+                <div class="content" style="margin-top: 70px;">
                     <center>
                         @RenderBody()
                     </center>
@@ -142,12 +67,14 @@ and
     </button>
     <!--script src="~/assets/js/feather.min.js"></script-->
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="~/assets/js/script.js?version=2.1"></script>
+    <script src="~/assets/js/script.js?version=9.3"></script>
     <script src="~/assets/js/anijs.js"></script>
     <script src="~/assets/js/anijs-helper-scrollreveal.js"></script>
     <script type="text/javascript">
         //$('#sidebarCollapse').click();
         document.addEventListener("DOMContentLoaded", function (event) {
+            //feather.replace();
+            //console.log("old loaded");
             $("#page").show()
         });
         function logOut() {
@@ -155,37 +82,60 @@ and
             location.href = "/home/logout";
         }
         /*
-        var source = new EventSource("/SSE/SSE_CNT");
-        source.onmessage = function (event) {
+        var source = new EventSource("/sse/sse2");
+        source.onmessage = function(event) {
             console.log(event.data);
         }
-        source.onerror = function (event) {
-                console.log(event.data);
-            }
-            */
-        /*if (window.Worker) {
-           console.log('Your browser support web workers.');
-          const myWorker = new Worker("/assets/worker.js");
-               myWorker.onmessage = function (e) {
-               //console.log(e.data)
-               var v=JSON.parse(e.data).filter(e=>EMPS.includes(e.FileNumber))
-               console.log(v.length)
+        source.onerror = function(event) {
+            console.log(event);
+        }
+        */
+        let da = readSQL("select * from ak_training()")
+        if (da.length >= 0) {
+            $("#noti").show();
+            $("#noti").html(da.length)
+        }
+        else {
+            $("#noti").hide()
+        }
+        /*fetch("/noti/InOutNoti")
+     .then((x) => x.json())
+     .then((y) => {
+       console.log(y.length);
+       if(y.length==0)
+       {
+            $("#noti2").hide()
+        }
+        else
+        {
+           //$("#noti").show()
+           $("#noti2").html(y.length)
+        }
+     }); */
+        if (window.Worker) {
+            //console.log('Your browser support web workers.');
+            /*const myWorker = new Worker("/noti/InOutNoti");
+                 myWorker.onmessage = function (e) {
+                 console.log(e)
+                 var v=JSON.parse(e.data).filter(e=>EMPS.includes(e.FileNumber))
+                 console.log(v.length)
 
-               if(v.length==0){ $("#noti").hide()}
-               else{
-                   $("#noti").show();
-                   $("#noti").html(v.length)
-                   }
-               //console.log()
-               //console.log('Message received from worker');
+                 if(v.length==0){ $("#noti").hide()}
+                 else{
 
-           }
-       } else {
-           console.log('Your browser doesn\'t support web workers.');
-       }*/
+                     }
+                 //console.log()
+                 //console.log('Message received from worker');
+              }*/
+
+        }
+        else {
+            console.log('Your browser doesn\'t support web workers.');
+        }
+
     </script>
 
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
-</!html>
+</html>

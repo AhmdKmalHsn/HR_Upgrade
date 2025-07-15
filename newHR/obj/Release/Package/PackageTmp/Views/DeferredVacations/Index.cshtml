@@ -1,9 +1,18 @@
 ﻿@using WebMatrix.Data;
 <h2>تقرير رصيد الأجازات</h2>
-<div class="input-group" dir="rtl">
+<h1 class="alert alert-warning" role="alert">تنبيه! هذا الرصيد غير رسمي ولا يتم الاخذ به </h1>
+
+<!--div class="input-group" dir="rtl">
     <button class="btn btn-success " id="excel">EXCEL</button>
-</div>
+</div-->
 <hr>
+<div id="loader" style="position: absolute;
+                        width: 100%;
+                        z-index: 100;
+                        height: 0;
+                        background-color: #FFF;">
+        <img src="~/3.gif" style="margin:auto; ">
+</div>
 <div id="container" style="overflow-x:auto">
     <table dir="rtl" id="example" class="display" style="width:100%"></table>
 </div>
@@ -14,6 +23,7 @@
     $.ajax({
         url:"/DeferredVacations/ListAll",
         success: function (data) {
+            $("#loader").hide();
        var columns = [
       {data: 'fileNumber', title: 'رقم الملف'}
      ,{data: 'name', title: 'الاسم',}
@@ -25,7 +35,7 @@
      ,{"defaultContent": "<button id='del-btn' class='btn btn-success'>show</button>"}
             ];
             //console.log(columns);
-          console.log(data);
+            console.log(data);
             var tb = $('#example').dataTable({
                 stateSave: true,
                 "destroy": true,
@@ -45,6 +55,8 @@
             readVacs(mainData);
             dialog.dialog( "open" );
         });
+        },failed:(e)=>{
+             $("#loader").hide();
         }
         });
 </script>
@@ -76,12 +88,9 @@
  function readVacs(mainData)
 {
 var  sql0=
-/*"select DateFrom,sum(DayPart)DayPart from Absences where " +
-"    DateFrom>='"+mainData.OBdate+"' "+
-"and AbsenceTypeId in(3,7) and "+
-"    EmployeeId =(select id  from Employees where FileNumber='"+mainData.fileNo+"')"+
-"group by DateFrom order by DateFrom asc";*/
-`declare @@f date ;
+
+`
+declare @@f date ;
 set @@f='${mainData.OBdate}'
 ;with month_cte as
 ( 
@@ -110,30 +119,23 @@ console.log(data)
 var balance=mainData.OB
 if(data.length==0)
 	{
-       //console.log('fail!');
-       /*var html='<table border=1 dir="rtl" class="table table-bordered"><tr><th>التاريخ</th><th>الاجازة</th><th>الرصيد</th></tr>';
-           html+='<tr style="background-color:yellow"><th>'+ mainData.OBdate +'</th><th></th><th>'+ mainData.OB +'</th></tr>';
-           html+='<tr style="background-color:yellow"><th>'+ new Date().toISOString().substr(0,10)+'</th><th></th><th>'+mainData.balance+'</th></tr>'
-           html+='</table>';
-       $("#dialog-form").html(html);*/
+       
 	}
     else
     {
         var html='<table border=1 dir="rtl" class="table table-bordered"><tr><th>التاريخ</th><th>الاجازة</th><th>اضافة رصيد</th><th>الرصيد</th></tr>';
             html+='<tr><th style="background-color:yellow">'+ mainData.OBdate+
                       '</th><th style="background-color:skyblue" colspan=2 >'+ "رصيد افتتاحي "+
-                      /*'</th><th style="background-color:#55FF44">'+ data[i].addition +*/
                       '</th><th style="background-color:#11cc33">'+ balance +'</th></tr>';
             for(var i=0; i<data.length;i++)
             {
-                balance=parseFloat(balance)+parseFloat(data[i].addition)-parseFloat(data[i].DayPart);
-                html+='<tr><th style="background-color:yellow">'+ data[i].dateDay.substr(0,10) +
+                balance=parseFloat(balance)+(parseFloat((i==0 && data[i].dateDay.substr(0,10)==mainData.OBdate)?0:data[i].addition))-parseFloat(data[i].DayPart);
+                html+='<tr><th style="background-color:#159754">'+ data[i].dateDay.substr(0,10) +
                       '</th><th style="background-color:#aabb00">'+ data[i].DayPart +
-                      '</th><th style="background-color:#55FF44">'+ data[i].addition +
+                      '</th><th style="background-color:#15aF44">'+ ((i==0 && data[i].dateDay.substr(0,10)==mainData.OBdate)?0:data[i].addition) +
                       '</th><th style="background-color:#11cc33">'+ balance +'</th></tr>';
             }
             
-            //html+='<tr style="background-color:yellow"><th>'+ new Date().toISOString().substr(0,10)+'</th><th></th><th>'+mainData.balance+'</th></tr>'
             html+='</table>';
        $("#dialog-form").html(html);
 

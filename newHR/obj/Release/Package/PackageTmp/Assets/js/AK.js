@@ -10,6 +10,18 @@ function readSQL(sql) {
   });
   return data;
 }
+function readSQL_async(sql) {
+    var data = "";
+    $.ajax({
+        url: "/SQL/Read",
+        //async: false,
+        data: { sql: sql },
+        success: function (res) {
+            data = JSON.parse(res);
+        },
+    });
+    return data;
+}
 
 function AK_readSQL(sql) {
   var data = "";
@@ -101,6 +113,38 @@ function getCookie(cname) {
 }
 
 function checkCookie() { }
+
+function RolesGet(user) {
+  var cook = [];
+  var sql1 =
+     `SELECT
+  AK_Modules_lines.name
+ ,AK_Roles_lines.[access]
+ ,AK_Roles_lines.[read]
+ ,AK_Roles_lines.[create]
+ ,AK_Roles_lines.[update]
+ ,AK_Roles_lines.[delete]
+FROM dbo.AK_Modules_lines
+INNER JOIN dbo.AK_Modules
+  ON AK_Modules_lines.Module_id = AK_Modules.Id
+INNER JOIN dbo.AK_Roles_lines
+  ON AK_Roles_lines.module_line_id = AK_Modules_lines.id
+INNER JOIN dbo.AK_Roles
+  ON AK_Roles_lines.role_id = AK_Roles.Id
+INNER JOIN dbo.Users2
+  ON Users2.RoleId = AK_Roles.Id
+WHERE Users2.Id = ${user}
+`;
+  var data = readSQL(sql1);
+  
+ 
+  for (var i = 0; i < data.length; i++) {
+    let temp=data[i]["name"];
+    delete data[i]["name"];
+    cook[temp]= data[i];
+  }
+  return cook;
+}
 
 function EmpGet(user) {
   var cook = [];

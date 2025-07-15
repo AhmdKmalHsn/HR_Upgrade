@@ -539,7 +539,7 @@ var pieChart = new Chart(pieChartCanvas, {
                 case "emp":emp_count =item.cnt; break;
                 case "depts":dept_count =item.cnt;  break;
                 case "users":user_count =item.cnt;  break;
-                case "mac": mac_count = item.cnt; break;
+                case "branches": mac_count = item.cnt; break;
                 default: break;
             }
         })
@@ -565,7 +565,7 @@ $("#attendYesterdayId").html(readSQL("select count(*) as cnt from Attendances a 
     sqlInOut = `select * from join_term order by  yer,mon
 `;
 
-    console.log(sqlInOut)   
+    //console.log(sqlInOut)   
     var jsonfile = readSQL(sqlInOut);
     console.log(jsonfile)  
     var labels = jsonfile.map(function (e) {

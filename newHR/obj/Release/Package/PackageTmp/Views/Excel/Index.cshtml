@@ -114,8 +114,7 @@
         }
         $("#spinner-border").hide();
         $("#btn1").click(function () {  
-            if ($("#select").val() == "1")
-            { // Checking whether FormData is available in browser  
+            if ($("#select").val() == 1) { // Checking whether FormData is available in browser  
                 if (window.FormData !== undefined) {
 
                     var fileUpload = $("#excelFile1").get(0);
@@ -141,7 +140,6 @@
                         success: function (result) {
                             $("#spinner-border").hide();
                             alert("تم");
-                            console.log(result);
                         },
                         error: function (err) {
                             $("#spinner-border").hide();
@@ -152,8 +150,7 @@
                     alert("FormData is not supported.");
                 }
 
-            }
-            if ($("#select").val() == "2")
+            } else
             {
                 if (window.FormData !== undefined) {
 

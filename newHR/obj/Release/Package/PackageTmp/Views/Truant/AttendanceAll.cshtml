@@ -1,41 +1,51 @@
-﻿@using WebMatrix.Data;
-@{
-    ViewBag.Title = "AttendanceAll";
-}
-<head>
-<style>
-#myProgress {
+﻿<head>
+    <style>
+        .row {
+            justify-content: center;
+            direction: rtl;
+        }
 
-  width: 100%;
-  background-color: #ddd;
-  display: flex;
-}
+        .mytable {
+            border: 1px solid aliceblue;
+            background-color: aliceblue;
+            width: 95%;
+            margin: auto;
+        }
 
-.myBar {
-  position:relative;
-  height: 30px;
-  background-color: #04AA6D;
-}
-</style>
+        td {
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<h2>AttendanceAll</h2>
+@if(Request.Cookies["Reports_Salary_Details"]==null)
+{
+    Response.Redirect("~/home/log");
+}
+@if(Int32.Parse(Request.Cookies["Reports_Salary_Details"].Value)>=2){
+
+}else
+{
+   //Response.Redirect("~/home/Index");
+}
+@using WebMatrix.Data;
+<h2>الانتاج الشهري باعتبار المجهود 100% والانتاج 20 يوم</h2>
 <script>
     var all = [];
 </script>
 @{
     var db1 = Database.Open("CS");
+	var db2 = Database.Open("CS");
     var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
 	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id where p.StatusId<>3 order by FileNumber";
 }
 <script>
 @foreach (var row in db1.Query(selectQueryString1))
 {
-
         @:all.push({fileNo:@row.fn,dept:@row.deptId})
-
 } 
 </script>
-
 <style>
     #tblStocks {
           tr:nth-child(even){background-color: #f2f2f2;}
@@ -43,9 +53,14 @@
     #thead td{
         vertical-align:middle;
     }
+    .row{
+        align-items: center;
+    }
+    .card{
+     background-image: linear-gradient(45deg, #F0F0A0, #A0C0F0);
+    }
 </style>
-    <h2>المرتبات  </h2>
- <!--modal-->
+ 
  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -67,7 +82,7 @@
 			</tr>
 			</thead>
 			<tbody>
-		    @foreach (var row in db1.Query(sql))
+		    @foreach (var row in db2.Query(sql))
                      {
                         <tr> 
 						 <td style="text-align:center">@row.fn</td>
@@ -87,29 +102,31 @@
     </div>
   </div>
 </div>
-<!---->
+
 	<hr>
-    <table class="container" style="width:100%">
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
+    <div class="card container" style="width:60%">
+        <div class=row>        
+             <div class="col-9" >     
 			 <div class="input-group">
 			    <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
 				<input id="fileNo" class="form-control" type="number" />
 			  </div>
-			</td>
-            <td>
-				<h3 style="margin:10px;float:right">رقم الملف </h3>
-			</td>
+			</div>
+             <div class="col-3" >     
+				<h3 style="margin:10px;float:left">رقم الملف </h3>
+			</div>
 
-        </tr>
-        <tr>
-
-            <td>
+        </div>
+        
+                    
+         <div class=row>     
+         
+             <div class="col-9" > 
+                <div class="input-group">    
+                    <button id="Depts" class="btn btn-info">اختر الاقسام</button>
                 @{
                     var db = Database.Open("CS");
-                    var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+                    var selectQueryString = "select Id,Name from Departements where [group] =0 ORDER BY Name ";
                 }
                 <select id="D" class="form-control">
                     @foreach (var row in db.Query(selectQueryString))
@@ -117,20 +134,50 @@
                         <option style="text-align:right" value="@row.Id">@row.Name</option>
                     }
                 </select>
-            </td>
-            <td><h3 style="margin:10px;float:right">القسم </h3></td>
-
-            <td>
-                <input type="date" id="f" class="form-control">
-                    
-                
-            </td>
-            <td><h3 style="margin:10px;float:right">من </h3></td>
-            
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input id="ok" class="btn btn-primary" value="المرتب" type="button" />
+                </div>
+            </div>
+             <div class="col-3" >     
+                 <h3 style="margin:10px;float:left">القسم </h3>
+            </div>
+        </div> 
+        
+        <div class=row id="month">     
+             
+             <div class="col-4" >     
+                <select id="Y" class="form-control" style="margin:5px;float:right">
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                      <option value="2021">2021</option>
+                </select>
+            </div>
+             <div class="col-2" >     
+                 <h3 style="margin:5px;float:center">سنة </h3>
+            </div> 
+            <div class="col-4" >     
+                <select id="M" class="form-control" style="margin:5px;float:right">
+                      <option value="1">01</option>
+                      <option value="2">02</option>
+                      <option value="3">03</option>
+                      <option value="4">04</option>
+                      <option value="5">05</option>
+                      <option value="6">06</option>
+                      <option value="7">07</option>
+                      <option value="8">08</option>
+                      <option value="9">09</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                </select>
+            </div>
+            <div class="col-2" >     
+                <h3 style="margin:5px;float:center">شهر </h3>
+            </div>  
+        </div> 
+        <div class=row>     
+            <div class="col-12 m-1 p-1">
+                <input id="ok" class="btn btn-primary" value="تاكيد" type="button" />
                 <button onclick="ExportToExcel('xlsx')" class="btn btn-primary">
                     <span class="glyphicon glyphicon-download"></span>
                     Excel
@@ -139,159 +186,512 @@
                     <span class="glyphicon glyphicon-print"></span>
                     طباعة
                 </button>
-            </td>
-
-            <td>
-                <input type="date" id="t" class="form-control">
-                    
-            </td>
-            <td><h3 style="margin:10px;float:right">الي </h3></td>
-
-            
-
-        </tr>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dialogDept">
+    <table id="allDeptTable" class="display" style="width:100%">
 
     </table>
-    <div id="loader">
+    </div>
+    
+    <div id="loader" style="display:none">
         <center><img src="~/1.gif" /></center>
     </div>
     <div class="table-responsive-lg" style="overflow-x:auto">
         <table id ="tblStocks" border="1" dir="rtl" class="table table-hover table-bordered">
+           
             <tbody id="container1" style="text-align:center;font-size:large">
+                
+               
             </tbody>
             <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
         </table>
         
     </div>
 
-<h1>JavaScript Progress Bar</h1>
 
-<div id="myProgress">
-  <!--div class="myBar"></div-->
-</div>
-<div id="screen"></div>
+
+<script>   
+    function userLog()
+	{
+          return  {
+                user: $("#userName").html() ,
+                ip: '@HttpContext.Current.Request.UserHostAddress' ,
+            } 
+    }
+</script>
+<script src="~/Assets/attendanceSetup2.js?version=9.5.1"></script>
+<script src="~/Assets/attendance2.js?version=9.5.1"></script>
 <script>
-            $('#loader').hide();
-            $('.table-responsive-lg').show();
-            var department = [];
-            $('#ok').click(function () {
-                if ($('#fileNo').val()){
-                    department=all.filter(w=>w.fileNo==$('#fileNo').val());
-                }
-                else{
-                    department=all.filter(w=>w.dept==$('#D').val());
-                }
-                excute();
-            });
+    $("#myTable").DataTable();
+    var q = window.location.href;
+    var url = new URL(q);
+    var fileNo = url.searchParams.get("fileNo");
+    var M = url.searchParams.get("M");
+    var Y = url.searchParams.get("Y");
+    if(typeof fileNo!=='undefined' && typeof M!=='undefined' && typeof Y!=='undefined')
+    {
+       getdata(fileNo,M,Y,1)
+    }
+</script>
+<script>
+     //$('#loader').hide();
+     $('.table-responsive-lg').show();
+function displayAllMonth(res) // المواصبة بالقسم
+{
 
-            function excute() {
+    let a=0,v=0;
+    
+					$('#loader').hide();
+                    $('.table-responsive-lg').show();
+                    var htmlDom='<tr style="background-color:gray">' +
+                                '<th scope=col>القسم</th>' +         
+                                '<th scope=col>رقم الملف</th>' +
+                                '<th scope=col>الاسم</th>' +                                
+                                '<th scope=col>حضور</th>' +
+                                //'<th scope=col>غياب</th>' +
+                                '<th scope=col>نسبة الحضور</th>' +
+                                '<th scope=col>نسبة المجهود</th>' +
+                                '<th scope=col>اليومية</th>' +
+                                '<th scope=col>حافز الانتاج</th>' +
+                                '<th scope=col>المستحق</th>' +
+                            '</tr>';
+    for(var i=0;i<res.length;i++)
+    {
+        //res[i].total.attSum=res[i].total.attSum//+(res[i].total.vacSum-res[i].total.vacSum)
+    if(res[i].total.absSum>0)
+    {
+        if((res[i].total.vacSum+res[i].total.absSum)>1.75)
+        {
+            a=res[i].total.attSum;
+            //if(res[i].all.JoiningDate<='2024-03-26')a++;
+            v=res[i].total.vacSum;
+            console.log("case1");
+        }
+        else
+        {
+            a=res[i].total.attSum;
+            //if(res[i].all.JoiningDate<='2024-03-26')a++;
+            v=res[i].total.vacSum;
+            console.log("case2");
+        }
+    }
+    else
+    {
+        /*if((res[i].total.vacSum)>1.75)
+        {
+            a=28.25;
+            v=1.75;
+            console.log("case3");
+        }
+        else*/
+        {
+            a=res[i].total.attSum;
+           // if(res[i].all.JoiningDate<='2024-03-26')a++;
+            v=res[i].total.vacSum;
+            console.log("case4");
 
-               $("#myProgress").html("");            
-                 var a=reCalc(reSet(getDayData('2234').filter(w=>w.fileNo=='2022-11-12')));
-                    $("#screen").html(a);
-                }  
-            
-            function getDayData(fn,d1,d2)
+        }
+    }
+                        console.log(res[i])
+					   // if(EMPS.includes('' + res.fileNo))
+                       let mSalary= readSQL("select totalsalary from basicbayworks where employeeid=(select id from employees where filenumber="+res[i].all.filenumber+")")[0].totalsalary;
+                       let Virtual_Att=parseFloat(a)+(parseFloat(v)>1.75?1.75:parseFloat(v))
+                        htmlDom+=
+                        '<tr><td>'+
+                        res[i].all.dept +'</td><td><a href=/Truant/Abscence?fileNo='+
+                        res[i].all.filenumber+'&M='+$("#M").val()+'&Y='+$("#Y").val()+' target="_blank">'+
+                        res[i].all.filenumber+'</a></td><td >' +
+                        res[i].all.name+'</td><td >' +
+                        Virtual_Att + '</td><td >' +
+                        //res[i].total.absSum + '</td><td>' +
+                        (Virtual_Att*100/30).toFixed(2)+ '% </td><td>' +   
+                         100+ '% </td><td>' +
+                        (mSalary/30).toFixed(2) + '</td><td>' +
+                        (mSalary/30*20).toFixed(2)+ '</td><td>' +
+                        (
+                            mSalary/30*20*
+                            1*
+                            Virtual_Att*100/30/100
+                        ).toFixed(2) + '</td></tr>'
+                    }
+                    $('#container1').html(htmlDom)
+}
+
+$("#M").val(new Date().getMonth()+1)
+//console.log(new Date().getMonth()+1)
+var department = [],dept=[];
+
+$('#ok').click(function () {
+        //console.log($('#M').val()+"-"+$('#Y').val());
+        if ($('#fileNo').val()) {
+            department = all.filter(w => w.fileNo == $('#fileNo').val());
+        }
+        else {
+
+            var rows_selected = table.columns(0).checkboxes.selected()[0];
+        //console.log(rows_selected);
+        if (rows_selected.length > 0) 
             {
-                var sqlcom=`select *
-from
-(
-select FileNumber,
-       cast(DateTime as date)'date',
-	   cast(DateTime as time(0))time ,
-	   type
- from AClogs ac
- where FileNumber=${fn}
-
- union
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeFrom,'In'
- from Attendances a
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeFrom is not null and TimeFrom <> ''
-
- union
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
- from Attendances a
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> ''
-
- union
-
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	timefrom,'In'
- from Absences ab
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId=4
-
- UNION
-
- select (select FileNumber from Employees e  where EmployeeId=e.id),cast( DateFrom as date)'DateFrom',	TimeTo,'Out'
- from Absences ab
- where EmployeeId=(select id from Employees where FileNumber=${fn}) and TimeTo is not null and TimeTo <> '' and  AbsenceTypeId=4
-
- )q where date >='${d1}' and date <='${d2}' order by date,time`;
-                return readSQL(sqlcom);
-            }//حساب بيانات يوم 
-            function reSet(data) //تصفية البيانات               
-            {
-                var array2=[]
-                for(var i=0;i<data.length;i++)
-                {
-                    if(data[i].type=="In")
-                    {
-                        if(i>0){
-                            if(data[i-1].type!=data[i].type){
-                                array2.push(data[i]);
-                            }
-                        }else  array2.push(data[i]);
-                    }
-                    if(data[i].type=="Out")
-                    {
-                        if(i<data.length-1){
-                            if(data[i].type!=data[i+1].type){
-                                array2.push(data[i]);
-                            }
-                        }else  array2.push(data[i]);
-                    }
-                }
-                if(array2.length>0)if(array2[0].type == 'out')array2=array2.slice(1)
-                if(array2.length>0)if(array2[array2.length-1].type=='in')array2=array2.slice(0,array2.length-1)
-                return array2;
-            }//تصفية البيانات    
-            function reCalc(array2)//حساب الفرق
-            {
-                if(array2.length>1) {
-                    for(var i=0;i<array2.length;i+=2)
-                    {
-                        var dd=new Date(array2[i].date.substr(0,10)+' '+array2[i].time);
-                        var dddd=new Date(array2[i+1].date.substr(0,10)+' '+array2[i+1].time);
-                        var left=(dd.getHours()*60+dd.getMinutes())/1440*100;
-                        var width=(dddd.getHours()*60+dddd.getMinutes())/1440*100;
-                        console.log((dd.getHours()*60+dd.getMinutes())/1440*100)
-                       // $("#myProgress").append('<div class="myBar" style="left:'+left+'%;width:'+(width-left)+'%;"'+'></div>')
-                    }
-                }
-                var absTime=0;
-                if(array2.length>2) {
-                    for(var i=1;i<array2.length;i+=2)
-                    {
-                        if(i<array2.length-1)
-                        { 
-                            var d1=new Date(array2[i].date.substr(0,10)+' '+array2[i].time);
-                            var d2=new Date(array2[i+1].date.substr(0,10)+' '+array2[i+1].time);
-                            absTime+=(d2.getHours()*60+d2.getMinutes())-(d1.getHours()*60+d1.getMinutes())
-                            //console.log("absTime "+ absTime);
-                        }  
-                    }
-                } 
-                return absTime;
-            }//حساب الفرق  
-            function display(){
-
+                department = all.filter(w => rows_selected.includes(w.dept) )
             }
+            else
+            {
+                department = all.filter(w => w.dept == $('#D').val());
+            }
+        }
+        res = [];
+        //console.log(department)
+        dept=[]
+        for(var i=0;i<department.length;i++){
+            
+            dept.push(department[i].fileNo);
+        }
+        console.log(dept)
+        $('#loader').show();
+        getArray(dept,$("#M").val(),$("#Y").val()); 
+    });
+
+   var data = readSQL(`select d.Id,d.Name'Dept' from Departements d`);
+    //console.log(data);
+   var table= $("#allDeptTable").DataTable({
+        data:data,
+        columns: [
+                     { data: "Id", title: '' },
+                     { data: "Id", title: "Id" },
+                     { data: "Dept", title: "Department" },
+        ],
+        'columnDefs': [
+      {
+          'targets': 0,
+          'checkboxes': {
+              'selectRow': true
+          }
+      }
+        ],
+   'select': {
+        'style': 'multi'
+    },
+   'order': [[1, 'asc']] 
+    });
+   
+    $(".dialogDept").dialog({
+                autoOpen:false,
+                width:900,
+                height:700,
+                title:"Select Departments",
+            }); 
+    $('#Depts').on('click', function(e){
+        $(".dialogDept").dialog('open');
+     });
 </script>
 <script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
 <script>
-    $("#myTable").DataTable({
-    "pagingType":"full_numbers"
+ function ExportToExcel(type, fn, dl) {
+     var elt = document.getElementById('tblStocks');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+ }   
+ function printData()
+ {
+     var divToPrint=document.getElementById("tblStocks");
+     newWin= window.open("");
+     newWin.document.write(divToPrint.outerHTML);
+     newWin.print();
+     newWin.close();
+ }
+</script>
+
+
+
+@* <div class="card container-fluid mx-lg-auto" style="width: 50%;">
+    <div class="row">
+        <div class="col-3  p-1">
+            القسم
+        </div>
+        <div class="col-9  p-1">
+            <select id="dept" class="form-control">
+                <script>
+                    var Deptdata = readSQL("select Id,name from departements order by name");
+                    //console.log(Deptdata);
+                    var htmlDom = "";
+                    for (var i = 0; i < Deptdata.length; i++) {
+                        htmlDom += `<option value=${Deptdata[i].Id}>${Deptdata[i].name}</option>`
+                    }
+                    $("#dept").html(htmlDom);
+                </script>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3  p-1">
+            من
+        </div>
+        <div class="col-9  p-1">
+            <select id="M" class="form-control">
+                <option value="1">1-يناير</option>
+                <option value="2">2-فبراير</option>
+                <option value="3">3-مارس</option>
+                <option value="4">4-ابريل</option>
+                <option value="5">5-مايو</option>
+                <option value="6">6-يونيو</option>
+                <option value="7">7-يوليو</option>
+                <option value="8">8-اغسطس</option>
+                <option value="9">9-سبتمبر</option>
+                <option value="10">10-اكتوبر</option>
+                <option value="11">11-نوفمبر</option>
+                <option value="12">12-ديسمبر</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 p-1">
+            الي
+        </div>
+        <div class="col-9 p-1">
+
+            <select id="Y" class="form-control">
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+            </select>
+
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 p-1">
+            <button onclick="getTable()" class="btn btn-outline-dark">تأكيد</button>
+        </div>
+    </div>
+</div>
+<div id=loader style="display:none;position: fixed;top: 65px;left: 0;width: 100%;margin: auto;">
+    <img src="~/1.gif" style="width:100%;height:100%;">
+</div>
+
+<div class="mycard"></div>
+<div>
+    <button id=btnExport class="btn btn-success" style="">export excel</button>
+    <!--button id=btnPrint class="btn btn-info" style="">export pdf</button-->
+</div>
+<div id="mytable">
+
+</div>
+
+<script>
+    var ajax;
+    function getTable() {
+        $("#loader").css("display", "block");
+        var req = [], result = [];
+        var EmpData = readSQL(`select FileNumber from employees e left join personals p on p.id=e.PersonalId where p.StatusId=1 and departementId=${$("#dept").val()}`);
+        console.log(EmpData);
+        for (let i = 0; i < EmpData.length; i++) {
+            req.push($.ajax({
+                type: "POST",
+                dataType: "JSON",
+                url: "/AttTable/SalaryFileNoV3",
+                data: { fileNo: EmpData[i].FileNumber, M: $("#M").val(), Y: $("#Y").val() },
+                success: function (res) {
+                    result.push(JSON.parse(res));
+                    
+                },
+                fail: function (res) {
+
+                },
+            })
+            )
+        }
+        $.when.apply($, req).done(function () {
+            console.log('complete');
+            console.log(result)
+            display(result)
+            $("#loader").css("display", "none");
+        });
+
+    }
+
+    function display(res) {
+        let HtmlWeeks1 = '', HtmlWeeks2 = '';
+        var html = '<table class="table table-hover mytable"><thead>';
+        html += '<tr style="background-color:skyblue">';
+        html += '<td rowspan=3 style="background-color:">#</td>';
+        html += '<td rowspan=3 style="background-color:">File Number</td>';
+        html += '<td rowspan=3 style="background-color:">Name</td>';
+
+        html += '<td rowspan=3 style="background-color:">حضور</td>';
+        html += '<td rowspan=3 style="background-color:">اجازة</td>';
+        html += '<td rowspan=3 style="background-color:">اجمالي الحضور</td>';
+        html += '<td rowspan=3 style="background-color:">نسبة الحضور</td>';
+        html += '<td rowspan=3 style="background-color:">نسبة المجهود</td>';
+        html += '<td rowspan=3 style="background-color:">الانتاج</td>';
+        //for(let j=0;j<d.Atts.length;j++)
+        //{
+        //html += '<td  style="background-color:">نسبة الحضور</td>';
+        //}
+        html += '</tr><tr id="Row1"></tr><tr id="Row2"></tr></thead><tbody>';
+
+        for (var i = 0; i < res.length; i++) {
+            //res[i]=
+            console.log(res[i])
+            res[i].abc = res[i].abc <0 ? 0 : res[i].abc ;
+            res[i].att = res[i].att <0 ? 0 : res[i].att ;
+            res[i].no = res[i].no <0 ? 0 : res[i].no ;
+            
+            let d = calc(res[i]);
+
+            //console.log(d)
+            html += '<tr style="background-color:darkorange;">';
+            html += '<td  rowspan=1 style="background-color:#72abff">' + (i + 1) + '</td>';
+            html += '<td  rowspan=1 style="background-color:">' + (d.FileNumber) + '</td>';
+            html += '<td  rowspan=1 style="background-color:">' + (d.Name) + '</td>';
+
+            html += '<td rowspan=1 style="background-color:#56af87">' + (d.Att) + '</td>';
+            html += '<td rowspan=1 style="background-color:#878711">' + (d.Vac) + '</td>';
+        
+            let totalAtt = d.Att + (d.Vac>= 1.75 ? 1.75 : d.Vac);
+            html += '<td rowspan=1 style="background-color:#cc2589">' + (totalAtt) + '</td>';
+            html += '<td rowspan=1 style="background-color:#03367e;color:00FF22">' + (totalAtt * 100 / 30).toFixed(2) + '%</td>';
+            html += '<td rowspan=1 style="background-color:#d993ff">' + (100) + '%</td>';
+             html += '<td rowspan=1 style="background-color:#25C8C9">' + ((totalAtt / 30) * 1 * (d.Salary * 20/30)).toFixed(2) + '</td>';
+            /*h 
+            //html += '<td style="background-color:#d77A">' + (abc) + '</td>';
+             */
+            html += '</tr>';
+
+        }
+
+        //html += '<tr><td>' + ((att * 100) / (att + abc)).toFixed(2) + '%</td><td>' + ((abc * 100) / (att + abc)).toFixed(2) + '%</td></tr>';
+        html += '</tbody></table>';
+        $("#mytable").html(html);
+        $("#Row1").html(HtmlWeeks1);
+        $("#Row2").html(HtmlWeeks2);
+    }
+
+
+    function calc(arr) {
+        let aAll = 0,
+            vAll = 0,
+            nAll = 0;
+        var temps = [], temp = [];
+        for (let i = 0; i < arr.length; i++) {
+
+            if (arr[i].weekend == 1) {
+                arr[i].att=1;
+                temp.push(i)
+                if (i == arr.length - 1) {
+                    temps.push(temp)
+                    temp = []
+                }
+            }
+            else {
+                if (temp.length != 0) {
+                    temps.push(temp)
+                    temp = []
+                }
+            }
+        }
+        console.log(temps)
+        for (var i = 0; i < temps.length; i++) 
+        {
+            try {
+                if (arr[temps[i][0] - 1].att <= 0 && arr[temps[i][temps[i].length-1]+1].att <= 0)
+                    for (var j = 0; j < temps[i].length; j++) {
+                        //set att =0 
+                        arr[temps[i][j]].att=0;
+                    }
+                /*else
+                    for (var j = 0; j < temps[i].length; j++) {
+                        //set att =1
+                    }
+                */
+            }catch(e){}
+
+        }
+        /**************************/
+        for (var i = 0; i < arr.length; i++) {
+            console.log(arr.length);
+
+
+
+            switch (arr.length) {
+                case 31: {
+                    let index = arr.findIndex(w => w.DayName == 'Friday');
+                    arr[index].att = 0;
+                } break;
+                case 30: {
+
+                } break;
+                case 29: {
+
+                } break;
+                case 28: {
+
+                } break;
+            }
+            arr[i].att <= 0 ? 0 : arr[i].att;
+            vAll += arr[i].vacDay;
+            aAll += arr[i].att>0?arr[i].att:0;
+            nAll += 1 - (arr[i].att > 0 ? arr[i].att : 0) -  arr[i].vacDay;
+        }
+        return {
+            FileNumber: arr[0].fno,
+            Name: arr[0].name,
+            Date: "" + arr[0].DayName + " " + arr[0].dateDay.substr(0, 10) + " : " + arr[arr.length - 1].DayName + " " + arr[arr.length - 1].dateDay.substr(0, 10),
+            Day: "",
+            Salary : readSQL("select totalsalary from basicbayworks where employeeid=(select id from employees where filenumber="+arr[0].fno+")")[0].totalsalary,
+            Att: aAll,
+            Vac: vAll,
+            Abc: nAll,
+        }
+    }  
+</script>
+<script src="~/assets/tableToExcel.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btnExport").click(function () {
+            let table = document.getElementsByTagName("table");
+            console.log(table);
+            //debugger;
+            TableToExcel.convert(table[0], {
+                name: `Productivity-${new Date().getDate()}.xlsx`,
+                sheet: {
+                    name: 'sheet1'
+                }
+            });
+        });
     });
 </script>
+<script type="text/javascript" src="~/assets/jspdf.min.js"></script>
+<script type="text/javascript" src="~/assets/html2canvas.js"></script>
+<script>
+    function CreatePDFfromHTML() {
+        var HTML_Width = $("#mytable").width();
+        var HTML_Height = $("#mytable").height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + (top_left_margin * 2);
+        var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
+
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+        html2canvas($("#mytable")[0]).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/jpeg", 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+            for (var i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+            }
+            pdf.save("Your_PDF_Name.pdf");
+            $("#mytable").hide();
+        });
+    }
+    $("#btnPrint").click(function () {
+        CreatePDFfromHTML();
+    });
+</script> *@

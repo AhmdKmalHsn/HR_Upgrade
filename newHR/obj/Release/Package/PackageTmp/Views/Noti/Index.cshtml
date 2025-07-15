@@ -12,22 +12,97 @@
         console.log(y) 
         setTable(y)
      }); 
+     var html="";
      function setTable(e)
      {
-         $("#myTable").DataTable
+        let data=e.filter(w=>EMPS.includes(w.FileNumber))
+        html+=`
+<thead>
+<tr>
+<td>
+EmployeeId
+</td>
+<td>
+FileNumber
+</td>
+<td>
+dateFrom
+</td>
+<td>
+dept
+</td>
+<td>
+name
+</td>
+<td>
+timeFrom
+</td>
+<td>
+timeTo
+</td>
+<td>
++
+</td>
+</tr>
+</thead>
+<tbody>
+`;
+        for(let i=0;i<data.length;i++)
+        {
+            //console.log(data[i]);
+            html+=`<tr>
+            <td>
+            ${data[i].EmployeeId}
+            </td>
+            <td>
+            ${data[i].FileNumber}
+            </td>
+            <td>
+            ${data[i].dateFrom.substr(0,10)}
+            </td>
+            <td>
+            ${data[i].dept}
+            </td>
+            <td>
+            ${data[i].name}
+            </td>
+            <td>
+            ${data[i].timeFrom==null?"":data[i].timeFrom}
+            </td>
+            <td>
+            ${data[i].timeTo==null?"":data[i].timeTo}
+            </td>
+            <td>
+                <a href=/Truant/Abscence?fileNo=${data[i].FileNumber}&Y=${data[i].dateFrom.substr(0,4)}&M=${data[i].dateFrom.substr(5,2)} target="_BLANK">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-escape" viewBox="0 0 16 16">
+  <path d="M8.538 1.02a.5.5 0 1 0-.076.998 6 6 0 1 1-6.445 6.444.5.5 0 0 0-.997.076A7 7 0 1 0 8.538 1.02Z"/>
+  <path d="M7.096 7.828a.5.5 0 0 0 .707-.707L2.707 2.025h2.768a.5.5 0 1 0 0-1H1.5a.5.5 0 0 0-.5.5V5.5a.5.5 0 0 0 1 0V2.732z"/>
+</svg></a>
+            </td>
+            </tr>
+`;
+
+        }
+        html+=`</tbody>`
+        $("#myTable").html(html);
+        $("#myTable").DataTable()
+         /*$("#myTable").DataTable
          (
             {
                 data:e.filter(w=>EMPS.includes(w.FileNumber)),
                 columns:[
                 {title:"Date From",data:"dateFrom",render:function(e){return e.substr(0,10)}},
                 //{title:"Employee Id",data:"EmployeeId"},
-                {title:"File Number",data:"FileNumber"},
+                {
+                    title:"File Number",data:"FileNumber"
+                },
                 {title:"Department",data:"dept"},
                 {title:"Name",data:"name"},
                 {title:"Time From",data:"timeFrom"},
                 {title:"Time To", data: "timeTo" },
                 ]
             }
-         );
+         );*/
      }
+     
 </script>

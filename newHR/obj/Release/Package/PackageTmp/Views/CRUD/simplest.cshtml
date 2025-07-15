@@ -1,1 +1,186 @@
 ﻿
+<h2></h2>
+<hr>
+<div id=root>
+</div>
+
+<script>
+    let url = new URL(window.location.href);
+    let table = url.searchParams.get("table");
+    let cols = url.searchParams.get("cols");
+    let data,
+        columns,
+        colObj,
+        types,
+        formHTML
+    if (typeof table !== 'object')
+    {
+        //console.log(table);
+        $("#root").html('<button onclick="createFn()" class="btn btn-success" id=create>create</button><table id="rootTable" class="display" width=100%></table><div id="form"></div>');
+    
+    } else
+    {
+        //$("#root").html('<p class="card" id=create>create</button><table id="rootTable" class="display" width=100%></table><div id="form"></div>');
+        console.log("page not set")
+    }
+
+    if (typeof cols !== 'object')
+    {   
+        cols=cols.split(",")
+        cols.map(w=>{w=w.toLowerCase().split("#")})
+        data=readTableCols(table,cols)
+    } else
+    {
+        //console.log("page not set")
+        data=readTable(table);
+    }
+   
+    //
+    
+    
+    function readTable(t){
+         return readSQL("select id,name from "+table);
+    }
+
+    function readTableCols(t,arr){
+        let sqltemp="select id";
+            arr.forEach(e=>{
+                sqltemp+=","+e
+            }) 
+            sqltemp+=" from "+table;
+            console.log(sqltemp);
+         return readSQL(sqltemp);
+    }
+    
+    
+    columns=Object.keys(data[0])
+
+    colObj=columns.map(e=>e={data:e,title:e})
+
+    
+    columns=[];
+   for(var i=0;i<colObj.length;i++){
+        if(colObj[i].title!=='edit' && colObj[i].title !== 'delete')
+        {
+            
+            columns.push({ title: colObj[i].title, type: "text" })
+            
+        }
+    }
+    colObj.push({data:"id",title:"edit",render:function(id){return '<button onclick="editFn('+id+')" class="btn btn-warning">Edit</button>'}})
+    colObj.push({data:"id",title:"delete",render:function(id){return '<button onclick="deleteFn('+id+')" class="btn btn-danger">delete</button>'}})
+    $("#rootTable").dataTable({
+        scrollX:true,
+        data:data,
+        columns: colObj
+    });
+
+    
+    console.log(columns);
+    formHTML=''
+    for(var i=0;i<columns.length;i++)
+    {
+        formHTML+=`<div id="div_${columns[i].title}" class="form-floating mb-3">
+            <input type="${columns[i].type}" class="form-control" id="${columns[i].title}" placeholder="name@example.com">
+            <label for="${columns[i].title}">${columns[i].title}</label>
+            </div>`;
+    }
+    formHTML+=`<button id="insertBtn" onclick="insertFn()" class="btn btn-success">submit</btn>`
+    formHTML+=`<button id="updateBtn" onclick="updateFn()" class="btn btn-warning">submit</btn>`
+    $("#form").html(formHTML);
+    $("#id").attr("disabled","true");
+    $("#form").dialog({
+        autoOpen:false,
+        title:"form"
+    });
+    function deleteFn(id){
+            var sql="delete from "+table+" where id="+id;
+            console.log(sql);
+            if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+            else alert("خطأ");
+    }
+    function createFn(){
+        $("#id").hide()
+        $("#id").val("")
+        $("#name").val("")
+        $("#insertBtn").show()
+        $("#updateBtn").hide()
+        $("#form").dialog("open");
+    }
+    function editFn(id) {
+        $("#id").show()
+        $("#id").prop("readonly", true)//$('#inputId').prop('readonly', true);
+
+        let sql = ""
+        
+        if (typeof cols !== 'object') {
+             sql = "select id";
+            cols.forEach(e=>{
+                sql += "," + e
+            }) 
+            sql += " from " + table +" where id=" + id;
+            //console.log(cols);
+           
+        } else {
+            //console.log("page not set")
+            sql = "select id,name from " + table + " where id=" + id;
+        }
+        
+        console.log(sql);
+        
+        let arr = readSQL(sql)[0];
+
+        for (const property in arr) {
+
+            $("#" + property).val("" + arr[property]).change();
+        }
+
+        $("#insertBtn").hide();
+
+        $("#updateBtn").show();
+
+        $("#form").dialog("open");
+
+    }
+    function insertFn(){
+         var sql=`insert into ${table}(`
+         for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='id')
+                sql+=columns[i].title+','
+            }
+            sql=sql.slice(0,-1);
+            sql+=")values("
+        for(var i=0;i<columns.length;i++)
+            {
+                if(columns[i].title!='id')
+                sql+="'"+$("#"+columns[i].title).val()+"',"
+            }
+            sql=sql.slice(0,-1);
+           sql+=")"
+         console.log(sql);
+         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+         else alert("خطأ");
+        
+    }
+    function updateFn (){
+        var sql = `update  ${table} set`
+            for(var i=0;i<columns.length;i++)
+                {
+                    if(columns[i].title!='id')
+                    sql+=" "+columns[i].title+"= '"+$("#"+columns[i].title).val()+"',"
+                }
+            sql=sql.slice(0,-1);
+            sql+=" where id="+$("#id").val()
+         console.log(sql);
+         if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+        else alert("خطأ");
+    }
+
+</script>
+
+
+
+
+
+

@@ -1,1 +1,514 @@
-﻿
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body
+        {
+            /*font-size: 24px;*/
+        }
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            font-size:larger;
+            text-align: center;
+
+        }
+        .sp-ch {
+            /*display: none;*/
+            margin-bottom:2px ;
+        }
+        a
+        {
+            text-decoration:none;
+        }
+        #myTable
+        {
+            box-shadow: 5px 5px #1888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form style="width:75%" method="post" id="formDemo" onsubmit="return false;">
+        <div class="input-group mb-3">
+            <label class=input-group-text> date from </label>
+            <input class=form-control type=date name="dateFrom" id="dateFrom">
+            <button class="btn btn-success" type="submit" onclick=""> submit </button>
+        </div>
+    </form>
+
+    <div id="loader" style="display:none">
+        <img src="~/3.gif" style="margin:auto">
+    </div>
+
+    <table id="myTable">
+        <thead>
+
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <div class="myModal modal fade " id="MODALSPECIAL" tabindex="-1" role="dialog" aria-labelledby=""
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle" style="text-align:center">مأمورية</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
+                    <div class="row"><!--#DRemove-->
+                        <div class="col-6">
+                            <div id="DRemove" class="datefrom" style="border-radius:10px;text-align:center"></div>
+                        </div>
+                        <div class="col-6">
+                            التاريخ
+                        </div>
+                    </div>
+                    <div class="row "><!--#specialChoise-->
+                        <div class="col-6">
+                            <select id="specialChoise" class="form-control">
+                                <option value="1">اذن خاص</option>
+                                <option value="2">مأمورية</option>
+                                <option value="3">اجازة</option>
+                                <option value="4">غياب</option>
+                                <option value="5">طعام/ داخل المصنع</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--اذن خاص-->
+                        <div class="row">
+                            <div class="col-6">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0">0</option>
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                القيمة
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--مأمورية-->
+
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="time" id="TOUTMission" style="border-radius:10px;text-align:center">
+                            </div>
+
+                            <div class="col-2">
+                                الي
+                            </div>
+                            <div class="col-4">
+                                <input type="time" id="TINMission" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                من
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <select id="deviceMOUT"
+                                    onchange="$('.sp-ch #TOUTMission').eq(1).val($('.sp-ch #deviceMOUT').eq(1).val())"></select>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" class="dayOut">
+                                غداً
+                            </div>
+                            <div class="col-3">
+                                <select id="deviceMIN"
+                                    onchange="$('.sp-ch #TINMission').eq(1).val($('.sp-ch #deviceMIN').eq(1).val())"></select>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" class="dayIn">
+                                غداً
+                            </div>
+                            <div class="col-2">البصمة</div>
+                        </div>
+
+
+                    </div>
+                    <div class="sp-ch"><!--اجازة-->
+                        <div class="row">
+                            <div class="col-6">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                القيمة
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <input type="time" id="TOUTVAC" style="border-radius:10px;text-align:center">
+                            </div>
+
+                            <div class="col-2">
+                                الي
+                            </div>
+                            <div class="col-4">
+                                <input type="time" id="TINVAC" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                من
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <select id="deviceMOUT"
+                                    onchange="$('.sp-ch #TOUTVAC').eq(1).val($(this).val())"></select>
+                            </div>
+                            <div class="col-2"></div>
+                            <div class="col-4">
+                                <select id="deviceMIN"
+                                    onchange="$('.sp-ch #TINVAC').eq(1).val($(this).val())"></select>
+                            </div>
+                            <div class="col-2">البصمة</div>
+                        </div>
+                    </div>
+                    <div class="sp-ch"><!--غياب-->
+
+                        <div class="row">
+                            <div class="col-2">
+                                <select id="dayPartSpecial" class="form-control">
+                                    <option value="0.25">0.25</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                القيمة
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer"><!--ADDSpecial-->
+                        <button id="spBTN" onclick="" type="button" class="btn btn-success"
+                            data-bs-dismiss="modal">أضافة</button>
+                        <button id="DELSpecial" onclick="del_special()" style="float:left" type="button"
+                            class="btn btn-danger " data-bs-dismiss="modal">حذف</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+   
+    $("form").submit((e) => {
+        $("#loader").show();
+        let html = `<thead><tr style="background-color:#1598aa">
+                    <td>#</td>
+                    <td>التاريخ</td>
+                    <td>رقم الملف</td>
+                    <td>الاسم</td>
+                    <td>القسم</td>
+                    <td>الدخول</td>
+                    <td>الخروج</td>
+                    <td>الوقت المستقطع</td>
+                    <td>+</td>
+                  </tr>
+                  </thead>
+                  <tbody>`;
+
+        console.log($("form").serializeArray())
+        let q = `select *,(select name from jobtitles where id=(select JobTitleId from Employees where id=EmployeeId))JobTitle from [dbo].[Ak_CutsReport_V3] ('${$("#dateFrom").val()}', '${$("#dateFrom").val()}')ak order by dept
+        /*left join attendances att on ak.employeeid=att.employeeid and att.DateFrom=ak.date*/`;
+        let v = readSQL(q);
+        
+        v.map((x) => {
+            x.DateFrom = x.DateFrom.substr(0, 10);
+            x.datetime_in = x.datetime_in.replace("T", " ")
+            x.datetime_out = x.datetime_out.replace("T", " ")
+            x.shift_in = x.shift_in.replace("T", " ")
+            x.shift_out = x.shift_out.replace("T", " ")
+        });
+        console.log(v)
+        var sqlcom = readSQL(`select * from Ak_Cuts_All_V1( '${$("#dateFrom").val()}','${$("#dateFrom").val()}') order by datetime,Type desc`);
+        console.log(sqlcom)
+        sqlcom.map((x) => {
+            x.DateTime =x.DateTime.replace("T", " ")
+
+        });
+        var des = readSQL(`select sum(cnt)cnt,filenumber,cast(DateFrom as date)'datetime'
+from(
+            select	isnull(case when cast(TimeFrom as time)<=cast(TimeTo as time) 
+                        then  datediff(minute,TimeFrom,TimeTo)
+                        else datediff(minute,TimeTo,TimeFrom) 
+                    end ,0)+
+                    isnull(HoursNo * 60,0)+
+                    isnull(DayPart*(select DailyHrs from Shifts where Id=( select shiftid from BasicBayWorks b where b.EmployeeId=a.EmployeeId)),0)cnt,
+             (select FileNumber from Employees where id=employeeid)fileNumber,
+             DateFrom
+            DateFrom
+            from Absences a where isRemoveGap=1 and DateFrom = '${$("#dateFrom").val()}'
+)q
+group by fileNumber ,DateFrom`)
+        des.map((x) => {
+            x.datetime =
+                x.datetime.substr(0, 10)
+        });
+        console.log("des => ",des)
+        let minA=40;
+        var url = new URL(window.location.href);
+        var a = url.searchParams.get("a");
+
+    if (typeof a !== 'object')
+    {
+        minA=a;
+    } else
+    {
+        console.log("page not set")
+    }
+        var j = 0;
+
+        for (let i = 0; i < v.length; i++) {
+            console.log("pure v=>",v[i],v[i].datetime_in,v[i].datetime_out)
+            console.log(v[i].filenumber,"filter =>",sqlcom.filter(
+                w => /*w.DateTime >= v[i].datetime_in && w.DateTime <= v[i].datetime_out &&*/ 
+                w.filenumber == v[i].filenumber
+            ))
+            console.log(v[i].filenumber,"filter =>",sqlcom.filter(
+                w => w.DateTime >= v[i].datetime_in && /*w.DateTime <= v[i].datetime_out &&*/ 
+                w.filenumber == v[i].filenumber
+            ))
+            console.log(v[i].filenumber,"filter =>",sqlcom.filter(
+                w => w.DateTime >= /*v[i].datetime_in && */w.DateTime <= v[i].datetime_out && 
+                w.filenumber == v[i].filenumber
+            ))
+            var a = reCalc(reSet(sqlcom.filter(w => w.DateTime >= v[i].datetime_in && w.DateTime <= v[i].datetime_out && w.filenumber == v[i].filenumber)))
+            var b = des.filter(w => w.datetime == v[i].DateFrom && w.filenumber == v[i].filenumber);
+            console.log("a=>",a)
+            console.log("b=>",b)
+
+            if (a >minA && b.length == 0) {
+                j++;
+                html += `<tr style="background-color:${v[i].AttValue == null?'':'#FA7A51'}">
+                            <td>${j}</td>
+                            <td>${v[i].DateFrom}</td>
+                            <td><a href=/Truant/Abscence?fileNo=${v[i].filenumber}&Y=${v[i].DateFrom.substr(0,4)}&M=${v[i].DateFrom.substr(5,2)}>${v[i].filenumber}</a></td>
+                            <td>${v[i].name}</td>
+                            <td>${v[i].dept=='التدريب'?v[i].dept+" - "+ v[i].JobTitle:v[i].dept}</td>
+                            <td>${v[i].datetime_in.substr(10,8)}</td>
+                            <td>${v[i].datetime_out.substr(10,8)}</td>
+                            <td>${a}</td>
+                            <td onclick="getData(this)"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="violet" class="bi bi-database-add" viewBox="0 0 16 16">
+  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0"/>
+  <path d="M12.096 6.223A4.92 4.92 0 0 0 13 5.698V7c0 .289-.213.654-.753 1.007a4.493 4.493 0 0 1 1.753.25V4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16c.536 0 1.058-.034 1.555-.097a4.525 4.525 0 0 1-.813-.927C8.5 14.992 8.252 15 8 15c-1.464 0-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13h.027a4.552 4.552 0 0 1 0-1H8c-1.464 0-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10c.262 0 .52-.008.774-.024a4.525 4.525 0 0 1 1.102-1.132C9.298 8.944 8.666 9 8 9c-1.464 0-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777M3 4c0-.374.356-.875 1.318-1.313C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4"/>
+</svg></td>
+                            </tr>`
+            }
+        }
+        html += `</tbody>`
+        $("#loader").hide();
+        $("#myTable").html(html);
+        //});
+    });
+
+    function getDayData(fn, d1, d2)//حساب بيانات يوم 
+    {
+        var sqlcom = `select * from Ak_Cuts_V3( '${d1}','${d2}',${fn}) order by datetime,Type desc`;
+        return readSQL(sqlcom);
+    }//حساب بيانات يوم 
+    function getDayDataFN(fn, d1, d2)//حساب بيانات يوم 
+    {
+        readSQL(sqlcom);
+    }//حساب بيانات يوم 
+    function reSet(data) //تصفية البيانات               
+    {
+        var array2 = []
+        if (data != null && data.length > 2) {
+
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].type == "In") {
+                    if (i > 0) {
+                        if (data[i - 1].type != data[i].type) {
+                            array2.push(data[i]);
+                        }
+                    } else array2.push(data[i]);
+                }
+                if (data[i].type == "Out") {
+                    if (i < data.length - 1) {
+                        if (data[i].type != data[i + 1].type) {
+                            array2.push(data[i]);
+                        }
+                    } else array2.push(data[i]);
+                }
+            }
+            if (array2.length > 0) if (array2[0].type == 'out') array2 = array2.slice(1)
+            if (array2.length > 0) if (array2[array2.length - 1].type == 'in') array2 = array2.slice(0, array2.length - 1)
+
+        }
+        return array2;
+    }//تصفية البيانات    
+    function reCalc(array2)//حساب الفرق
+    {
+        var absTime = 0;
+        if (array2.length > 2) {
+            for (var i = 0; i < array2.length - 1; i++) {
+                if (array2[i].type == 'Out') {
+                    var d1 = new Date(array2[i].date.substr(0, 10) + ' ' + array2[i].time);
+                    var d2 = new Date(array2[i + 1].date.substr(0, 10) + ' ' + array2[i + 1].time);
+                    let c = (d2.getHours() * 60 + d2.getMinutes()) - (d1.getHours() * 60 + d1.getMinutes());
+                    absTime += (c < 0 ? (24 * 60 + c) : c);
+                }
+            }
+        }
+        return absTime;
+    }//حساب الفرق  
+
+</script>
+<script>
+    $(".sp-ch").hide();
+    $(".sp-ch").eq(0).show();
+    $("#specialChoise").change(() => {
+        $(".sp-ch").hide();
+        $(".sp-ch").eq($("#specialChoise").val() - 1).show();
+        $("#MODALSPECIAL .dayIn").prop('checked', false);
+        $("#MODALSPECIAL .dayOut").prop('checked', false);
+    })
+    //for save removel
+    $("#spBTN").click(() => {
+        let sql = ''
+        let date = $("#DRemove").text();
+        switch ($("#specialChoise").val()) {
+            case "1":
+                {//removal_ak
+                    sql += 'insert into Absences([DateFrom],[HoursNo],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}',${$(".sp-ch #dayPartSpecial").eq(0).val()},11,(select id from employees where filenumber=${FN}),1)`
+                    //console.log($(".sp-ch #dayPartSpecial").eq(0).val());
+                }
+                break;
+            case "2":
+                {
+                    sql += 'insert into Absences([DateFrom],[TimeFrom],[TimeTo],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}','${$(".sp-ch #TINMission").val()}','${$(".sp-ch #TOUTMission").val()}',4,(select id from employees where filenumber=${FN}),1)`
+                    //console.log($(".sp-ch #dayPartSpecial").eq(1).val());
+                } break;
+            case "3":
+                {
+                    sql += 'insert into Absences([DateFrom],[TimeFrom],[TimeTo],[DayPart] ,[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}','${$(".sp-ch #TINVAC").val()}','${$(".sp-ch #TOUTVAC").val()}',${$(".sp-ch #dayPartSpecial").eq(1).val()},3,(select id from employees where filenumber=${FN}),1)`
+                    //console.log($(".sp-ch #dayPartSpecial").eq(1).val());
+                }
+                break;
+            case "4":
+                {
+                    sql += 'update attendances set [AttValue]=1-' + $(".sp-ch #dayPartSpecial").eq(2).val()
+                    sql += ` where employeeid=(select id from employees where filenumber=${FN}) and [DateFrom]='${date}'`
+                    //console.log();
+                }
+                break;
+            case "5":
+                {
+                    sql += 'insert into Absences([DateFrom],[AbsenceTypeId],[EmployeeId],[isRemoveGap])'
+                    sql += `values('${date}',16,(select id from employees where filenumber=${FN}),1)`
+                    //console.log($(".sp-ch #dayPartSpecial").eq(2).val());
+                }
+                break;
+
+        }
+        //console.log(sql)
+        if (excuteSQL(sql) == 1) {
+            alert("تم الحفظ بنجاح");
+            document.getElementById("myTable").deleteRow(row);
+        }
+        else
+        {
+            alert("خطأ");
+        } 
+    })
+    let FN = '';
+    let dateFrom = '';
+    var row;
+    function getData(e) {
+        row=e.parentNode.rowIndex;
+        FN = e.parentNode.children[2].innerText;
+        dateFrom = e.parentNode.children[1].innerHTML;
+        $(".dateFrom").html(dateFrom)
+
+        var data1 = readSQL("select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime");
+        var html1 = '<option >--select--</option>';
+        for (var i = 0; i < data1.length; i++) {
+            html1 += '<option>' + data1[i].time + '</option>';
+        }
+        $('.sp-ch #deviceMIN').html(html1);
+        $('.sp-ch #TIN').val('');
+
+        data1 = readSQL("select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime");
+        html1 = '<option >--select--</option>';
+        for (var i = 0; i < data1.length; i++) {
+            html1 += '<option>' + data1[i].time + '</option>';
+        }
+        $('.sp-ch #deviceMOUT').html(html1);
+        $('.sp-ch #TOUT').val('');
+
+        //open special modal
+        $("#MODALSPECIAL").modal("show");
+        $("#MODALSPECIAL .dayIn").prop('checked', false);
+        $("#MODALSPECIAL .dayOut").prop('checked', false);
+
+    }
+    //<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>
+    $(".dayIn").change(() => {
+        var sql1 = "select cast(DateTime as time(0))time,Type from AClogs where dateadd(day,-1,cast(DateTime as date))='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime";
+        var sql0 = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime";
+        let data;
+        if ($("#MODALSPECIAL .dayIn").is(':checked')) {
+            data = readSQL(sql1);
+        } else {
+            data = readSQL(sql0);
+        }
+         console.log(data)
+        var html = '<option >--select--</option>';
+        for (var i = 0; i < data.length; i++) {
+            html += '<option>' + data[i].time + '</option>';
+        }
+        //console.log(html);
+        $('#TINMission').val('');
+        $('#deviceMIN').html(html);
+        //$('#MODALIN').modal('show');     
+    });
+    $(".dayOut").change(() => {
+        var sql1 = "select cast(DateTime as time(0))time,Type from AClogs where dateadd(day,-1,cast(DateTime as date))='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime";
+        var sql0 = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime";
+        let data;
+        if ($("#MODALSPECIAL .dayOut").is(':checked')) {
+            data = readSQL(sql1);
+        } else {
+            data = readSQL(sql0);
+        }
+        console.log(data)
+        var html = '<option >--select--</option>';
+        for (var i = 0; i < data.length; i++) {
+            html += '<option>' + data[i].time + '</option>';
+        }
+        //console.log(html);
+        $('#TINMission').val('');
+        $('#deviceMOUT').html(html);
+        //$('#MODALIN').modal('show');     
+    });
+</script>

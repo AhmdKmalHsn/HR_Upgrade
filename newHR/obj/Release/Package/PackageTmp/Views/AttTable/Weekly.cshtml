@@ -1,1 +1,140 @@
-﻿
+﻿<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+
+    #loader_img {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6 form-floating mb-1 mt-1">
+            <input name="dateFrom" type="date" class="form-control" value='@DateTime.Now.ToString("yyyy-MM-dd")'
+                placeholder=" " />
+            <label for="dateFrom">Date From</label>
+        </div>
+        <div class="col"></div>
+    </div>
+
+    <div class="tabs">
+        <ul>
+            <li><a href="#tabs-1">Events</a></li>
+            
+        </ul>
+        <div id="tabs-1">
+            <h2>تسجيل</h2>
+            <hr>
+            <button id="choose" class="btn btn-outline-dark m-1">choose</button>
+            <button id="submit" class="btn btn-outline-primary m-1">submit</button>
+            <!--input type=checkbox id=dateFilter> filter by date-->
+            <div class="result">
+                <!--Result Here-->
+                <table id="result_table" class="table table-striped">
+                    
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="dialogEmp">
+        <table id="allEmpTable" class="display" style="width: 100%;">
+
+        </table>
+
+    </div>
+</div>
+<div id="loader"><img id="loader_img" src="~/1.gif"></div>
+<script>
+    $(".tabs").tabs();
+    var data = readSQL(`select 
+	e.Id,e.FirstName+' '+e.MidelName+' '+e.LastName'Name',
+	e.FileNumber,
+	d.Name'Dept'
+	
+from employees e left join 
+	 Departements d on e.DepartementId=d.Id left join 
+	 personals p on p.id=e.personalid left join 
+	 Attendances att on e.Id=att.EmployeeId
+
+where p.statusid=1 and 
+	  att.DateFrom='${$("[name=dateFrom]").val()}' and 
+	  filenumber not in 
+	  (
+		select filenumber 
+		from AK_events_lines 
+		where dateFrom='${$("[name=dateFrom]").val()}'
+	  )`);
+    console.log(data);
+    var table = $("#allEmpTable").DataTable({
+        data: data,
+        columns: [
+            { data: "FileNumber", title: '' },
+            { data: "Id", title: "Id" },
+            { data: "Name", title: "name" },
+            { data: "FileNumber", title: "File Number" },
+            { data: "Dept", title: "Department" },
+        ],
+        'columnDefs': [
+            {
+                'targets': 0,
+                'checkboxes': {
+                    'selectRow': true
+                }
+            }
+        ],
+        'select': {
+            'style': 'multi'
+        },
+        'order': [[1, 'asc']]
+    });
+
+    $('#submit').on('click', function (e) {
+        var rows_selected = table.columns(0).checkboxes.selected()[0];
+        console.log(data.filter(w=>rows_selected.includes(w.FileNumber)))
+        draw_table($('#result_table'),data.filter(w=>rows_selected.includes(w.FileNumber)));
+        
+    });
+    function draw_table(dom,arr)
+    {
+        if(arr.length >0)
+        {
+            let html='<thead>';
+            for(let i=0;i<arr.length;i++)
+            {
+                if(i==0)
+                {   
+                    html+='<tr>';
+                    for(let elem in arr[i])
+                    {
+                        html+='<td>'+elem+'</td>';
+                    }
+                    html+='</tr><thead><tbody>';
+                }
+                    html+='<tr>';
+                    for(let elem in arr[i])
+                    {
+                        html+='<td>'+arr[i][elem]+'</td>';
+                    }
+                    html+='</tr>';  
+            }
+            html+='</tbody>'; 
+            dom.html(html);
+        }
+    }  
+    $(".dialogEmp").dialog({
+        autoOpen: false,
+        width: 900,
+        height: 700,
+        title: "Select Employee",
+    }); 
+    $("#choose").click(function () {
+        $(".dialogEmp").dialog("open");
+    }); 
+</script>

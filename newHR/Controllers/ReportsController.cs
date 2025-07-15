@@ -64,22 +64,22 @@ namespace newHR.Controllers
         public ActionResult salaryReport1()
         {
             //return View();
-            return static_class.GetView(this, "salaryReport1");
+            return static_class.GetView(this, "salary_report1");
         }
         public ActionResult Report1()
         {
             //return View();
-            return static_class.GetView(this, "Report1");
+            return static_class.GetView(this, "report1");
         }
         public ActionResult Report2()
         {
             //return View();
-            return static_class.GetView(this, "Report2");
+            return static_class.GetView(this, "report2");
         }
         public ActionResult Report3()
         {
             //return View();
-            return static_class.GetView(this, "Report2");
+            return static_class.GetView(this, "report3");
         }
 
 

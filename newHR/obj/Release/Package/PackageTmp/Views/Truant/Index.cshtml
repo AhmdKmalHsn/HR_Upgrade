@@ -27,6 +27,7 @@
 </style>
 <h2>تقرير الغياب/الانقطاع خلال فترة</h2>
 <hr>
+<div id="mytabs">
     <div class="buttons">
         <button id="absBtn" class="btn btn-danger bigBtn">غياب</button>
         <button id="cutBtn" class="btn btn-warning bigBtn">انقطاع</button>
@@ -42,6 +43,7 @@
     >
         <center><img src="~/1.gif" /></center>
     </div>
+    <!--نهاية الصورة -->
 <button id="reBtn" class="btn btn-info">رجوع</button>
 <div class="hd">
     <div class="input-group" dir="rtl">
@@ -56,49 +58,59 @@
             var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
         }
         <select id="dept" class="form-control">
+            <option style="text-align:right" value="0">جميع الاقسام</option>
             @foreach (var row in db.Query(selectQueryString))
             {
                 <option style="text-align:right" value="@row.Id">@row.Name</option>
             }
         </select>
         <button id="btn" class="btn btn-outline-success">إنشاء</button>
-        <button class="btn btn-outline-primary" id="DLtoExcel">Excel</button>
+        <button class="btn btn-outline-primary" id="DLtoExcel1" onclick="ExportToExcel('xlsx')">Excel</button>
         
-    </div>
-    
+    </div>  
 </div>
 <div id="employeeDiv">
-<table id="employee" class="table table-bordered table-hover display" cellspacing="0" dir="rtl">
-    
-</table>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered table table-hover">
-                    <thead><tr><th>day</th><th>date</th></tr></thead>
-                    <tbody id="ModalTbody"></tbody>
-                </table>  
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                
+    <table id="employee" class="table table-bordered table-hover display" cellspacing="0" dir="rtl">
+        
+    </table>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table table-hover">
+                        <thead><tr><th>day</th><th>date</th></tr></thead>
+                        <tbody id="ModalTbody"></tbody>
+                    </table>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    
+                </div>
             </div>
         </div>
     </div>
- </div>
 </div>
 </div>
 
 <!--script src="https://code.jquery.com/jquery-3.2.0.min.js"></script-->
+<script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
+<script>
+ function ExportToExcel(type, fn, dl) {
+     var elt = document.getElementById('employee');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('تقرير الغياب.' + (type || 'xlsx')));
+ } 
+
+</script>
 <script src="~/scripts/excelexportjs.js"></script>
 
 <script type="text/javascript">
@@ -132,8 +144,7 @@
         
 
     });
-
-</script>
+</script> 
 <script>
     $(document).ready(function () {
         var tb;
@@ -141,6 +152,7 @@
             $(".buttons").css("display","none");
             $(".hd").css("display","block");
             $("#reBtn").css("display","block");
+            //display();
         });
 
         $("#cutBtn").click(function(){
@@ -157,7 +169,7 @@
             $("#reBtn").css("display","none");
             $("#employeeDiv").html('<table id="employee"  dir="rtl"></table>');
         });
-
+        
         function ajaxExcute0() {
             $('#loader').css("display","block");
             $.ajax({
@@ -170,24 +182,25 @@
                        // $('#counter').html("<B>result :</B>" + response.length);
                         $('#loader').css("display","none");
                         var html = '';
+                        console.log(response)
                         $.each(response, function (key, item) {
 
                                 html += '<tr>';
-                                html += '<td><button class="btn" onclick="reply_click(this.innerHTML)">' + item.fileNumber + '</button></td>';
-                                html += '<td>' + item.name + '</td>';
-                                html += '<td>' + item.abcenceDays + '</td>';
+                                //html += '<td><button class="btn" onclick="reply_click(this.innerHTML)">' + item.FileNumber + '</button></td>';
+                                //html += '<td>' + item.name + '</td>';
+                               // html += '<td>' + item.abcenceDays + '</td>';
                                 html += '</tr>';
 
                         });
                         $('#employee').html('<colgroup><col><col><col></colgroup>'+
-    '<thead>'+
-        '<tr>'+
-            '<th>رقم الملف</th>'+
-            '<th>الاسم</th>'+
-            '<th>عدد ايام الغياب</th>'+
-        '</tr>'+
-    '</thead>'+
-    '<tbody id="tbody">'+html+'</tbody>');  
+                        '<thead>'+
+                            '<tr>'+
+                                '<th>رقم الملف</th>'+
+                                '<th>الاسم</th>'+
+                                '<th>عدد ايام الغياب</th>'+
+                            '</tr>'+
+                        '</thead>'+
+                        '<tbody id="tbody">'+html+'</tbody>');  
                         
                     },
                 error:
@@ -201,26 +214,26 @@
         //$('#loader').css("display","block");
        var sql3=`
         with data as(
-select 
-      ROW_NUMBER()over (partition by employeeid order by datefrom desc)n,
-	  cast(DateFrom as date)date,
-	 d.Name'dept',
-	  EmployeeId,
-	  FileNumber,
-	  KnownAs,
-	   datediff(day,cast(DateFrom as date),GETDATE())noOfDays
-from (
-        select DateFrom,EmployeeId from Absences union
-		select DateFrom,EmployeeId from Attendances 
-      ) a left join 
-      Employees e on e.id=a.EmployeeId left join
-	  Personals p on e.PersonalId=p.Id left join
-	  Departements d on e.DepartementId=d.Id
-	  
-where p.StatusId<>3 and d.[group]=0
-)
-select * from data where n=1 and noOfDays >3
-order by noOfDays desc
+                    select 
+                        ROW_NUMBER()over (partition by employeeid order by datefrom desc)n,
+                        cast(DateFrom as date)date,
+                        d.Name'dept',
+                        EmployeeId,
+                        FileNumber,
+                        KnownAs,
+                        datediff(day,cast(DateFrom as date),GETDATE())noOfDays
+                    from (
+                            select DateFrom,EmployeeId from Absences union
+                            select DateFrom,EmployeeId from Attendances 
+                        ) a left join 
+                        Employees e on e.id=a.EmployeeId left join
+                        Personals p on e.PersonalId=p.Id left join
+                        Departements d on e.DepartementId=d.Id
+                        
+                    where p.StatusId=1 and d.[group]=0
+                    )
+                    select * from data where n=1 and noOfDays >3
+                    order by noOfDays desc
         `;
         
         var data=readSQL(sql3);
@@ -282,8 +295,8 @@ order by noOfDays desc
         }
 
         $('#btn').click(function () {
-            ajaxExcute0();
-            
+            //ajaxExcute0();
+            display();
         });
 
     });
@@ -329,5 +342,152 @@ order by noOfDays desc
 
 </script>
 
+<script>  
+function display()
+{
+    var data;
+    if($("#dept").val()==0)
+    {
+        data=readSQL_MAX(`declare @@f date='${$("#f").val()}',@@t date='${$("#t").val()}'
+                   
+      ;              
+with cte
+    as
+    (
+        select @@f date , DateName(WEEKDAY,@@f)dateName
 
+        union All
+            select DATEADD(day,1,date), DATENAME(WEEKDAY,DATEADD(day,1,date))dateName
+            from cte
+            where DATEADD(day,1,date)<=@@t
+    )
+select q.FileNumber'fileNo', q.KnownAs'name', *
+from
+    (
+        select q1.*,att.TimeFrom,ab.TimeTo--, v.AttendanceValue
+    from
+        (
+            select  cte.*, 
+                    e.FileNumber,
+                    e.KnownAs, 
+                    (select name from departements where id=e.DepartementId)dept, 
+                    e.id, 
+                    cast(p.JoiningDate as date)JoiningDate
+            from cte, Employees e left join 
+                 Personals p on e.PersonalId=p.id
+            where e.DepartementId in (SELECT Id FROM Departements where groups = 0 ) 
+              and p.StatusId=1
+              and datename<>'friday'
+                     )q1
+        left join Attendances att on(att.DateFrom=q1.date and att.EmployeeId=q1.id)
+        left join Absences ab on (ab.DateFrom=q1.date and ab.EmployeeId=q1.Id)
+       left join (select * from Vacations where AttendanceValue>0 ) v on (q1.date=v.Date)
+     where /*((att.timefrom is null and att.timeto is null))
+        and*/ ab.DateFrom is null
+        and v.AttendanceValue is null
+        and q1.date>=q1.JoiningDate
+                    )Q
+--WHERE timefrom is null AND timeto is null
+order by dept,FileNumber,date
+                    `);
+}
+else
+{
+     data=readSQL(`declare @@f date='${$("#f").val()}',@@t date='${$("#t").val()}',@@dept_id int=${$("#dept").val()}
+                    ;
+                    with cte as (
+                    select @@f date ,DateName(WEEKDAY,@@f)dateName
+                    union All
+                    select DATEADD(day,1,date),DATENAME(WEEKDAY,DATEADD(day,1,date))dateName
+                    from cte
+                    where DATEADD(day,1,date)<=@@t
+                    )
+                    select q.FileNumber'fileNo',q.KnownAs'name',*
+                    from
+                    (
+                    select q1.*,v.AttendanceValue
+                    from 
+                    (
+                    select cte.*,e.FileNumber,e.KnownAs,(select name from departements where id=e.DepartementId)dept,e.id,cast(p.JoiningDate as date)JoiningDate
+                    from cte,Employees e left join Personals p on e.PersonalId=p.id
+                    where (DepartementId =@@dept_id) and p.StatusId=1
+                    )q1
+                    left join Attendances  att on(att.DateFrom=q1.date and att.EmployeeId=q1.id)
+                    left join Absences ab on (ab.DateFrom=q1.date and ab.EmployeeId=q1.Id)
+                    left join (select * from Vacations where AttendanceValue>0 ) v on (q1.date=v.Date)
+                    where att.datefrom is null 
+                    and ab.DateFrom is null 
+                    and v.AttendanceValue is null
+                    and q1.date>=q1.JoiningDate
+                    )Q
+                    order by FileNumber,date
+                    `);
+}
+    console.log(data);
+    data=data.filter(w=> w.TimeFrom==null && w.TimeTo==null)
+    console.log(data);
+    let fns=[]
+    let filtered=[]
+    data.forEach((e)=>{
+        //console.log(e.fileNo)
+        if(!fns.includes(e.fileNo))
+        {
+            fns.push(e.fileNo)
+            //console.log(data.filter(w=>w.fileNo==e.fileNo))
+            //console.log(`filenumber ${e.fileNo} =${get_con(data.filter(w=>w.fileNo==e.fileNo))}`);
+            if(get_con(data.filter(w=>w.fileNo==e.fileNo))>=3)
+            {
+                filtered.push({fileNo:e.fileNo,dept:e.dept,name:e.name,days:get_con(data.filter(w=>w.fileNo==e.fileNo))})
+            }
+        }
+    })
+     //console.log(filtered)
+    //let fns=data. 
+    console.log(filtered)
+      var html = '<tr>'+
+                    '<td>رقم الملف</td>'+
+                    '<td>الاسم</td>'+
+                    '<td>القسم</td>'+
+                    '<td>عدد الايام</td>'+
+                    '<td></td>'+
+                 '</tr>';
+                        $.each(filtered, function (key, item) {
+                            html += '<tr>';
+                            html += '<td><a href=/Truant/Abscence?fileNo='+
+                        item["fileNo"]+'&M='+(new Date().getMonth()+1)+'&Y='+new Date().getFullYear()+' target="_blank">' + item["fileNo"] + '</td>';
+                            html += '<td>' + item["name"] + '</td>';
+                            html += '<td>' + item["dept"] + '</td>';
+                            html += '<td>' + item["days"] + '</td>';
+                             html += '<td><button onclick="$(this).parent().parent().remove()" class="btn btn-danger">حذف</button></td>';
+                            html += '</tr>';
+                            //$('#ModalTbody').html(html);
+                        });
+    $('#employee').html(html)
+}
+function get_con(date)
+{
+    let temp=1;
+    let last_temp=1;
+    let ok=false;
+  for(let i=0;i<date.length-1;i++)
+  {
+    if((new Date(date[i+1].date).valueOf()-new Date(date[i].date).valueOf())/24/60/60/1000==1)
+    {
+        temp++;
+        //console.log(temp)
+        if(temp>=3)
+        {
+            ok =true;
+            last_temp=last_temp>temp?last_temp:temp
+        } 
+        }
+        else
+        {
+            temp=1;
+        }
+    }
+    return last_temp;
+}
+$("mytabs").tabs()
+</script>
 

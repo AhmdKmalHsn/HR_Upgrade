@@ -242,14 +242,27 @@ namespace newHR.Controllers
         DBContext db = new DBContext();
         public JsonResult dashboard()
         {
-            SqlCommand cmd = new SqlCommand(@"select COUNT(*)cnt,'emp' name from Employees e ,Personals p where e.PersonalId=p.Id and p.StatusId=1
-union ALL
-select count(*)cnt, 'depts' name from Departements
- union ALL
-                                 select count(*)cnt, 'users' name from Users2
-                                  union all
-                                                                  select count(*)cnt, 'mac' name from Mac
-                                                                   ");
+            SqlCommand cmd = new SqlCommand(@"SELECT
+  COUNT(e.Id) cnt
+ ,'emp' name
+FROM Employees e LEFT JOIN Personals p ON e.PersonalId=p.Id
+WHERE e.PersonalId = p.Id
+AND p.StatusId = 1
+UNION ALL
+SELECT
+  COUNT(*) cnt
+ ,'depts' name
+FROM Departements
+UNION ALL
+SELECT
+  COUNT(*) cnt
+ ,'users' name
+FROM Users2
+UNION ALL
+SELECT
+  COUNT(*) cnt
+ ,'branches' name
+ FROM  Locations l");
             return Json(db.toJSON(db.getData(cmd)), JsonRequestBehavior.AllowGet);
         }
 
@@ -267,9 +280,6 @@ select count(*)cnt, 'depts' name from Departements
                     HttpFileCollectionBase files = Request.Files;
                     for (int i = 0; i < files.Count; i++)
                     {
-                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
-                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
-
                         HttpPostedFileBase file = files[i];
                         string fname = file.FileName;
 

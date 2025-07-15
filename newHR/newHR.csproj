@@ -693,11 +693,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="1.gif" />
+    <Content Include="2.gif" />
+    <Content Include="3.gif" />
+    <Content Include="4.gif" />
+    <Content Include="5.gif" />
+    <Content Include="Assets\att.js" />
     <Content Include="Assets\Attendance.css" />
     <Content Include="Assets\Attendance.js" />
     <Content Include="Assets\Attendance2.js" />
     <Content Include="Assets\AttendanceSetup.js" />
     <Content Include="Assets\AttendanceSetup2.js" />
+    <Content Include="Assets\buttons.colVis.min.js" />
+    <Content Include="Assets\buttons.dataTables.css" />
+    <Content Include="Assets\buttons.dataTables.js" />
+    <Content Include="Assets\buttons.html5.min.js" />
+    <Content Include="Assets\buttons.print.min.js" />
     <Content Include="Assets\css\all.min.css" />
     <Content Include="Assets\css\anicollection.css" />
     <Content Include="Assets\css\animate.css" />
@@ -718,11 +728,36 @@
     <Content Include="Assets\css\splash.css" />
     <Content Include="Assets\css\switch.css" />
     <Content Include="Assets\css\team.css" />
+    <Content Include="Assets\dataTables.buttons.js" />
+    <Content Include="Assets\dataTables.buttons.min.js" />
+    <Content Include="Assets\dataTables.checkboxes.css" />
+    <Content Include="Assets\dataTables.checkboxes.js" />
+    <Content Include="Assets\dataTables.checkboxes.min.js" />
+    <Content Include="Assets\dataTables.dataTables.css" />
+    <Content Include="Assets\dataTables.dateTime.min.css" />
+    <Content Include="Assets\dataTables.dateTime.min.js" />
+    <Content Include="Assets\dataTables.fixedHeader.min.js" />
+    <Content Include="Assets\dataTables.searchBuilder.min.js" />
+    <Content Include="Assets\dataTables.select.min.js" />
+    <Content Include="Assets\dataTable\buttons.colVis.min.js" />
+    <Content Include="Assets\dataTable\buttons.dataTables.css" />
+    <Content Include="Assets\dataTable\buttons.dataTables.js" />
     <Content Include="Assets\dataTable\buttons.html5.min.js" />
     <Content Include="Assets\dataTable\buttons.print.min.js" />
+    <Content Include="Assets\dataTable\dataTables.buttons.js" />
     <Content Include="Assets\dataTable\dataTables.buttons.min.js" />
+    <Content Include="Assets\dataTable\dataTables.checkboxes.css" />
+    <Content Include="Assets\dataTable\dataTables.checkboxes.js" />
+    <Content Include="Assets\dataTable\dataTables.checkboxes.min.js" />
+    <Content Include="Assets\dataTable\dataTables.dataTables.css" />
+    <Content Include="Assets\dataTable\dataTables.dateTime.min.css" />
+    <Content Include="Assets\dataTable\dataTables.dateTime.min.js" />
+    <Content Include="Assets\dataTable\dataTables.fixedHeader.min.js" />
+    <Content Include="Assets\dataTable\dataTables.searchBuilder.min.js" />
+    <Content Include="Assets\dataTable\dataTables.select.min.js" />
     <Content Include="Assets\dataTable\jszip.min.js" />
     <Content Include="Assets\dataTable\pdfmake.min.js" />
+    <Content Include="Assets\dataTable\searchBuilder.dataTables.min.css" />
     <Content Include="Assets\dataTable\vfs_fonts.js" />
     <Content Include="Assets\fonts\LineIcons.svg" />
     <Content Include="Assets\img\bg.svg" />
@@ -734,7 +769,11 @@
     <Content Include="Assets\img\earth2.svg" />
     <Content Include="Assets\img\earth3.svg" />
     <Content Include="Assets\img\flag.svg" />
+    <Content Include="Assets\img\group.png" />
     <Content Include="Assets\img\header1.svg" />
+    <Content Include="Assets\img\Icon 29.png" />
+    <Content Include="Assets\img\icon2.svg" />
+    <Content Include="Assets\img\Icon29.svg" />
     <Content Include="Assets\img\java.svg" />
     <Content Include="Assets\img\kpackage.svg" />
     <Content Include="Assets\img\leaf.svg" />
@@ -767,6 +806,8 @@
     <Content Include="Assets\jquery-ui\jquery-ui.theme.css" />
     <Content Include="Assets\jquery-ui\jquery-ui.theme.min.css" />
     <Content Include="Assets\jquery-ui\LICENSE.txt" />
+    <Content Include="Assets\jszip.min.js" />
+    <Content Include="Assets\js\1.jpg" />
     <Content Include="Assets\js\AK.js" />
     <Content Include="Assets\js\anijs-helper-scrollreveal-min.js" />
     <Content Include="Assets\js\anijs-helper-scrollreveal.js" />
@@ -776,6 +817,7 @@
     <Content Include="Assets\js\bootstrap.bundle.min.js" />
     <Content Include="Assets\js\carousel.js" />
     <Content Include="Assets\js\Chart.min.js" />
+    <Content Include="Assets\js\chart.umd.min.js" />
     <Content Include="Assets\js\charts.js" />
     <Content Include="Assets\js\count-up.min.js" />
     <Content Include="Assets\js\feather.min.js" />
@@ -792,10 +834,12 @@
     <Content Include="Assets\js\script5.js" />
     <Content Include="Assets\js\switch.js" />
     <Content Include="Assets\js\wow.min.js" />
+    <Content Include="Assets\pdfmake.min.js" />
+    <Content Include="Assets\searchBuilder.dataTables.min.css" />
+    <Content Include="Assets\vfs_fonts.js" />
     <Content Include="Assets\webfonts\fa-brands-400.svg" />
     <Content Include="Assets\webfonts\fa-regular-400.svg" />
     <Content Include="Assets\webfonts\fa-solid-900.svg" />
-    <Content Include="Assets\worker.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
@@ -1000,6 +1044,8 @@
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="Assets\dataTable\dataTables.checkboxes.min.js.map" />
+    <Content Include="Assets\dataTables.checkboxes.min.js.map" />
     <None Include="Properties\PublishProfiles\ahmd.pubxml" />
     <None Include="Properties\PublishProfiles\IIS Upgrade.pubxml" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
@@ -1102,6 +1148,8 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\xlsx.full.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="w1.gif" />
+    <Content Include="w3.gif" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1216,10 +1264,6 @@
     <Content Include="Views\JobTitles\Index.cshtml" />
     <Content Include="Views\Home\test.cshtml" />
     <Content Include="Views\AttTable\Index2.cshtml" />
-    <Content Include="Views\Shared\_SideBar.cshtml" />
-    <Content Include="Views\Shared\_NavBar.cshtml" />
-    <Content Include="Views\Shared\_Libs.cshtml" />
-    <Content Include="Views\Shared\_NotAuthorized.cshtml" />
     <Content Include="Views\Reports\salaryReport1.cshtml" />
     <Content Include="Views\Reports\Report1.cshtml" />
     <Content Include="Views\Reports\Report2.cshtml" />
@@ -1232,6 +1276,10 @@
     <Content Include="Views\MasterData\Shifts.cshtml" />
     <Content Include="Views\MasterData\Shifts_index.cshtml" />
     <Content Include="Views\MasterData\Shift_entry.cshtml" />
+    <Content Include="Views\Home\_NotAuthorized.cshtml" />
+    <Content Include="Views\Shared\_SideBar.cshtml" />
+    <Content Include="Views\Shared\_NavBar.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

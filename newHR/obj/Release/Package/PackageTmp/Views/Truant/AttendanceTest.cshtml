@@ -1,7 +1,480 @@
-﻿
+﻿@using WebMatrix.Data
 @{
-    ViewBag.Title = "AttendanceTest";
+    ViewBag.Title = "SalaryIndex";
 }
+@if (Request.Cookies["UserName"] == null)
+{
+    Response.Redirect("~/home/Index");
+}
+@if(Int32.Parse(Request.Cookies["ClosingPeriod"].Value) <= 2){
+    Response.Redirect("~/home/Index");
+}
+<script>
+    var all = [];
+</script>
+@{
+    
+    var db1 = Database.Open("CS");
+	var db2 = Database.Open("CS");
+    var selectQueryString1 = "select FileNumber fn,DepartementId deptId from Employees left join Personals p on PersonalId=p.Id where p.StatusId=1 and DepartementId is not null order by FileNumber";
+	var sql = "select e.FileNumber fn,e.knownAs'name',d.name dept from Employees e left join departements d on e.departementid=d.id  left join Personals p on e.PersonalId=p.Id /*where p.StatusId<>3*/ order by FileNumber";
+}
+<script>
+@foreach (var row in db1.Query(selectQueryString1))
+{
 
-<h2>AttendanceTest</h2>
+        @:all.push({fileNo:@row.fn,dept:@row.deptId})
+
+} 
+</script>
+
+<style>
+    #tblStocks {
+          tr:nth-child(even){background-color: #f2f2f2;}
+    }
+    #thead td{
+        vertical-align:middle;
+    }
+</style>
+<div class="alert alert-danger d-flex align-items-center" role="alert" style="flex-direction:row-reverse">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <div >
+    تنبيه! الصفحة قيد التعديل
+  </div>
+</div>
+    <h2>المرتبات  </h2>
+ <!--modal-->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+		<hr>
+		<div style="overflow-y:auto;height:400px">
+		  <table id="myTable" class="table table-bordered table-responsive-lg" dir="rtl" >
+		  <thead>
+			<tr>
+			  <th>رقم الملف</th>
+			  <th>الاسم</th>
+			  <th>القسم</th>
+			  <th>choose</th>
+			</tr>
+			</thead>
+			<tbody>
+		    @foreach (var row in db2.Query(sql))
+                     {
+                        <tr> 
+						 <td style="text-align:center">@row.fn</td>
+						 <td style="text-align:center">@row.name</td>
+						 <td style="text-align:center">@row.dept</td>
+						 <td style="text-align:center">
+						   <input type="button" value="Choose" data-bs-dismiss="modal" onclick="javascript:$('#fileNo').val(document.getElementById('myTable').rows[this.closest('tr').rowIndex].cells[0].innerHTML);" /></td>
+						</tr>
+                     }
+			</tbody>
+		  </table>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!---->
+	<hr>
+    <table class="container" style="width:100%">
+        <tr>
+            <td>
+                <div class="input-group">
+                    <input type=button value=اختر class="btn btn-outline-dark" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                    <input id="fileNo" class="form-control" type="number" />
+                </div>
+            </td>
+            <td>
+                <h3 style="margin:10px;float:right">رقم الملف </h3>
+            </td>
+            <td>
+            @{
+                var db = Database.Open("CS");
+                var selectQueryString = "select Id,Name from Departements ORDER BY Name ";
+            }
+                <div class="input-group">
+                    <button id="Depts" class="btn btn-primary">اختر الاقسام</button>
+                    <select id="D" class="form-control">
+                    @foreach (var row in db.Query(selectQueryString))
+                    {
+                        <option style="text-align:right" value="@row.Id">@row.Name</option>
+                    }
+                    </select>
+                </div>
+            </td>
+            <td>
+                <h3 style="margin:10px;float:right">القسم </h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                
+                    <select id="M" class="form-control">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                            <option>@i</option>
+                    }
+                    </select>
+                
+                
+            </td>
+
+            <td>
+                <h3 style="margin:10px;float:right">الشهر </h3>
+            </td>
+            <td>
+                <select id="Y" class="form-control">
+                @for (int i = DateTime.Now.Year; i >= 2020; i--)
+                {
+                        <option>@i</option>
+                }
+                </select>
+            </td>
+            <td>
+                <h3 style="margin:10px;float:right">العام </h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <input id="ok" class="btn btn-primary" value="المرتب" type="button" />
+                <button onclick="ExportToExcel('xlsx')" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-download"></i>
+                    Excel
+                </button>
+                <button onclick="printData()" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-print"></i>
+                    طباعة
+                </button>
+                <button id="Add" class="btn btn-outline-success m-1">
+                    حفظ
+                </button>
+            </td>
+        </tr>
+    </table>
+    <div class="dialogDept">
+    <table id="allDeptTable" class="display" style="width:100%">
+
+    </table>
+    </div>
+    <div id="loader" style="display: none;">
+        <center><img src="~/1.gif" /></center>
+    </div>
+    <div class="table-responsive-lg" style="overflow-x:auto">
+        <table id ="tblStocks" border="1" dir="rtl" class="table table-hover table-bordered">
+            <thead id="thead" style="text-align:center;font-size:large;font-weight: bold;position:sticky; top:0px;background-color: gray;border:solid medium;">
+                <tr>
+                    <td colspan="23" id="deptLbl"> مرتبات </td> 
+                </tr>
+
+                <tr>
+                    <td rowspan="2" style="vertical-align: middle;">القسم</td>
+                    <td rowspan="2" style="vertical-align: middle;">رقم الملف</td>
+                    <td rowspan="2" style="vertical-align: middle;">الاسم</td>
+                    <td rowspan="2" style="vertical-align: middle;"> ايام الحضور</td>
+                    <td rowspan="2" style="vertical-align: middle;">الاجازات</td>
+                    <td rowspan="2" style="vertical-align: middle;">الغياب</td>
+                    <td colspan="8"> الاستحقاقات</td>
+                    <td colspan="6"> الاستقطاعات</td>
+                    <td rowspan="2" style="vertical-align: middle;"> صافي المرتب </td>
+                </tr>
+                
+                <tr>
+				    <td> الاجر الشهري </td>
+                    <td style="background-color: rgb(154, 236, 154);"> قيمة عدد الايام </td>
+                    <td style="background-color: rgb(154, 236, 154);"> حافز الانتظام </td>
+                    <td style="background-color: rgb(154, 236, 154);"> حوافز اخري</td>
+                    <td style="background-color: rgb(154, 236, 154);">حافز الأنتاجية</td>
+                    <!--td> غلاء المعيشة </td>
+                    <td> حافز مجلس الادارة </td>
+                    <td> حافز المهارة </td-->
+                    <td > عدد الساعات</td>
+                    <td style="background-color: rgb(154, 236, 154);"> أضافي <!--font color="#1111cc">(عدد الساعات)</font--></td>
+                    <td style="background-color: rgb(67, 109, 67);">أجمالي المستحق</td>
+                    <td style="background-color: rgb(236, 154, 154);"> خصم التامينات </td>
+                    <!--td> جزاءات التأخيرات +الخصومات </td-->
+                    <td style="background-color: rgb(236, 154, 154);"> تاخيرات </td>
+                    <td style="background-color: rgb(236, 154, 154);"> الجزاءات </td>
+                    <td style="background-color: rgb(236, 154, 154);"> ملبس </td>
+                    <td style="background-color: rgb(236, 154, 154);"> سلف </td>
+                    <td style="background-color: rgb(244, 156, 89);">  اجمالي الاستقطاعات</td>
+                </tr>
+            </thead>
+            <tbody id="container1" style="text-align:center;font-size:large">
+                
+               
+            </tbody>
+            <tfoot id="tfoot" style="text-align:center;font-size:large;font-weight:bold"></tfoot>
+        </table>
+        
+    </div>
+
+<script src="~/Assets/attendanceSetup2.js?version=9.5.1"></script>
+<script src="~/Assets/attendance2.js?version=9.5.1"></script>
+<script> 
+var department = [],dept=[];
+
+$('#ok').click(function () {
+        //console.log($('#M').val()+"-"+$('#Y').val());
+        if ($('#fileNo').val()) {
+            department = all.filter(w => w.fileNo == $('#fileNo').val());
+        }
+        else {
+
+            var rows_selected = table.columns(0).checkboxes.selected()[0];
+        //console.log(rows_selected);
+        if (rows_selected.length > 0) 
+            {
+                department = all.filter(w => rows_selected.includes(w.dept) )
+            }
+            else
+            {
+                department = all.filter(w => w.dept == $('#D').val());
+            }
+        }
+        res = [];
+        //console.log(department)
+        dept=[]
+        for(var i=0;i<department.length;i++){
+            
+            dept.push(department[i].fileNo);
+        }
+        //console.log(dept)
+        $('#loader').show();
+        getArray(dept,$("#M").val(),$("#Y").val()); 
+    });
+/*begin multiselect*/
+var data = readSQL(`select d.Id,d.Name'Dept' from Departements d`);
+    //console.log(data);
+   var table= $("#allDeptTable").DataTable({
+        data:data,
+        columns: [
+                     { data: "Id", title: '' },
+                     { data: "Id", title: "Id" },
+                     { data: "Dept", title: "Department" },
+        ],
+        'columnDefs': [
+      {
+          'targets': 0,
+          'checkboxes': {
+              'selectRow': true
+          }
+      }
+        ],
+   'select': {
+        'style': 'multi'
+    },
+   'order': [[1, 'asc']] 
+    });
+   
+    $(".dialogDept").dialog({
+                autoOpen:false,
+                width:900,
+                height:700,
+                title:"Select Departments",
+            }); 
+    $('#Depts').on('click', function(e){
+        $(".dialogDept").dialog('open');
+     });
+/*end multiselect*/
+var salaries = [];
+
+function displayAllMonth(res) // المواصبة بالقسم
+{
+    console.log("ahmdkmal")
+    console.log(res)
+    //res=res.sort((a,b) => (parseInt(a.filenumber) > parseInt(b.filenumber)) ? 1 : ((parseInt(b.filenumber) > parseInt(a.filenumber)) ? -1 : 0))
+    salaries=[];
+                    $('#loader').hide();
+                    $('.table-responsive-lg').show();
+                    var htmlDom=''
+for(var i=0;i<res.length;i++){
+    // if(EMPS.includes('' + res.fileNo))
+    let s=salary(res[i]);
+    salaries.push({salary:s,data:res[i]});
+    htmlDom+='<tr><td>'+res[i].all.dept
+        +'</td><td><a href=/truant/Abscence?fileNo='+s.fileNo+'&M='+$("#M").val()+'&Y='+$("#Y").val()+' target="_blank">'+
+    s.fileNo+'</a></td><td >' +
+    s.name+'</td><td >' +
+    s.att + '</td><td >' +
+    s.vac + '</td><td>' +
+    s.abs + '</td><td>' + 
+    s.basicM+'</td><td>' +
+
+    s.basicV+'</td><td>' +
+    s.regular+'</td><td>'+
+    (parseFloat(s.expensive)+parseFloat(s.management)+parseFloat(s.skill)).toFixed(2)+'</td><td>'+
+    /*s.expensive +'</td><td>' + 
+    s.management +'</td><td>' +
+    s.skill +'</td><td>' +*/
+    (res[i].all.withinSalary==true || res[i].all.withinSalary==1 ? s.product : 0 ).toFixed(2)+'</td><td>'+//now edit
+    res[i].total.overSum+'</td><td>'+
+    s.over /*+'('+res[i].total.overSum+')*/+'</td><td>'+
+    
+    (parseFloat(s.total1)+parseFloat(res[i].all.withinSalary==true || res[i].all.withinSalary==1 ? s.product : 0 )).toFixed(2)+'</td><td>' +
+
+    s.insu+'</td><td>' + 
+    s.delays + '</td><td>' +
+    s.sanctions + '</td><td>' +
+    s.clothes+ '</td><td>'+
+    s.loans+ '</td><td>'+
+    s.total2 + '</td><td>'+
+    (parseFloat(s.total3)+parseFloat(res[i].all.withinSalary==true || res[i].all.withinSalary==1 ? s.product : 0 )).toFixed(2)+ '</td></tr>';
+}
+$('#container1').html(htmlDom)
+//console.log(salaries);
+}   
+
+</script>
+<script type="text/javascript" src="~/Scripts/xlsx.full.min.js"></script>
+<script>
+ function ExportToExcel(type, fn, dl) {
+     var elt = document.getElementById('tblStocks');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+ }   
+ function printData()
+ {
+     var divToPrint=document.getElementById("tblStocks");
+     newWin= window.open("");
+     newWin.document.write(divToPrint.outerHTML);
+     newWin.print();
+     newWin.close();
+ }
+</script>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $("#myTable").DataTable({
+  "pagingType":"full_numbers"
+  });
+});
+</script>
+
+<script>   
+$("#Add").click(function () {
+            let promises = [];
+    let res = salaries;
+    for (var i = 0; i < res.length; i++) {
+        var sql = `
+        begin transaction
+        insert into salarysheet(
+            FileNumber,
+            Name,
+            Attendance,
+            Vacation,
+            Abcence,
+            SalaryMonth,
+            DaysValue,
+            RegularityIncentive,
+            ExpensiveIncetive,
+            ManagmentIncetive,
+            SkillIncentive,
+            Overtime,
+            Total1,
+            Insurance,
+            Deductions,
+            Delays,
+            Clothes,
+            Loans,
+            Total2,
+            Total3,
+            Department,	
+            Year,
+            Month,
+            [attSum] , 
+            [absSum] , 
+            [vacSum] , 
+            [errandSum] , 
+            [sepcialSum] , 
+            [overtimeSum] , 
+            [lateSum] , 
+            [leaveSum],
+            [deductionSum]
+)
+values
+            (`+
+            res[i].salary.fileNo + ",'" +
+            res[i].salary.name + "'," +
+            res[i].salary.att + "," +
+            res[i].salary.vac + "," +
+            res[i].salary.abs + "," +
+            res[i].salary.basicM + "," +
+            res[i].salary.basicV + "," +
+            res[i].salary.regular + "," +
+            res[i].salary.expensive + "," +
+            res[i].salary.management + "," +
+            res[i].salary.skill + "," +
+            res[i].salary.over + "," +
+            res[i].salary.total1 + "," +
+            res[i].salary.insu + "," +
+            res[i].salary.sanctions + "," +
+            res[i].salary.delays + "," +
+            res[i].salary.clothes + "," +
+            res[i].salary.loans + "," +
+            res[i].salary.total2 + "," +
+            res[i].salary.total3 + ",'" +
+            res[i].data.all.dept + "'," +
+            $('#Y').val() + "," +
+            $('#M').val() + ",'" +
+            res[i].data.total.attSum + "','" +
+            res[i].data.total.absSum + "','" +
+            res[i].data.total.vacSum + "','" +
+            res[i].data.total.errandSum + "','" +
+            res[i].data.total.specialSum + "','" +
+            res[i].data.total.overSum + "','" +
+            res[i].data.total.lateSum + "','" +
+            res[i].data.total.leaveSum + "','" +
+            res[i].data.total.dValue +"'" +
+            ") insert into AttTable(SalarySheetId,[Dayname],TimeFrom,TimeTo,[abs],att,dateDay,errand,lateHours,leaveHours,overTimeHour,vacDay,weekend,special)values ";
+            var sql2=''
+            for(var j=0;j<res[i].data.days.length;j++)
+            {
+                if(j==0)sql2 += "((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" +(res[i].data.days[j].errand=="&#10003"?1:0)  + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" +(res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay  + "','" + res[i].data.days[j].weekend+ "','" + res[i].data.days[j].special + "')" 
+                else sql2 += ",((SELECT IDENT_CURRENT('SalarySheet')),'" + res[i].data.days[j].DayName + "','" + res[i].data.days[j].TimeFrom + "','" + res[i].data.days[j].TimeTo + "','" + res[i].data.days[j].abs + "','" + res[i].data.days[j].att + "','" + res[i].data.days[j].dateDay + "','" + (res[i].data.days[j].errand=="&#10003"?1:0) + "','" + res[i].data.days[j].lateHours + "','" + res[i].data.days[j].leaveHours + "','" + (res[i].data.days[j].overTimeHour=="&#9889"?"": res[i].data.days[j].overTimeHour )+ "','" + res[i].data.days[j].vacDay + "','" + res[i].data.days[j].weekend + "','" + res[i].data.days[j].special + "')" 
+            }
+            sql+=sql2+" commit transaction";
+           //console.log(sql);
+         var request = $.ajax(//begin ajax card
+         {
+             type: 'POST',
+             dataType: 'JSON',
+             url:"SalarySheetAdd",
+             data:{sql:sql},
+             success:
+                 function (response) {
+                     console.log("Sucess: " + response);
+                 },
+             error:
+                 function (response) {
+                     console.log(response.statusText);
+                 }
+         });
+
+         promises.push(request);
+     }
+    $.when.apply(null, promises).always(function () {
+         alert('All Done successfull!');
+     });
+       // console.log(excuteSQL(sql));
+    
+});
+</script>
 

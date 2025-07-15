@@ -1,11 +1,11 @@
-﻿var dateFrom, FN;
+﻿var dateFrom, FN, shiftOfDay;
 var html = '';
 //var ajax, ajaxC;
 const sql1 = `select filenumber,knownas name,(select name from departements where id=departementId)dept  from employees`;
 const sqlAbsence = `select name,id from AbsenceTypes where id not in (1,2,7,8,9,10,4,11)`;
 const sqlVacations = `select * from Vacations where AttendanceValue=0 --and DATEPART(year,date)=DATEPART(year,GETDATE())`;
-const sqlDelay = `select id, ShiftName 'name' from Delays`
-const Delay = readSQL(sqlDelay);
+const sqlShifts = `select id,cast(id as nvarchar)+' - '+ShiftName 'name' from shifts`
+const Shifts = readSQL(sqlShifts);
 var absenceType = readSQL(sqlAbsence)
 var vacations = readSQL(sqlVacations)
 // ضبط اختيارات ال select
@@ -21,11 +21,11 @@ for (var i = 0; i < vacations.length; i++) {
 }
 $("#official").html(html);
 html = '';
-for (var i = 0; i < Delay.length; i++) {
-    html += `<option style="text-align:right" value="${Delay[i].id}">${Delay[i].name}</option>`;
+for (var i = 0; i < Shifts.length; i++) {
+    html += `<option style="text-align:right" value="${Shifts[i].id}">${Shifts[i].name}</option>`;
 }
-$("#delay").html(html);
-$("#leave").html(html);
+$("#shiftId").html(html);
+
 // قائمة العمال 
 var empTable = $("#empTable").dataTable({
     data: readSQL(sql1),
@@ -38,10 +38,10 @@ var empTable = $("#empTable").dataTable({
             title: "name",
             data: "name",
         },
-          {
-              title: "department",
-              data: "dept",
-          },
+        {
+            title: "department",
+            data: "dept",
+        },
         {
             title: "choose",
             data: "filenumber",
@@ -60,27 +60,34 @@ var dialog = $("#empContainer").dialog({
 
 //ضبط الشهر الافتراضي
 $("#M").val(new Date().getMonth() + 1);
-const weekDays=[
-                  {Ar:"السبت",EN:"Saturday"},
-                  {Ar:"الاحد",EN:"Sunday"},
-                  {Ar:"الاثنين",EN:"Monday"},
-                  {Ar:"الثلاثاء",EN:"Tuesday"},
-                  {Ar:"الاربعاء",EN:"Wednesday"},
-                  {Ar:"الخميس",EN:"Thursday"},
-                  {Ar:"الجمعة",EN:"Friday"},
-               ]
+const weekDays = [
+    { Ar: "السبت", EN: "Saturday" },
+    { Ar: "الاحد", EN: "Sunday" },
+    { Ar: "الاثنين", EN: "Monday" },
+    { Ar: "الثلاثاء", EN: "Tuesday" },
+    { Ar: "الاربعاء", EN: "Wednesday" },
+    { Ar: "الخميس", EN: "Thursday" },
+    { Ar: "الجمعة", EN: "Friday" },
+]
 //دالة عرض الجدول
 
 function display(v) {
-    $("#personal_data").html('<div class="row row-reversed" style="font-size:24px;border:1px #1595 solid;"><div class="col-1 p-1" >الاسم:</div><div class="col-3 p-1 text-end">' + v.all.name + '</div>'
-                            + '<div class="col-1 p-1 " >القسم:</div><div class="col-3 p-1 text-end">' + v.all.dept + '</div>'
-        /*+ '<div class="col-2 p-1 text-danger" >الرصيد:</div><div class="col-2 p-1 text-end text-danger">' + v.total.balance+ '</div>*/
-        + '</div>');
-    //console.error("here display");
-    console.log(JSON.parse(JSON.stringify(v)));
+    $("#personal_data").html(
+        '<div class="row row-reversed" style="background:' + v.all.color +
+        ';font-size:24px;border:1px #1595 solid;"><table>'
+        + '<tr><td>الاسم:</td><td>' + v.all.name + '</td></tr>'
+        + '<tr><td>القسم:</td><td>' + v.all.dept + '</td></tr>'
+        + '<tr><td>الوظيفة</td><td>' + v.all.job + '</td></tr>'
+        + '<tr><td>تاريخ التعيين:</td><td>' + v.all.JoiningDate + '</td></tr>'
+
+        + '</table></div>');
+    console.error(v);
+
     let s = salary(v);
-    
-    //console.log(s);
+
+    let json = JSON.parse(JSON.stringify(v));
+
+    let fno = json.all.filenumber;
 
     var html = '<table class="table table-hover"><thead class="">';
     html += '<tr style="background-color:darkorange;">';
@@ -95,154 +102,147 @@ function display(v) {
     html += '<th style="">انصراف</th>';
     html += '<th style="">اضافي</th>';
     html += '<th style="">مأمورية</th>';
-    html += '<th style="">مأمورية خاصة</th>';
+    html += '<th style="">اذن خاص</th>';
     html += '</tr></thead><tbody>';
-   
+
     for (var i = 0; i < v.days.length; i++) {
-       
+
         if (v.days[i]["weekend"] == 0) {
             html += '<tr>';
             html +=
-              '<td class="--bs-cyan" style="background-color:">' +
-              v.days[i]["DayName"] +
-              "</td>";
+                '<td class="--bs-cyan" style="background-color:">' +
+                v.days[i]["DayName"] +
+                "</td>";
             html +=
-              '<td style="background-color:#2098bb55">' +
-              v.days[i]["dateDay"] +
-              "</td>";
+                `<td style="background-color:${(v.days[i]['shift_id_flag'] == 0 || v.days[i]['ShiftId'] == null) ? '#2098bb55' : ''}">` +
+                v.days[i]["dateDay"] +
+                "</td>";
             html +=
-              '<td style="background-color:">' +
-              v.days[i]["TimeFrom"] +
-              "</td>";
+                '<td style="background-color:">' +
+                v.days[i]["TimeFrom"] +
+                "</td>";
             html +=
-              '<td style="background-color:">' + v.days[i]["TimeTo"] + "</td>";
-            html += '<td class="table-success">' + v.days[i]["att"] + "</td>";
+                '<td style="background-color:">' + v.days[i]["TimeTo"] + "</td>";
+            html += `<td class="table-success" style="background-color:${v.days[i]['attValue_flag'] == 1 ? '' : ''}">` + (v.days[i]["att"]) + "</td>";
             html += '<td class="table-danger">' + v.days[i]["abs"] + "</td>";
             html +=
-              '<td class="table-warning">' + v.days[i]["vacDay"] + "</td>";
+                `<td style="background-color:${v.days[i]["vacDayTypeId"] == 6 ? '#0c71ff' : '#ffc107'}" >` +
+                (v.days[i]["vacDay"])
+                + "</td>";
             html +=
-              '<td class="table-secondary">' + v.days[i]["lateHours"] + "</td>";
+                `<td class="table-secondary" style="background-color:${v.days[i]['late_flag'] == 1 ? '' : ''}">` + v.days[i]["lateHours"] + "</td>";
             html +=
-              '<td class="table-primary">' + v.days[i]["leaveHours"] + "</td>";
+                `<td class="table-primary" style="background-color:${v.days[i]['leave_flag'] == 1 ? '' : ''}">` + v.days[i]["leaveHours"] + "</td>";
             html +=
-              '<td style="background-color:silver">' +
-              v.days[i]["overTimeHour"] +
-              "</td>";
-            html += '<td ">' + v.days[i]["errand"] + "</td>";
+                '<td style="background-color:silver">' +
+                v.days[i]["overTimeHour"] +
+                "</td>";
+            html += '<td style="background-color:rgb(169 83 225 / 80%);">' + v.days[i]["errand"] + "</td>";
+
             html +=
-              '<td style="background-color:rgb(200,150,84);">' +
-              v.days[i]["special"] +
-              "</td>";
+                '<td style="background-color:rgb(237 46 136 / 75%);">' +
+                (v.days[i]["special"] > 0 ? v.days[i]["special"] : "") +
+                "</td>";
         }
         else {
             html += '<tr style="background-color:#05F548">';
             html +=
-              '<td  style="background-color:">' +
-              v.days[i]["DayName"] +
-              "</td>";
+                '<td  style="background-color:">' +
+                v.days[i]["DayName"] +
+                "</td>";
             html +=
-              '<td style="background-color:#2098bb55">' +
-              v.days[i]["dateDay"] +
-              "</td>";
+                '<td style="background-color:#2098bb55">' +
+                v.days[i]["dateDay"] +
+                "</td>";
             html +=
-              '<td style="background-color:">' +
-              v.days[i]["TimeFrom"] +
-              "</td>";
+                '<td style="background-color:">' +
+                v.days[i]["TimeFrom"] +
+                "</td>";
             html +=
-              '<td style="background-color:">' + v.days[i]["TimeTo"] + "</td>";
+                '<td style="background-color:">' + v.days[i]["TimeTo"] + "</td>";
             html += '<td >' + v.days[i]["att"] + "</td>";
             html += '<td >' + v.days[i]["abs"] + "</td>";
             html +=
-              '<td >' + v.days[i]["vacDay"] + "</td>";
+                '<td >' + v.days[i]["vacDay"] + "</td>";
             html +=
-              '<td >' + v.days[i]["lateHours"] + "</td>";
+                '<td >' + v.days[i]["lateHours"] + "</td>";
             html +=
-              '<td >' + v.days[i]["leaveHours"] + "</td>";
+                '<td >' + v.days[i]["leaveHours"] + "</td>";
             html +=
-              '<td style="background-color:">' +
-              v.days[i]["overTimeHour"] +
-              "</td>";
+                '<td style="background-color:">' +
+                v.days[i]["overTimeHour"] +
+                "</td>";
             html += '<td ">' + v.days[i]["errand"] + "</td>";
             html +=
-              '<td style="">' +
-              v.days[i]["special"] +
-              "</td>";
+                '<td style="">' +
+                v.days[i]["special"] +
+                "</td>";
         }
-        
+
         html += '</tr>';
     }
     html +=
-      '<tr><td rowspan=2 colspan="4">أجمالي</td><td rowspan=2>' +
-      v.total.attSum +
-      "</td><td>" +
-      v.total.absSum +
-      "</td><td rowspan=2>" +
-      v.total.vacSum +
-      "</td><td>" +
-      v.total.lateSum +
-      "</td><td rowspan=2>" +
-      v.total.leaveSum +
-      "</td><td rowspan=2>" +
-      v.total.overSum +
-      "</td><td rowspan=2>" +
-      v.total.errandSum +
-      "</td><td rowspan=2>" +
-      v.total.specialSum +
-      "</td></tr><tr><td>" +
-      v.total.absCount +
-      "</td><td>" +
-      v.total.dValue +
-      "</td></tr></tbody></table>";
+        '<tr><td rowspan=2 colspan="4">أجمالي</td><td rowspan=2>' +
+        v.total.attSum +
+        "</td><td rowspan=2>" +
+        v.total.absSum +
+        "</td><td rowspan=2>" +
+        v.total.vacSumAll +
+        "</td><td>" +
+        v.total.lateSum +
+        "</td><td rowspan=2>" +
+        v.total.leaveSum +
+        "</td><td rowspan=2>" +
+        v.total.overSum +
+        "</td><td rowspan=2>" +
+        v.total.errandSum +
+        "</td><td rowspan=2>" +
+        v.total.specialSum +
+        "</td></tr>" +
+        "</td><td>" +
+        (parseFloat(v.total.dValue) + parseFloat(v.all.sanctions2)) +
+        "</td></tr></tbody></table>";
     $("#mytable").html(html);
     $("#loader").css("display", "none");
-    
-    var htmlDom =
-      "<tr><td colspan=4>مفردات المرتب</td></tr><tr><td>الاساسي</td><td>" +
-      //s.basicM +
-      //"</td><td>" +
-      s.basicV +
-      "</td><td>خصم التأمينات</td><td>" +
-      s.insu +
-      "</td>" +
-      "</tr><tr><td>الانتظام</td><td>" +
-      s.regular +
-      "</td><td>التاخيرات</td><td>" +
-      s.delays +
-      "</td>" +
-      "</tr><tr><td>غلاء المعيشة</td><td>" +
-      s.expensive +
-      "</td><td>الجزاءات</td><td>" +
-      s.sanctions +
-      "</td>" +
-      "</tr><tr><td>مجلس الادارة</td><td>" +
-      s.management +
-      "</td><td>الملبس</td><td>" +
-      s.clothes +
-      "</td>" +
-      "</tr><tr><td>المهارة</td><td>" +
-      s.skill +
-      "</td><td>السلف</td><td>" +
-      s.loans +
-      "</td>" +
-      "</tr><tr><td>الاضافي</td><td>" +
-      s.over +
-      "</td>" +
-      "</tr><tr><td>أجمالي الاستحقاقات</td><td>" +
-      s.total1 +
-      "</td><td>اجمالي الاستقطاعات</td><td>" +
-      s.total2 +
-      "</td>" +
-      "</tr><tr><td colspan=2>صافي المرتب</td><td colspan=2>" +
-      s.total3 +
-      "</td></tr>";
-     
-     
-      
-      
-      
-     
 
-$('#salary').html(htmlDom)
+    var htmlDom =
+        "<tr><td colspan=4>مفردات المرتب</td></tr><tr><td>الاساسي</td><td>" +
+        s.basicV +
+        "</td><td>خصم التأمينات</td><td>" +
+        s.insu +
+        "</td>" +
+        "</tr><tr><td>الانتظام</td><td>" +
+        s.regular +
+        "</td><td>التاخيرات</td><td>" +
+        s.delays +
+        "</td>" +
+        "</tr><tr><td>غلاء المعيشة</td><td>" +
+        s.expensive +
+        "</td><td>الجزاءات</td><td>" +
+        s.sanctions +
+        "</td>" +
+        "</tr><tr><td>مجلس الادارة</td><td>" +
+        s.management +
+        "</td><td>الملبس</td><td>" +
+        s.clothes +
+        "</td>" +
+        "</tr><tr><td>المهارة</td><td>" +
+        s.skill +
+        "</td><td>السلف</td><td>" +
+        s.loans +
+        "</td>" +
+        "</tr><tr><td>الاضافي</td><td>" +
+        s.over +
+        "</td>" +
+        "</tr><tr><td>أجمالي الاستحقاقات</td><td>" +
+        s.total1 +
+        "</td><td>اجمالي الاستقطاعات</td><td>" +
+        s.total2 +
+        "</td>" +
+        "</tr><tr><td colspan=2>صافي المرتب</td><td colspan=2>" +
+        s.total3 +
+        "</td></tr>";
+    $('#salary').html(htmlDom)
 }
 
 //ضبط اختيار نوع الاجازة
@@ -262,7 +262,6 @@ $(function () {
 
     $("#mytable").on("contextmenu", "table tr td", function (e) {
         dateFrom = $(this).closest('tr').find('td:eq(1)').html();
-        //FN = ajaxC[0].filenumber;
         $(".dateFrom").val(dateFrom)
         $(".dateTo").val(dateFrom)
         $contextMenu.css({
@@ -277,64 +276,52 @@ $(function () {
     $('html').click(function () {
         $contextMenu.hide();
     });
-     /*
-    $("#contextMenu li").click(function (e) {
-        var f = $(this);
-        console.log(f)
-    });*/
+    /*
+   $("#contextMenu li").click(function (e) {
+       var f = $(this);
+       console.log(f)
+   });*/
 
 });
 //console.log($(".myModal .btn").length);
 $(".myModal .btn").on("click", function (e) {
-    console.log($(".myModal .btn").index(e.target));
+    //console.log($(".myModal .btn").index(e.target));
     switch ($(".myModal .btn").index(e.target)) {
-       /* case 0: { ins_in() } break;
-        case 1: { ins_out() } break;
-        case 2: { ins_mission() } break;
-        case 3: { del_mission() } break;
-        case 4: { ins_overtime() } break;
-        case 5: { del_overtime() } break;
-        case 6: { ins_vacation() } break;
-        case 7: { del_vacation() } break;
-        case 8: { ins_temp() } break;
-        //case 9: { del_temp() } break;
-        case 9: { ins_ATT() } break;
-        case 10: { del_ATT() } break;
-        case 11: { ins_LATE() } break;
-        case 12: { del_LATE() } break;
-        case 13: { ins_LEAVE() } break;
-        case 14: { del_LEAVE() } break;*/
     }
 });
-function showtime(){
-    let sh=$("#shft").val();
-    let part=$("#vacValue").val();
-    let off=0;
+function showtime() {
+    let sh = '';
+    if (shiftOfDay == null) {
+        sh = $("#shft").val();
+    }
+    else {
+        sh = shiftOfDay;
+    }
+    //$("#shft").val();//
+    let part = $("#vacValue").val();
+    let off = 0;
 
-switch(parseFloat($("#vacValue").val()))
-{
-   case 0.5: off=$('input:radio[name=hlf]:checked').val();break;
-   case 0.25:off=$('input:radio[name=qtr]:checked').val();break;
-}
-let sql=`declare  @sh int=${sh},@off int=${off},@part float =${part}
+    switch (parseFloat($("#vacValue").val())) {
+        case 0.5: off = $('input:radio[name=hlf]:checked').val(); break;
+        case 0.25: off = $('input:radio[name=qtr]:checked').val(); break;
+    }
+    let sql = `declare  @sh int=${sh},@off int=${off},@part float =${part}
 select cast(dateadd(MINUTE,DailyHours*@part*60*(@off-1),StartTime)as time(0))s ,
 cast(dateadd(MINUTE,DailyHours*@part*60*(@off),StartTime)as time(0))e 
 from Shifts 
 where ShiftId=@sh`;
-//console.log(run);
-if(parseFloat($("#vacValue").val())!=1 /*&& parseInt($("#type").val())==3*/)
-{
-   $("#vacFrom").val(readSQL(sql)[0].s);
-   $("#vacTo").val(readSQL(sql)[0].e);
+    //console.log(run);
+    if (parseFloat($("#vacValue").val()) != 1 /*&& parseInt($("#type").val())==3*/) {
+        $("#vacFrom").val(readSQL(sql)[0].s);
+        $("#vacTo").val(readSQL(sql)[0].e);
+    }
+    else {
+        $("#vacFrom").val('');
+        $("#vacTo").val('');
+    }
 }
-else
-{
-    $("#vacFrom").val('');
-    $("#vacTo").val('');
-}  
-} 
-$("#ModalVacation input,#ModalVacation select").not("#vacFrom,#vacTo").on("change",function (e) {
-  showtime();  
+$("#ModalVacation input,#ModalVacation select").not("#vacFrom,#vacTo").on("change", function (e) {
+    showtime();
 });
 /***************test****************/
 $("#vacValue").on("change", function () {
@@ -346,17 +333,28 @@ $("#vacValue").on("change", function () {
         case 0.25: $("#qtrDiv").css("display", "flex"); $("#shftDiv").css("display", "flex"); break;
         case 0.5: $("#hlfDiv").css("display", "flex"); $("#shftDiv").css("display", "flex"); break;
     }
+    showtime();
 });
-/*******************************/
+/****************table showing modals***************/
 $("#mytable").on("click", "table tr td", function (e) {
     var col = $(this).parent().children().index($(this));
     var row = $(this).parent().parent().children().index($(this).parent());
     dateFrom = $(this).closest('tr').find('td:eq(1)').html();
-    //FN = //ajaxC[0].filenumber;
-    
+    shiftOfDay = dataDay.filter(w => w.dateDay.substr(0, 10) == dateFrom)[0].ShiftId
+    //console.log("shiftOfDay=>")
+    //console.log(shiftOfDay)
+    console.log(col);
     $(".dateFrom").html(dateFrom)
     switch (col) {
+        //ModalTemp
+        case 1:{
+            $("#ModalTemp .dateFrom").val(dateFrom);
+            $("#ModalTemp .dateTo").val(dateFrom);
+            $("#ModalTemp #shiftId").val(shiftOfDay);
+            $('#ModalTemp').modal('show');
+        }break;
         case 2: {
+            $("#MODALIN .dayIn").prop('checked', false);
             var sql = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime";
             var data = readSQL(sql);
             var html = '<option >--select--</option>';
@@ -368,6 +366,7 @@ $("#mytable").on("click", "table tr td", function (e) {
             $('#MODALIN').modal('show');
         } break;
         case 3: {
+            $("#MODALOUT .dayOut").prop('checked', false);
             var sql = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime";
             var data = readSQL(sql);
             var html = '<option >--select--</option>';
@@ -380,20 +379,26 @@ $("#mytable").on("click", "table tr td", function (e) {
         } break;
         case 4:
             {
-            $('#MODALATT').modal('show');
-            }break;
-        case 6: { 
+                $('#MODALATT').modal('show');
+            } break;
+        case 5:
+            {
+                $("#MODALDEDU #date").val(dateFrom);
+                $('#MODALDEDU').modal('show');
+            } break;
+        case 6: {
+            showtime();
             $('#ModalVacation').modal('show');
             $("#shftDiv").css("display", "none");
-         } break;
+        } break;
         case 7:
             {
                 $('#MODALLATE').modal('show');
-            }break;
+            } break;
         case 8:
             {
                 $('#MODALLEAVE').modal('show');
-            }break;
+            } break;
         case 9: { $('#ModalOvertime').modal('show'); } break;
         case 10: {
             var sql = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime";
@@ -417,16 +422,35 @@ $("#mytable").on("click", "table tr td", function (e) {
             $('#MODALMission').modal('show');
         } break;
         case 11: {
+
+            var data1 = readSQL("select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='in' order by DateTime");
+            var html1 = '<option >--select--</option>';
+            for (var i = 0; i < data1.length; i++) {
+                html1 += '<option>' + data1[i].time + '</option>';
+            }
+            $('.sp-ch #deviceMOUT').html(html1);
+            $('.sp-ch #TOUT').val('');
+
+            data1 = readSQL("select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + dateFrom + "' and FileNumber=" + FN + " and type='out' order by DateTime");
+            html1 = '<option >--select--</option>';
+            for (var i = 0; i < data1.length; i++) {
+                html1 += '<option>' + data1[i].time + '</option>';
+            }
+            $('.sp-ch #deviceMIN').html(html1);
+            $('.sp-ch #TIN').val('');
+
+            //open special modal
             $("#MODALSPECIAL").modal("show");
 
         } break;
     }
 });
+
 //كاميرا زيزو هام
-$("#type").change(function(){
-  if(parseInt($("#type").val())==3){
-      //$("#qtrDiv")
-  }
+$("#type").change(function () {
+    if (parseInt($("#type").val()) == 3) {
+        //$("#qtrDiv")
+    }
 });
 /*
 حضور-0
@@ -485,33 +509,33 @@ function ins_mission() {
     var sql = `
         insert into Absences(DateFrom,TimeFrom,TimeTo,AbsenceTypeId,EmployeeId)
                      values('${dateFrom}', '${$("#TINMission").val()}', '${$("#TOUTMission").val()}', 4, (select id from Employees where FileNumber=${FN})) `;
-    console.log(sql);
+    ////console.log(sql);
     if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
     else alert("خطأ");
 }
 
 function del_mission() {
     var sql = `delete from Absences where DateFrom='${dateFrom}' and AbsenceTypeId=4 and EmployeeId=(select id from Employees where FileNumber=${FN})`;
-    console.log(sql);
+    ////console.log(sql);
     if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
     else alert("خطأ");
 }
 
 function ins_special() {
-  var sql = `
+    var sql = `
         insert into Absences(DateFrom,daypart,AbsenceTypeId,EmployeeId)
                      values('${dateFrom}', '${$("#dayPartSpecial").val()}', 11, (select id from Employees where FileNumber=${FN})
                      ) `;
-  console.log(sql);
-  if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
-  else alert("خطأ");
+    ////console.log(sql);
+    if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+    else alert("خطأ");
 }
 
 function del_special() {
-  var sql = `delete from Absences where DateFrom='${dateFrom}' and AbsenceTypeId=11 and EmployeeId=(select id from Employees where FileNumber=${FN})`;
-  console.log(sql);
-  if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
-  else alert("خطأ");
+    var sql = `delete from Absences where DateFrom='${dateFrom}' and AbsenceTypeId=11 and EmployeeId=(select id from Employees where FileNumber=${FN})`;
+    ////console.log(sql);
+    if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
+    else alert("خطأ");
 }
 
 function ins_overtime() {
@@ -531,14 +555,14 @@ function ins_overtime() {
 
 function del_overtime() {
     var sql = `delete from  AdditionApprovals where date='${dateFrom}' and EmployeeId=(select id from Employees where FileNumber=${FN})`
-    console.log(sql);
+    ////console.log(sql);
     if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
     else alert("خطأ");
 }
 
 function ins_vacation() {
     var type = $('#type').val();
-    console.log(type);
+    //console.log(type);
     var ref1 = '',
         ref2 = '';
     switch (type) {
@@ -546,11 +570,11 @@ function ins_vacation() {
         case '14': ref2 = $('#exchange').val(); break;
         case '15': ref2 = $('#exchange').val(); break;
     }
-    console.log(`ref1=${ref1},ref2=${ref2}`);
+    //console.log(`ref1=${ref1},ref2=${ref2}`);
     var sql = `
         insert into Absences(DateFrom,TimeFrom,TimeTo,AbsenceTypeId,EmployeeId,daypart,Ref1,Ref2)
         values('${dateFrom}', '${$("#vacFrom").val()}', '${$("#vacTo").val()}', ${type}, (select id from Employees where FileNumber=${FN}) ,'${$("#vacValue").val()}','${ref1}', '${ref2}') `;
-    console.log(sql);
+    ////console.log(sql);
     if (excuteSQL(sql) == 1) alert("تم الحفظ بنجاح");
     else alert("خطأ");
 }
@@ -562,14 +586,17 @@ function del_vacation() {
 }
 
 function ins_temp() {
-    let v = $("#ModalTemp #timeTo").val() - $("#ModalTemp #timeFrom").val()
     var sql = `
-        begin transaction
-        insert into TempShifts(DateFrom,DateTo,ShiftId,ShiftFrom,ShiftTo,ShiftHours,DepartmentId,isPrivate,DelayId,LeaveId)
-              values('${$("#ModalTemp .dateFrom").val()}', '${$("#ModalTemp .dateTo").val()}', 0, '${$("#ModalTemp #timeFrom").val()}', '${$("#ModalTemp #timeTo").val()}', (select case when datediff(minute, '${$("#ModalTemp #timeFrom").val()}', '${$("#ModalTemp #timeTo").val()}') <0 then 24+datediff(minute, '${$("#ModalTemp #timeFrom").val()}', '${$("#ModalTemp #timeTo").val()}') /60 else datediff(minute, '${$("#ModalTemp #timeFrom").val()}', '${$("#ModalTemp #timeTo").val()}') /60 end), 0, 1, '${$("#ModalTemp #delay").val()}', '${$("#ModalTemp #leave").val()}')
-        insert into tempshiftentry(fileNumber,tempShiftId)values('${FN}',(select IDENT_CURRENT('tempshifts')))
+        begin transaction 
+            UPDATE 
+                Attendances 
+            SET 
+                ShiftId =${$("#ModalTemp #shiftId").val()}  
+            WHERE 
+                DateFrom>='${$("#ModalTemp .dateFrom").val()}' and DateFrom<='${$("#ModalTemp .dateTo").val()}' and 
+                EmployeeId=(select id from Employees where FileNumber=${FN})  
         commit transaction `;
-    //console.log(sql);
+    ////console.log(sql);
     var res = excuteSQL(sql)
     if (res == 1)
         alert("تم التسجيل بنجاح");
@@ -579,18 +606,42 @@ function ins_temp() {
 }
 
 function del_temp() {
-    var sql = ``;
-    console.log(sql);
-    var data = excuteSQL(sql);
-    console.log(data);
+    var sql = `
+        begin transaction 
+            UPDATE 
+                Attendances 
+            SET 
+                ShiftId = NULL 
+            WHERE 
+                DateFrom>='${$("#ModalTemp .dateFrom").val()}' and DateFrom<='${$("#ModalTemp .dateTo").val()}' and 
+                EmployeeId=(select id from Employees where FileNumber=${FN})  
+        commit transaction `;
+    ////console.log(sql);
+    var res = excuteSQL(sql)
+    if (res == 1)
+        alert("تم التسجيل بنجاح");
+    else
+        alert("خطأ");
+    //console.log(res);
 }
 
 function ins_ATT() {
-    var sql = `update attendances set AttValue=${$("#ATTvalue").val()} where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log($("#ATTvalue").val());
-    console.log(sql);
+    //var sql = `update attendances set AttValue=${$("#ATTvalue").val()} where EmployeeId=(select id from Employees where FileNumber=) and dateFrom ='${dateFrom}'`;
+    var sql = `declare @empid int=(select id from employees where filenumber=${FN}),@att float(2)=${$("#ATTvalue").val()},@date date='${dateFrom}';
+            if((select count(*)cnt from attendances where employeeid=@empid and [DateFrom]=@date)>0)
+            begin 
+                update attendances set [AttValue]=@att
+                where employeeid=@empid and [DateFrom]=@date
+            end
+            else 
+            begin
+                insert into Attendances(EmployeeId,DateFrom,AttendanceTypeId,AttValue)
+                values(@empid,@date,'1',@att)
+            end`
+    //console.log($("#ATTvalue").val());
+    // //console.log(sql);
     var data = excuteSQL(sql);
-    console.log(data);
+    ////console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
@@ -599,9 +650,9 @@ function ins_ATT() {
 
 function del_ATT() {
     var sql = `update attendances set AttValue=NULL where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log(sql);
+    ////console.log(sql);
     var data = excuteSQL(sql);
-    console.log(data);
+    ////console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
@@ -610,9 +661,9 @@ function del_ATT() {
 
 function ins_LATE() {
     var sql = `update attendances set Late=${$("#LATEvalue").val()} where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log(sql);
+    ////console.log(sql);
     var data = excuteSQL(sql);
-    console.log(data);
+    ////console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
@@ -621,9 +672,9 @@ function ins_LATE() {
 
 function del_LATE() {
     var sql = `update attendances set Late=NULL where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log(sql);
+    ////console.log(sql);
     var data = excuteSQL(sql);
-    console.log(data);
+    ////console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
@@ -632,9 +683,9 @@ function del_LATE() {
 
 function ins_LEAVE() {
     var sql = `update attendances set Leave=${$("#LEAVEvalue").val()} where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log(sql);
+    ////console.log(sql);
     var data = excuteSQL(sql);
-    console.log(data);
+    ////console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
@@ -642,17 +693,54 @@ function ins_LEAVE() {
 }
 
 function del_LEAVE() {
-    var sql = `update attendances set Leave='NULL where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
-    console.log(sql);
-    var data = ExcuteSQL(sql);
-    console.log(data);
+    var sql = `update attendances set Leave=NULL where EmployeeId=(select id from Employees where FileNumber=${FN}) and dateFrom ='${dateFrom}'`;
+    //console.log(sql);
+    var data = excuteSQL(sql);
+    //console.log(data);
     if (data == 1)
         alert("تم التسجيل بنجاح");
     else
         alert("خطأ");
 }
+$("#MODALIN .dayIn").change(() => {
+    var sql1 = "select cast(DateTime as time(0))time,Type from AClogs where dateadd(day,-1,cast(DateTime as date))='" + $(".MODALIN #DIN").html() + "' and FileNumber=" + FN + " and type='in' order by DateTime";
+    var sql0 = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + $(".MODALIN #DIN").html() + "' and FileNumber=" + FN + " and type='in' order by DateTime";
+    let data;
+    if ($("#MODALIN .dayIn").is(':checked')) {
+        data = readSQL(sql1);
+    } else {
+        data = readSQL(sql0);
+    }
+
+    var html = '<option >--select--</option>';
+    for (var i = 0; i < data.length; i++) {
+        html += '<option>' + data[i].time + '</option>';
+    }
+    //console.log(html);
+    $('#TIN').val('');
+    $('.MODALIN #deviceIN').html(html);
+    //$('#MODALIN').modal('show');     
+});
+$("#MODALOUT .dayOut").change(() => {
+    var sql1 = "select cast(DateTime as time(0))time,Type from AClogs where dateadd(day,-1,cast(DateTime as date))='" + $(".MODALOUT #DOUT").html() + "' and FileNumber=" + FN + " and type='out' order by DateTime";
+    var sql0 = "select cast(DateTime as time(0))time,Type from AClogs where cast(DateTime as date)='" + $(".MODALOUT #DOUT").html() + "' and FileNumber=" + FN + " and type='out' order by DateTime";
+    let data;
+    if ($("#MODALOUT .dayOut").is(':checked')) {
+        data = readSQL(sql1);
+    } else {
+        data = readSQL(sql0);
+    }
+
+    var html = '<option >--select--</option>';
+    for (var i = 0; i < data.length; i++) {
+        html += '<option>' + data[i].time + '</option>';
+    }
+    //console.log(html);
+    $('#TOUT').val('');
+    $('.MODALOUT #deviceOUT').html(html);
+    //$('#MODALIN').modal('show');     
+});
 //console.log(userLog());
-function changeLog()
-{
-  
+function changeLog() {
+
 }

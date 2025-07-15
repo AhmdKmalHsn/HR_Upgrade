@@ -496,19 +496,19 @@ Promise.all(sql_queries.map(query => readSQL_MAX(query)))
         }
         display(temp.slice(0, 50));
     });
-
+    $("#okay").ajaxStart(function () {
+        $("#progress").show(); // Show loading gif when AJAX call starts
+    });
+    $("#okay").ajaxStop(function () {
+        $("#progress").hide(); // Hide loading gif when all AJAX calls are complete
+    });
     $("#okay").click(function () {
         switch (true) {
             case $("#wrady").is(':checked'):
                 {
-                    //$("#progress").show(); // Show loading gif
-                    $(document).ajaxStart(function () {
-                       // $("#progress").show(); // Show loading gif when AJAX call starts
-                    });
                     excute();
-                    $(document).ajaxStop(function () {
-                        //$("#progress").hide(); // Hide loading gif when all AJAX calls are complete
-                    });
+                    //$("#progress").show(); // Show loading gif
+                    
                     //akhmaia aiamhka
                     //excute();
                 } break;

@@ -1,3 +1,8 @@
 ﻿<h1>
     hello it's my test page ?!!!!!
 </h1>
+
+@if (ViewBag.perms.Columns.Contains("shift") && ViewBag.perms.Rows[0]["shift"]=="True")
+{
+    <li>ahmed kamal hassan</li> 
+}
