@@ -134,11 +134,11 @@ namespace newHR.Controllers
                     GuidString = GuidString.Replace("=", "");
                     GuidString = GuidString.Replace("+", "");
                     DataSet update;
-                    if (ds.Tables["data"].Rows[0]["login_permit"].ToString() == "")
+                    if (ds.Tables["data"].Rows[0]["login_permit"]!=DBNull.Value)
                     {
                         update = static_class.updatebysql(
-                                @"update AK_Users set login_at ='" + DateTime.Now +
-                                "',login_to ='" + DateTime.Now.AddMinutes(24 * 60) +
+                                @"update AK_Users set login_at='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
+                                "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])).ToString("yyyy-MM-dd HH:mm:ss") +
                                 "',token ='" + GuidString +
                                 "' where id=" + ds.Tables["data"].Rows[0]["Id"]
                                 );
@@ -146,8 +146,8 @@ namespace newHR.Controllers
                     else
                     {
                         update = static_class.updatebysql(
-                                @"update AK_Users set login_at='" + DateTime.Now +
-                                "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])) +
+                                @"update AK_Users set login_at ='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
+                                "',login_to ='" + DateTime.Now.AddMinutes(24 * 60).ToString("yyyy-MM-dd HH:mm:ss") +
                                 "',token ='" + GuidString +
                                 "' where id=" + ds.Tables["data"].Rows[0]["Id"]
                                 );
@@ -171,10 +171,16 @@ namespace newHR.Controllers
 
                     HttpCookie token = new HttpCookie("token", GuidString);
                     HttpCookie userName = new HttpCookie("UserName", ds.Tables["data"].Rows[0]["UserName"].ToString());
+                    HttpCookie UserId = new HttpCookie("UserId", ds.Tables["data"].Rows[0]["userId"].ToString());
+                  
                     token.Expires = DateTime.Now.AddDays(1);
                     userName.Expires = DateTime.Now.AddDays(1);
+                    UserId.Expires = DateTime.Now.AddDays(1);
+                   
                     Response.Cookies.Add(token);
                     Response.Cookies.Add(userName);
+                    Response.Cookies.Add(UserId);
+
                     output = JsonConvert.SerializeObject(update.Tables[0]);
                 }
             }

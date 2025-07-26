@@ -203,12 +203,12 @@
 
         //console.log($("#login-form").serializeArray())
         console.log($("#login-form").serialize());
-        $.ajax({
+        @* $.ajax({
             url: "/home/login",
             type: "POST",
             data: $("#login-form").serialize(),
             success: (res) => {
-                console.log(res);
+                console.log(res); *@
                 $.ajax({
                     url: "ak_login?" + $("#login-form").serialize(),
                     success: (res) => {
@@ -227,16 +227,16 @@
                     },
                     error: (res) => {
                         //console.log(res.responseText)
-                        console.log(res)
+                        //console.log(res)
                         //alert(JSON.parse(res.responseText).status[0].message)
                     }
                 })
-            },
+            @* },
             error: (res) => {
                 console.log(res);
                 alert("An error occurred while processing your request.");
             }
-        });
+        }); *@
         /*e.preventDefault();
         //console.log($("#login-form").serializeArray())
         console.log($("#login-form").serialize())

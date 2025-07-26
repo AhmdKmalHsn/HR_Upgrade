@@ -13,7 +13,6 @@
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Assets/dataTable/searchBuilder.dataTables.min.css" rel="stylesheet" />
     <link href="~/Assets/dataTable/dataTables.dateTime.min.css" rel="stylesheet" />
-    <!link href="~/Assets/dataTable/dataTables.dataTables.css" rel="stylesheet" />
     <link href="~/Assets/dataTable/buttons.dataTables.css" rel="stylesheet" />
     <!--js-->
     <script src="~/Scripts/jquery-1.10.2.js"></script>
@@ -36,7 +35,7 @@
     <script src="~/assets/datatable/dataTables.fixedHeader.min.js"></script>
     <script src="~/assets/datatable/dataTables.searchBuilder.min.js"></script>
     <script src="~/assets/datatable/dataTables.dateTime.min.js"></script>
-    
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
     <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.colVis.min.js"></script>
     <script src="~/assets/datatable/jszip.min.js"></script>
@@ -46,7 +45,10 @@
         #sidebar {
             display: none;
         }
-
+        thead
+        {
+            background-color: cadetblue;
+        }
         .dropbtn {
             background-color: rgba(0, 0, 0, 0);
             color: #aaa;
@@ -71,7 +73,7 @@
             z-index: 1;
         }
 
-            .dropdown-content a {
+       .dropdown-content a {
                 color: white;
                 padding: 12px 16px;
                 text-decoration: none;
@@ -79,7 +81,7 @@
                 text-align: right;
             }
 
-                .dropdown-content a:hover {
+       .dropdown-content a:hover {
                     background-color: #515151;
                 }
 
@@ -95,7 +97,7 @@
             font-size: 22px;
             font-weight: 500;
         }
-     
+
 
         .upcolerli {
             color: blue !important;
@@ -109,11 +111,47 @@
             color: #671e1e;
             text-decoration: none;
         }
+            label.form-control {
+        background-color: darkgray;
+    }
 
-        
+    .small-card {
+        background-color: rgb(169, 226, 226);
+        font-size: larger;
+        border: 1.1rem;
+        box-shadow: 0 1 1 1;
+    }
 
-        .detail-subtitle {
-            color: gold !important;
-        }
+    input[type="date"]::-webkit-datetime-edit,
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-clear-button {
+        color: #fff;
+        position: relative;
+    }
+
+    input[type="date"]::-webkit-datetime-edit-year-field {
+        position: absolute !important;
+        border-left: 1px solid #8c8c8c;
+        padding: 2px;
+        color: #000;
+        left: 56px;
+    }
+
+    input[type="date"]::-webkit-datetime-edit-month-field {
+        position: absolute !important;
+        border-left: 1px solid #8c8c8c;
+        padding: 2px;
+        color: #000;
+        left: 26px;
+    }
+
+
+    input[type="date"]::-webkit-datetime-edit-day-field {
+        position: absolute !important;
+        color: #000;
+        padding: 2px;
+        left: 4px;
+
+    }
     </style>
 </head>

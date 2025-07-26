@@ -1,7 +1,4 @@
-﻿
-@{
-    ViewBag.Title = "Report3";
+﻿@if(ViewBag.perms.Select("module_name='report1'").Length > 0 && ViewBag.perms.Select("module_name='report1'")[0]["p_access"]==true)
+{
+    <p>100</p>
 }
-
-<h2>Report3</h2>
-

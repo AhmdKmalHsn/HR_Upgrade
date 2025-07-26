@@ -19,29 +19,18 @@ else
 
 <script>
     var EMPS = [];
-    var ROLES = [];
+    //var ROLES = [];
     EMPS = EmpGet(@userId);
-    ROLES = RolesGet(@userId);
-    console.log(ROLES);
-    console.log(EMPS);
-    var sql = `
-    select e.FileNumber,a.* from Attendances a join Employees e on a.EmployeeId=e.id
-where (TimeFrom='' or TimeTo='') and DateFrom<dateadd(day,-3,GETDATE())
-and
-(
-    ( DATEPART(day,DateFrom)<26 and  datefrom>=cast(cast(DATEPART(YEAR,GETDATE())as varchar(4))+'-'+cast(DATEPART(MONTH,dateadd(month,-1,GETDATE())) as varchar(2))+'-'+'26' as datetime))
-    or
-    ( DATEPART(day,DateFrom)>=26 and  datefrom>=cast(cast(DATEPART(YEAR,GETDATE())as varchar(4))+'-'+cast(DATEPART(MONTH,GETDATE()) as varchar(2))+'-'+'26' as datetime))
-)
-`
-
+    //ROLES = RolesGet(@userId);
+    //console.log(ROLES);
+    //console.log(EMPS);
 </script>
 <body class="d-flex flex-column h-100">
     <div id="page" style="display: block">
         <div class="wrapper">
             @Html.Partial("_SideBar")
             <div id="bodywrapper" class="container-fluid showhidetoggle">
-                @Html.Partial("_NavBar");
+                @Html.Partial("_NavBar")
                 <div class="content" style="margin-top: 70px;">
                     <center>
                         @RenderBody()

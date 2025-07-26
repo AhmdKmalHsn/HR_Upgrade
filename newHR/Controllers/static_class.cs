@@ -49,34 +49,6 @@ namespace newHR.Controllers
             };
         }
 
-        public static Dictionary<string, Dictionary<string, object>>ConvertToJsonWithNamedRows(DataTable dataTable, string keyColumnName)
-        {
-            if (dataTable == null)
-                throw new ArgumentNullException(nameof(dataTable));
-
-            if (!dataTable.Columns.Contains(keyColumnName))
-                throw new ArgumentException($"Column '{keyColumnName}' not found in DataTable");
-
-            // Create a dictionary to hold our rows with the key
-            var dict = new Dictionary<string, Dictionary<string, object>>();
-
-            foreach (DataRow row in dataTable.Rows)
-            {
-                string key = row[keyColumnName].ToString();
-                var rowDict = new Dictionary<string, object>();
-
-                foreach (DataColumn col in dataTable.Columns)
-                {
-                    rowDict[col.ColumnName] = row[col];
-                }
-
-                dict[key] = rowDict;
-            }
-
-            // Serialize to JSON
-            
-            return dict;
-        }
         /************************** crud ************************/
         static public DataSet getbysql(string sql)
         {
@@ -303,21 +275,70 @@ namespace newHR.Controllers
             return ds;
         }
         //check  if page can access or not
+        static public bool is_Authenticated(string token)
+        {
+            string sql =
+                $@"SELECT 
+                          datediff(MINUTE,GETDATE(),u.login_to)est,
+                          u.login_to,
+                          u.login_permit
+                FROM AK_Users u 
+                WHERE u.token='{token}'";
 
+            DataSet ds= static_class.getbysql(sql);
+            if (ds.Tables["data"].Rows.Count == 0)
+            {
+                ds.Tables["status"].Rows[0]["status"] = "error";
+                ds.Tables["status"].Rows[0]["message"] = "Not Authorized";
+                return false;
+            }
+            else if (
+                ds.Tables["data"].Rows[0]["login_permit"].ToString() != "-1" &&
+                DateTime.Parse(ds.Tables["data"].Rows[0]["login_to"].ToString()) <= DateTime.Now
+                )
+            {
+                ds.Tables["status"].Rows[0]["status"] = "error";
+                ds.Tables["status"].Rows[0]["message"] = "Session Timeout";
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+            
+        }
         static public string[] GetStatusView(string moduleName, string token, string c, string a)
         {
 
             DataSet ds;
             try
             {
-                ds = static_class.is_Authrize(moduleName, token, "p_access");
-                if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
+                if (is_Authenticated(token))
                 {
-                    return new string[] { "_NotAuthorized", "Home" };
+                    ds = static_class.is_Authrize(moduleName, token, "p_access");
+                    if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
+                    {
+                        if (ds.Tables[0].Rows[0]["message"].ToString() == "Not Authorized")
+                            return new string[] { "_NotAuthorized", "Home" };
+                        else
+                            return new string[] { "Log", "Home" };
+                    }
+                    else
+                    {
+                        return new string[] { a, c };
+                    }
                 }
                 else
                 {
-                    return new string[] { a, c };
+                    return new string[] { "Log", "Home" };
                 }
             }
             catch (Exception)
