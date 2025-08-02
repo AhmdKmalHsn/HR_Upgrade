@@ -1,19 +1,11 @@
 ﻿@using WebMatrix.Data;
-@if(Request.Cookies["Logs"]==null)
-{
-Response.Redirect("~/home/log");
-}
-@if(Int32.Parse(Request.Cookies["Logs"].Value)>1){
-}else
-{
-   Response.Redirect("~/home/Index");
-}
+
 @{
     var u = Request.Cookies["UserId"].Value;
     var db = Database.Open("CS");    
-    var sql = "select Id,UserName,Password,Name,RoleId,[All],Departments,Employees,HaveApprove,ApproveId,(select UserName from Users2 uu where u.ApproveId=uu.Id)ApproveUser from users2 u";
+    var sql = "select Id,UserName,Password,Name,RoleId,[All],Departments,Employees,HaveApprove,ApproveId,(select UserName from ak_users uu where u.ApproveId=uu.Id)ApproveUser from ak_users u";
     var sql2 = "select Id,Name  from Roles2";
-	var sql3 = "select id,UserName from users2 where UserName<>'"+u+"'";
+	var sql3 = "select id,UserName from ak_users where UserName<>'"+u+"'";
     var sqlEmp="select filenumber,knownas from Employees";
     var sqlDept="select id,name from departements";
  }
@@ -298,7 +290,7 @@ if($('#tags2 .cont').length>0)
     
 }	
 var sql=" begin transaction "+
-        " insert into users2 (UserName,Password,Name,RoleId,[All],Departments,Employees,HaveApprove,ApproveId) values('"
+        " insert into ak_users (UserName,Password,Name,RoleId,[All],Departments,Employees,HaveApprove,ApproveId) values('"
         + $("#userNameId").val()+
         "', '"+$("#password").val()+
         "', '"+$("#name").val()+
@@ -346,7 +338,7 @@ if($('#tags2 .cont').length>0)
     
 }	
 var sql=" begin transaction "+
-        " update users2 set UserName='"+$("#userNameId").val()+
+        " update ak_users set UserName='"+$("#userNameId").val()+
         "', Password='"+$("#password").val()+
         "', Name='"+$("#name").val()+
         "', RoleId='"+$("#roles").val()+
@@ -379,13 +371,13 @@ var sql1=`select Id,
 	   case when Employees=1 then 1 else 0 end 'Emps',
        case when HaveApprove=1 then 1 else 0 end'HaveApprove',
 	   isnull(ApproveId,-1)'ApproveId'
-from users2 u
+from ak_users u
 where u.id=`+user_id;
 
-var sql2=`select u.UserName,d.Name,d.Id from DeptAssign a,Users2 u,Departements d
+var sql2=`select u.UserName,d.Name,d.Id from DeptAssign a,ak_users u,Departements d
 where a.AssignId=u.Id and a.DeptId=d.Id and u.id=`+user_id;
 
-var sql3=`select u.UserName,e.FileNumber,KnownAs'name' from EmpAssign a,Users2 u,Employees e
+var sql3=`select u.UserName,e.FileNumber,KnownAs'name' from EmpAssign a,ak_users u,Employees e
 where a.AssignId=u.Id and a.EmpId=e.FileNumber and u.id=`+user_id;
 var data1=readSQL(sql1);
 var data2=readSQL(sql2);

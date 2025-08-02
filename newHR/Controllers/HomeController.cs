@@ -119,41 +119,47 @@ namespace newHR.Controllers
         public ActionResult AK_LogIn(string username = "", string password = "")
         {
             string clientIP = Request.UserHostAddress;
+            DataSet update;
             string sql = @"SELECT u.Id userId,*
                            from AK_Users u 
-                           where u.UserName='" + username + "' and u.password='" + password + "'";
+                           where active='Y' and u.UserName='" + username + "' and u.password='" + password + "'";
             string output = "[{\"status\" : \"error\" ,\"message\" : \"user name or password is error\"}]";
             var ds = static_class.getbysql(sql);
             if (ds.Tables["status"].Rows[0][0].ToString() == "success")
             {
-                //output = JsonConvert.SerializeObject(ds, Formatting.Indented);
                 if (ds.Tables["data"].Rows.Count > 0)
                 {
                     Guid g = Guid.NewGuid();
                     string GuidString = Convert.ToBase64String(g.ToByteArray());
                     GuidString = GuidString.Replace("=", "");
                     GuidString = GuidString.Replace("+", "");
-                    DataSet update;
-                    if (ds.Tables["data"].Rows[0]["login_permit"]!=DBNull.Value)
+                    
+                    if (
+                        ds.Tables["data"].Rows[0]["ip_restrict"] == DBNull.Value
+                        || ds.Tables["data"].Rows[0]["ip_restrict"].ToString() == ""
+                        || ds.Tables["data"].Rows[0]["ip_restrict"].ToString() == clientIP
+                        )
                     {
-                        update = static_class.updatebysql(
-                                @"update AK_Users set login_at='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])).ToString("yyyy-MM-dd HH:mm:ss") +
-                                "',token ='" + GuidString +
-                                "' where id=" + ds.Tables["data"].Rows[0]["Id"]
-                                );
-                    }
-                    else
-                    {
-                        update = static_class.updatebysql(
-                                @"update AK_Users set login_at ='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                "',login_to ='" + DateTime.Now.AddMinutes(24 * 60).ToString("yyyy-MM-dd HH:mm:ss") +
-                                "',token ='" + GuidString +
-                                "' where id=" + ds.Tables["data"].Rows[0]["Id"]
-                                );
-                    }
-                    static_class.insertbysql(
-                                @"INSERT INTO dbo.AK_logins
+                        if (ds.Tables["data"].Rows[0]["login_permit"] != DBNull.Value)
+                        {
+                            update = static_class.updatebysql(
+                                    @"update AK_Users set login_at='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
+                                    "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])).ToString("yyyy-MM-dd HH:mm:ss") +
+                                    "',token ='" + GuidString +
+                                    "' where id=" + ds.Tables["data"].Rows[0]["Id"]
+                                    );
+                        }
+                        else
+                        {
+                            update = static_class.updatebysql(
+                                    @"update AK_Users set login_at ='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
+                                    "',login_to ='" + DateTime.Now.AddMinutes(24 * 60).ToString("yyyy-MM-dd HH:mm:ss") +
+                                    "',token ='" + GuidString +
+                                    "' where id=" + ds.Tables["data"].Rows[0]["Id"]
+                                    );
+                        }
+                        static_class.insertbysql(
+                                    @"INSERT INTO dbo.AK_logins
                                 (
                                   userid
                                  ,username
@@ -162,30 +168,34 @@ namespace newHR.Controllers
                                 )
                                 VALUES
                                 ('" +
-                                 ds.Tables["data"].Rows[0]["Id"] + "','" +
-                                 ds.Tables["data"].Rows[0]["UserName"] + "','" +
-                                 Request.UserHostAddress + "','" +
-                                 GuidString + "'" +
-                                 ");"
-                                );
-
+                                     ds.Tables["data"].Rows[0]["Id"] + "','" +
+                                     ds.Tables["data"].Rows[0]["UserName"] + "','" +
+                                     Request.UserHostAddress + "','" +
+                                     GuidString + "'" +
+                                     ");"
+                                    );
+                        output = JsonConvert.SerializeObject(update.Tables[0]);
+                    }
+                    else
+                    {
+                        output = "[{\"status\" : \"error\" ,\"message\" : \"user name cannot log in from this pc \"}]";
+                    }
                     HttpCookie token = new HttpCookie("token", GuidString);
                     HttpCookie userName = new HttpCookie("UserName", ds.Tables["data"].Rows[0]["UserName"].ToString());
                     HttpCookie UserId = new HttpCookie("UserId", ds.Tables["data"].Rows[0]["userId"].ToString());
-                  
+
                     token.Expires = DateTime.Now.AddDays(1);
                     userName.Expires = DateTime.Now.AddDays(1);
                     UserId.Expires = DateTime.Now.AddDays(1);
-                   
+
                     Response.Cookies.Add(token);
                     Response.Cookies.Add(userName);
                     Response.Cookies.Add(UserId);
 
-                    output = JsonConvert.SerializeObject(update.Tables[0]);
+                    
                 }
+               
             }
-
-            //return Content(/*, "application/json"*/); 
             return Content(output, "application/json");
         }
         public ActionResult AK_LogOut()
@@ -263,7 +273,7 @@ UNION ALL
 SELECT
   COUNT(*) cnt
  ,'users' name
-FROM Users2
+FROM ak_Users
 UNION ALL
 SELECT
   COUNT(*) cnt

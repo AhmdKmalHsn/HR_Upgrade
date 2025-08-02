@@ -38,5 +38,19 @@ namespace admin
         {
             
         }
+
+        private void aK_Roles_linesDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+
+        }
+
+        private void aK_Roles_linesDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 2)
+            {
+                
+                    
+            }
+        }
     }
 }

@@ -131,9 +131,9 @@ INNER JOIN dbo.AK_Roles_lines
   ON AK_Roles_lines.module_line_id = AK_Modules_lines.id
 INNER JOIN dbo.AK_Roles
   ON AK_Roles_lines.role_id = AK_Roles.Id
-INNER JOIN dbo.Users2
-  ON Users2.RoleId = AK_Roles.Id
-WHERE Users2.Id = ${user}
+INNER JOIN dbo.ak_Users
+  ON ak_Users.RoleId = AK_Roles.Id
+WHERE ak_Users.Id = ${user}
 `;
   var data = readSQL(sql1);
   
@@ -151,36 +151,36 @@ function EmpGet(user) {
   var sql1 =
     " select FileNumber from employees " +
     " where (" +
-    "       ((select Employees from users2 where id= " +
+    "       ((select Employees from ak_users where id= " +
     user +
     ")=1 and FileNumber in(select EmpId from EmpAssign where AssignId= " +
     user +
     "))or" +
-    //"       ((select Employees from users2 where id= "+user+")=0)or"+
-    "	   ((select Employees from users2 where id= " +
+    //"       ((select Employees from ak_users where id= "+user+")=0)or"+
+    "	   ((select Employees from ak_users where id= " +
     user +
     ")=-1 and FileNumber not in(select EmpId from EmpAssign where AssignId= " +
     user +
     "))" +
     "	  )or" +
     "	  (" +
-    "	  ((select Departments from users2 where id= " +
+    "	  ((select Departments from ak_users where id= " +
     user +
     ")=1 and DepartementId in(select DeptId from DeptAssign where AssignId= " +
     user +
     "))or" +
-    //"      ((select Departments from users2 where id= "+user+")=0 )or"+
-    "	  ((select Departments from users2 where id= " +
+    //"      ((select Departments from ak_users where id= "+user+")=0 )or"+
+    "	  ((select Departments from ak_users where id= " +
     user +
     ")=-1 and DepartementId not in(select DeptId from DeptAssign where AssignId= " +
     user +
     "))" +
     "	  )or" +
     "	  (" +
-    "	  ((select [All] from users2 where id= " +
+    "	  ((select [All] from ak_users where id= " +
     user +
     ")=0 and DepartementId in(0))or " +
-    "	  ((select [All] from users2 where id= " +
+    "	  ((select [All] from ak_users where id= " +
     user +
     ")=1 and DepartementId not in(0))" +
     "	  )" +

@@ -27,12 +27,12 @@ namespace newHR.Controllers
             if (id == 0) { 
             string sql = @"
 	        select u.Id,	u.UserName,	'****'password,	u.Name,	r.name 'role'	
-            from Users2 u left join Roles2 r on r.Id=u.RoleId";
+            from ak_users u left join Roles2 r on r.Id=u.RoleId";
             return Json(db.toJSON(db.getData(sql)), JsonRequestBehavior.AllowGet);
             }else { 
             string sql = @"
 	        select u.Id,	u.UserName,	''password,	u.Name,u.RoleId
-            from Users2 u where u.Id=@id";
+            from ak_users u where u.Id=@id";
             SqlCommand cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
             return Json(db.toJSON(db.getData(cmd)), JsonRequestBehavior.AllowGet);
@@ -41,7 +41,7 @@ namespace newHR.Controllers
         public JsonResult createUser(string UserName, string password, string Name, int RoleId)
         {
             string sql = @"
-	            insert into Users2(UserName,password,Name,RoleId)
+	            insert into ak_users(UserName,password,Name,RoleId)
                 values(@UserName,@password,@Name,@RoleId)";
             SqlCommand cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@UserName", SqlDbType.NVarChar).Value = UserName;
@@ -53,7 +53,7 @@ namespace newHR.Controllers
         public JsonResult updateUser(int Id,string UserName, string password, string Name, int RoleId)
         {
             string sql = @"
-	            update Users2 set
+	            update ak_users set
                 UserName=@UserName,password=@password,Name=@Name,RoleId=@RoleId
                 where id=@id";
             SqlCommand cmd = new SqlCommand(sql);

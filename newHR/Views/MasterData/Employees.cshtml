@@ -7,33 +7,29 @@
     var sql03 = "select id,name from status";
     var sqlEdu = "select id,name from EducationalStatus";
 }
-@if (Request.Cookies["Logs"] == null)
-{
-    Response.Redirect("~/home/log");
-}
-@if (Int32.Parse(Request.Cookies["Logs"].Value) < 2)
-{
-    Response.Redirect("~/home/Index");
-}
-<style>
 
-</style>
 <h2>بيانات العاملين</h2>
+
 <hr>
+
 <div id="loader"
      style="position: absolute; width: 100%; z-index: 100; height: 0px; background-color: rgb(255, 255, 255); display: block;">
     <img src="/1.gif" style="margin:auto; ">
 </div>
 <div id="my_tabs">
-    <button id="create" data-bs-toggle="modal" data-bs-target=".modal" class="btn btn-dark" onclick="$('#createBtn').show();
+    @if (ViewBag.perms.Select("module_name='employees'").Length > 0 && ViewBag.perms.Select("module_name='employees'")[0]["p_create"] == true)
+    {
+        <button id="create" data-bs-toggle="modal" data-bs-target=".modal" class="btn btn-dark" onclick="$('#createBtn').show();
                     $('#updateBtn').hide();
                     $('input').val('');
                     $('select').val(-1);
                     $('textarea').val('');
                     $('#img').attr('src', '');">
-        انشاء
-    </button>
-    <hr>
+            انشاء
+        </button>
+
+        <hr>
+    }
     <br>
     <div id="container" style="overflow-x:auto;width:100%;">
         <table id="example" class="display" style="width:100%;">
@@ -55,388 +51,443 @@
                 <div id="dialog-form">
                     <div class="container-fluid float-right">
                         <!-- #region -->
-                        <div class="row m-2">
-                            <div class="col-3 ps-4" style="position: relative;">
-                                <img id="img" src="" alt="no pics"
-                                     style="position: absolute; top: 0; left: 11px; width: 87%; height: 98%; border-radius: 10px; box-shadow: 4px 4px 10px black;" srcset="">
-                                <input type="file" id="FileUpload1" style="width:0px;height:0px;" />
-                            </div>
-                            <div class="col-9">
-                                <div class="row mb-2" dir=RTL>
-                                    <div class="col-3">
-                                        <label class="form-control">رقم الملف </label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input id="fileNo" name="fileNo" type=number class="form-control">
-                                    </div>
+                        @if (ViewBag.perms.Select("module_name='employees'").Length > 0 && ViewBag.perms.Select("module_name='employees'")[0]["p_access"] == true)
+                        {
+                            <div class="row m-2">
+                                <div class="col-3 ps-4" style="position: relative;">
+                                    <img id="img" src="" alt="no pics"
+                                         style="position: absolute; top: 0; left: 11px; width: 87%; height: 98%; border-radius: 10px; box-shadow: 4px 4px 10px black;" srcset="">
+                                    <input type="file" id="FileUpload1" style="width:0px;height:0px;" />
                                 </div>
-                                <div class="row mb-2" dir=RTL>
-                                    <div class="col-3">
-                                        <label class="form-control"> الاسم</label>
+                                <div class="col-9">
+                                    <div class="row mb-2" dir=RTL>
+                                        <div class="col-3">
+                                            <label class="form-control">رقم الملف </label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input id="fileNo" name="fileNo" type=number class="form-control">
+                                        </div>
                                     </div>
-                                    <div class="col-9">
-                                        <input id="name" name="name" type=text class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="row mb-2" dir=RTL>
-                                    <div class="col-3">
-                                        <label class="form-control"> القسم</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <select id="deptId" name="deptId" class="form-control">
-                                            <option style="text-align:right" value="0">بدون</option>
-                                            @foreach (var row in db.Query(sql01))
-                                            {
-                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control"> الوظيفة</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="jobId" name="jobId" class="form-control">
-                                            <option style="text-align:right" value="0">بدون</option>
-                                            @foreach (var row in db.Query(sql02))
-                                            {
-                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control"> التعليم</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="eduId"  name="eduId" class="form-control">
-                                            <option style="text-align:right" value="0">بدون</option>
-                                            @foreach (var row in db.Query(sqlEdu))
-                                            {
-                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div id="tabs">
-                            <ul>
-                                <li>
-                                    <a href="#tab-0">البيانات الشخصية</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-1">العمل</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-2">المرتب</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-4">التامينات</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-5">بيانات الاتصال</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-6">الملاحظات</a>
-                                </li>
-                                <li>
-                                    <a href="#tab-7">الملفات</a>
-                                </li>
-
-                            </ul>
-                            <div id="tab-0" style="margin-top: 40px;">
-                                @*>البيانات الشخصية<*@
-                                <div class="row m-2" dir=RTL>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> تاريخ الميلاد</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id=birthDate name=birthDate type=date class="form-control">
+                                    <div class="row mb-2" dir=RTL>
+                                        <div class="col-3">
+                                            <label class="form-control"> الاسم</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <input id="name" name="name" type=text class="form-control">
+                                        </div>
                                     </div>
 
-                                    <div class="col-2">
-                                        <label class="form-control">الخدمة العسكرية </label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="militId" name="militId" class="form-control">
-                                            <option style="text-align:right" value="0">تم</option>
-                                            <option style="text-align:right" value="1">لم يتم</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> رقم البطاقة</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id=idNo name=idNo type=text class="form-control">
+                                    <div class="row mb-2" dir=RTL>
+                                        <div class="col-3">
+                                            <label class="form-control"> القسم</label>
+                                        </div>
+                                        <div class="col-9">
+                                            <select id="deptId" name="deptId" class="form-control">
+                                                <option style="text-align:right" value="0">بدون</option>
+                                                @foreach (var row in db.Query(sql01))
+                                                {
+                                                    <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                                }
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <div class="col-2">
-                                        <label class="form-control">الديانة</label>
+                                    <div class="row mb-2" dir=RTL>
+                                        <div class="col-2">
+                                            <label class="form-control"> الوظيفة</label>
+                                        </div>
+                                        <div class="col-4">
+                                            <select id="jobId" name="jobId" class="form-control">
+                                                <option style="text-align:right" value="0">بدون</option>
+                                                @foreach (var row in db.Query(sql02))
+                                                {
+                                                    <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-2">
+                                            <label class="form-control"> التعليم</label>
+                                        </div>
+                                        <div class="col-4">
+                                            <select id="eduId" name="eduId" class="form-control">
+                                                <option style="text-align:right" value="0">بدون</option>
+                                                @foreach (var row in db.Query(sqlEdu))
+                                                {
+                                                    <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                                }
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="xreligion" name="xreligion">
-                                            <option value="مسلم">مسلم</option>
-                                            <option value="مسيحي">مسيحي</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">EmployeeGroup</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="EmployeeGroupId" name="EmployeeGroupId"></select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">EmployeeSubGroup</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="EmployeeSubGroupId" name="EmployeeSubGroupId"></select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">Level</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="LevelId" name="LevelId"></select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">Location</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="LocationId"  name="LocationId"></select>
-                                    </div>
-                                    <!-- new attributes -->
-
-                                    <div class="col-2">
-                                        <label class="form-control">Grade</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="GradeId"  name="GradeId"></select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">class</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="classid"  name="classid"></select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">Employee Type</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="TypeEmployeeId" name="TypeEmployeeId"></select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">Company</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="CompanyId" name="CompanyId"></select>
-                                    </div>
-                                    <!-- end new attributes -->
-
-                                </div>
-                            </div>
-                            <div id="tab-1" style="margin-top: 40px;">
-                                @*>العمل<*@
-                                <div class="row m-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control"> تاريخ التعيين</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="joinDate" name="joinDate" type="date" class="form-control">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> الحالة</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="statusId" name="statusId" class="form-control">
-                                            @foreach (var row in db.Query(sql03))
-                                            {
-                                                <option style="text-align:right" value="@row.Id">@row.Name</option>
-                                            }
-                                        </select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> تاريخ ترك العمل</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="TerminationDate" name="TerminationDate" type="date" class="form-control">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">سبب ترك العمل</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="TerminationReason" name="TerminationReason" rows="3"
-                                                  class="form-control"></textarea>
-                                    </div>
-
                                 </div>
 
                             </div>
-                            <div id="tab-2" style="margin-top: 40px;">
-                                @*>المرتب<*@
-                                <div class="row m-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control">كود البنك 1</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="bankCode" name="bankCode" type="number" class="form-control">
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">كود البنك 2</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="bankCode2" name="bankCode2" type="number" class="form-control">
-                                    </div>
+                            <div id="tabs">
+                                <ul>
 
-                                    <div class="col-2">
-                                        <label class="form-control"> تاريخ رصيد الاجازات</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="deferredDate" name="deferredDate" type="date" class="form-control">
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control"> رصيد الاجازات الاول</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="deferredDays" name="deferredDays" type="number" class="form-control">
-                                    </div>
+                                    @if (ViewBag.perms.Select("module_name='employees_personal'").Length > 0 && ViewBag.perms.Select("module_name='employees_personal'")[0]["p_access"] == true)
+                                    {
+                                        /*
+                                        employees_personal
+                                        employees_work
+                                        employees_salary
+                                        employees_insurance
+                                        employees_contact
+                                        employees_comment
+                                        employees_files
+                                        */
 
-                                    <div class="col-2">
-                                        <label class="form-control"> shift </label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="shift" name="shift" class="form-control"></select>
-                                    </div>
 
-                                </div>
+                                    <li>
+                                        <a href="#tab-0">البيانات الشخصية</a>
+                                    </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_work'").Length > 0 && ViewBag.perms.Select("module_name='employees_work'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-1">العمل</a>
+                                        </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_salary'").Length > 0 && ViewBag.perms.Select("module_name='employees_salary'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-2">المرتب</a>
+                                        </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_insurance'").Length > 0 && ViewBag.perms.Select("module_name='employees_insurance'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-4">التامينات</a>
+                                        </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_contact'").Length > 0 && ViewBag.perms.Select("module_name='employees_contact'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-5">بيانات الاتصال</a>
+                                        </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_comment'").Length > 0 && ViewBag.perms.Select("module_name='employees_comment'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-6">الملاحظات</a>
+                                        </li>
+                                    }
+                                    @if (ViewBag.perms.Select("module_name='employees_files'").Length > 0 && ViewBag.perms.Select("module_name='employees_files'")[0]["p_access"] == true)
+                                    {
+                                        <li>
+                                            <a href="#tab-7">الملفات</a>
+                                        </li>
+                                    }
+                                </ul>
+                                @if (ViewBag.perms.Select("module_name='employees_personal'").Length > 0 && ViewBag.perms.Select("module_name='employees_personal'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-0" style="margin-top: 40px;">
+                                        @*>البيانات الشخصية<*@
+                                        <div class="row m-2" dir=RTL>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> تاريخ الميلاد</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id=birthDate name=birthDate type=date class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">الخدمة العسكرية </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select id="militId" name="militId" class="form-control">
+                                                    <option style="text-align:right" value="0">تم</option>
+                                                    <option style="text-align:right" value="1">لم يتم</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> رقم البطاقة</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id=idNo name=idNo type=text class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">الديانة</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="xreligion" name="xreligion">
+                                                    <option value="مسلم">مسلم</option>
+                                                    <option value="مسيحي">مسيحي</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">EmployeeGroup</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="EmployeeGroupId" name="EmployeeGroupId"></select>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">EmployeeSubGroup</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="EmployeeSubGroupId" name="EmployeeSubGroupId"></select>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">Level</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="LevelId" name="LevelId"></select>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">Location</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="LocationId" name="LocationId"></select>
+                                            </div>
+                                            <!-- new attributes -->
+
+                                            <div class="col-2">
+                                                <label class="form-control">Grade</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="GradeId" name="GradeId"></select>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">class</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="classid" name="classid"></select>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">Employee Type</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="TypeEmployeeId" name="TypeEmployeeId"></select>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">Company</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="CompanyId" name="CompanyId"></select>
+                                            </div>
+                                            <!-- end new attributes -->
+
+                                        </div>
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_work'").Length > 0 && ViewBag.perms.Select("module_name='employees_work'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-1" style="margin-top: 40px;">
+                                        @*>العمل<*@
+                                        <div class="row m-2" dir=RTL>
+                                            <div class="col-2">
+                                                <label class="form-control"> تاريخ التعيين</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="joinDate" name="joinDate" type="date" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> الحالة</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select id="statusId" name="statusId" class="form-control">
+                                                    @foreach (var row in db.Query(sql03))
+                                                    {
+                                                        <option style="text-align:right" value="@row.Id">@row.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> تاريخ ترك العمل</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="TerminationDate" name="TerminationDate" type="date" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">سبب ترك العمل</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="TerminationReason" name="TerminationReason" rows="3"
+                                                          class="form-control"></textarea>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_salary'").Length > 0 && ViewBag.perms.Select("module_name='employees_salary'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-2" style="margin-top: 40px;">
+                                        @*>المرتب<*@
+                                        <div class="row m-2" dir=RTL>
+                                            <div class="col-2">
+                                                <label class="form-control">كود البنك 1</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="bankCode" name="bankCode" type="number" class="form-control">
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">كود البنك 2</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="bankCode2" name="bankCode2" type="number" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> تاريخ رصيد الاجازات</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="deferredDate" name="deferredDate" type="date" class="form-control">
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control"> رصيد الاجازات الاول</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="deferredDays" name="deferredDays" type="number" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> shift </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select id="shift" name="shift" class="form-control"></select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_insurance'").Length > 0 && ViewBag.perms.Select("module_name='employees_insurance'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-4" style="margin-top: 40px;">
+                                        @*>التامينات<*@
+                                        <div class="row m-2" dir=RTL>
+                                            <div class="col-2">
+                                                <label class="form-control"> رقم التامين</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input id="insNo" name="insNo" type="number" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> الاجر التاميني</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input id="insSalary" name="insSalary" type="number" class="form-control" value="0">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control"> نسبة التأمين</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input id="insPercent" name="insPercent" type="number" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_contact'").Length > 0 && ViewBag.perms.Select("module_name='employees_contact'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-5" style="margin-top: 40px;">
+                                        @*>بيانات الاتصال<*@
+                                        <div class="row m-2" dir=RTL>
+                                            <div class="col-2">
+                                                <label class="form-control">التليفون </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="phoneNo" name="phoneNo" type="text" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">تليفون الشركة</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="phoneNo2" name="phoneNo2" type="text" class="form-control">
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">Email</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input id="Email" name="Email" type="email" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" dir=RTL>
+                                            <div class="col-2">
+                                                <label class="form-control">Street</label>
+                                            </div>
+                                            <div class="col-10">
+                                                <textarea class="form-control" rows="3"
+                                                          id="HomeStreet" name="HomeStreet"></textarea>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">City</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="HomeCityId" name="HomeCityId"></select>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">Country</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-control" id="HomeCountryId" name="HomeCountryId"></select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_comment'").Length > 0 && ViewBag.perms.Select("module_name='employees_comment'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-6" style="margin-top: 40px;">
+                                        @*>الملاحظات<*@
+                                        <div class="row m-2" dir=RTL>
+
+                                            <div class="col-2">
+                                                <label class="form-control">Division</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="Division" name="Division" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">SubDivision</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="SubDivision" name="SubDivision" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <label class="form-control">PersonalArea</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="PersonalArea" name="PersonalArea" class="form-control"></textarea>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">PersonalSubArea</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="PersonalSubArea" name="PersonalSubArea" class="form-control"></textarea>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-control">Visa</label>
+                                            </div>
+                                            <div class="col-4">
+                                                <textarea id="AccountNo" name="AccountNo" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (ViewBag.perms.Select("module_name='employees_files'").Length > 0 && ViewBag.perms.Select("module_name='employees_files'")[0]["p_access"] == true)
+                                {
+                                    <div id="tab-7" style="margin-top: 40px;">
+                                        @*>الملفات<*@
+                                        <div class="row m-2" dir=RTL></div>
+                                    </div>
+                                }
                             </div>
-
-                            <div id="tab-4" style="margin-top: 40px;">
-                                @*>التامينات<*@
-                                <div class="row m-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control"> رقم التامين</label>
-                                    </div>
-                                    <div class="col-2">
-                                        <input id="insNo" name="insNo" type="number" class="form-control">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> الاجر التاميني</label>
-                                    </div>
-                                    <div class="col-2">
-                                        <input id="insSalary" name="insSalary" type="number" class="form-control" value="0">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control"> نسبة التأمين</label>
-                                    </div>
-                                    <div class="col-2">
-                                        <input id="insPercent" name="insPercent" type="number" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab-5" style="margin-top: 40px;">
-                                @*>بيانات الاتصال<*@
-                                <div class="row m-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control">التليفون </label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="phoneNo" name="phoneNo" type="text" class="form-control">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">تليفون الشركة</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="phoneNo2" name="phoneNo2" type="text" class="form-control">
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">Email</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <input id="Email" name="Email" type="email" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row m-2" dir=RTL>
-                                    <div class="col-2">
-                                        <label class="form-control">Street</label>
-                                    </div>
-                                    <div class="col-10">
-                                        <textarea class="form-control" rows="3"
-                                                  id="HomeStreet" name="HomeStreet"></textarea>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">City</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="HomeCityId" name="HomeCityId"></select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">Country</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <select class="form-control" id="HomeCountryId" name="HomeCountryId"></select>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div id="tab-6" style="margin-top: 40px;">
-                                @*>الملاحظات<*@
-                                <div class="row m-2" dir=RTL>
-
-                                    <div class="col-2">
-                                        <label class="form-control">Division</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="Division" name="Division" class="form-control"></textarea>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">SubDivision</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="SubDivision" name="SubDivision" class="form-control"></textarea>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <label class="form-control">PersonalArea</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="PersonalArea" name="PersonalArea" class="form-control"></textarea>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">PersonalSubArea</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="PersonalSubArea" name="PersonalSubArea" class="form-control"></textarea>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="form-control">Visa</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <textarea id="AccountNo" name="AccountNo" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab-7" style="margin-top: 40px;">
-                                @*>الملفات<*@
-                                <div class="row m-2" dir=RTL></div>
-                            </div>
-                        </div>
+                        }
                         <!-- #region -->
                     </div>
                 </div>
@@ -467,9 +518,9 @@
         dataType: "Json",
         success: function (response) {
             $("#loader").css("display", "none");
-            all = JSON.parse(response);
+            all = (@ViewBag.perms.Select("module_name='employees'").Length > 0 && '@ViewBag.perms.Select("module_name='employees'")[0]["p_read"]' == 'True')?JSON.parse(response):[];
             //console.log(all);
-           
+
             var tb = $('#example').DataTable({
                 fixedHeader: {
                     header: true,
@@ -690,7 +741,7 @@
             visible: false
         },
 
-        (parseInt(@Request.Cookies["Reports_Salary_Details"].Value) == 4) ?
+        (@ViewBag.perms.Select("module_name='employees'").Length > 0 && '@ViewBag.perms.Select("module_name='employees'")[0]["p_update"]' == 'True')?
             {
                 "title": "Edit",
                 "data": "Id",
@@ -810,24 +861,23 @@
             " ,Percentage=" + val($("#insPercent").val()) +
             " ,InsuranceNumber=" + val($("#insNo").val()) +
             " where EmployeeId=" + id +
-            
+
             " commit transaction ";
         //console.log(sqlUpdate);
         /* changed value */
         let formFields = document.querySelectorAll("#dialog-form [name]");
-            //console.log("Form Fields:", formFields);
-            
-            let changedValues = {};
-            formFields.forEach(field => {
-                if (field.value != f[field.name]) {
-                    changedValues[field.name] = field.value;
-                }
-            });
+        //console.log("Form Fields:", formFields);
+
+        let changedValues = {};
+        formFields.forEach(field => {
+            if (field.value != f[field.name]) {
+                changedValues[field.name] = field.value;
+            }
+        });
         /* end changed value */
-        if ( Object.keys(changedValues).length > 0) 
-        {
+        if (Object.keys(changedValues).length > 0) {
             var res = excuteSQL(sqlUpdate);
-           
+
             if (res == 1) {
                 alert("saved successfull!");
                 //dialog.dialog("close");
@@ -839,9 +889,8 @@
                 //dialog.dialog("close");
             }
         }
-        else
-        {
-            alert ("No changes detected!");
+        else {
+            alert("No changes detected!");
         }
     }
 
@@ -994,13 +1043,12 @@
         $("#shift").val(f.shift);
         $("#deferredDate").val(f.deferredDate == null ? '' : f.deferredDate.substr(0, 10));
         $("#deferredDays").val(f.deferredDays);
-        
-        // to be able to save changes in it 
+
+        // to be able to save changes in it
         let formFields = document.querySelectorAll("#dialog-form [name]");
         formFields.forEach(field => {
-            f[field.name] = field.value ;
+            f[field.name] = field.value;
         });
-
         $('#createBtn').hide();
         $('#updateBtn').show();
     }

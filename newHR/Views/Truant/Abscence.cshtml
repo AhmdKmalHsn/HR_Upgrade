@@ -1,9 +1,4 @@
-﻿@if (Request.Cookies["UserName"] == null)
-{
-    Response.Redirect("~/home/Index");
-}
-
-<head>
+﻿<head>
     <link rel="stylesheet" href="~/Assets/Attendance.css">
     <style>
         .sp-ch {
@@ -24,8 +19,7 @@
 <div class="container mx-auto">
     <div class="row">
         <div class="col-xl-6 col-md-6 col-sm-12">
-            <form class="" action="" method="post" onsubmit="getTable();return false;" 
-                  style="border: 1px aliceblue solid;
+            <form class="" action="" method="post" onsubmit="getTable();return false;" style="border: 1px aliceblue solid;
                         /*width: 39%;*/
                         background-color: #9dc8ed;
                         border-radius: 7%;
@@ -104,7 +98,7 @@
 @if (Int32.Parse(Request.Cookies["ClosingPeriod"].Value) >= 3)
 {
     <div class="card" style="border:none;">
-        <table class='table' id="salary" style="" dir=rtl>
+        <table class='table' id="salary" dir=rtl>
 
         </table>
     </div>
@@ -466,33 +460,35 @@
                 <div class="modal-body" style="text-align:right;font-size:20px;font-weight:bold">
                     <div class="row">
                         <div class="col-4">
-                            <input type="date" id="dateTo" class="dateTo form-control" style="border-radius:10px;text-align:center">
+                            <input type="date" id="dateTo" class="dateTo form-control"
+                                style="border-radius:10px;text-align:center">
                         </div>
                         <div class="col-2">
                             الى
                         </div>
                         <div class="col-4">
-                            <input type="date" id="dateFrom" class="dateFrom form-control" style="border-radius:10px;text-align:center">
+                            <input type="date" id="dateFrom" class="dateFrom form-control"
+                                style="border-radius:10px;text-align:center">
                         </div>
                         <div class="col-2">
                             من
                         </div>
                     </div>
                     <!--div class="row">
-                        <div class="col-4">
-                            <input type="time" id="timeTo" style="border-radius:10px;text-align:center">
-                        </div>
-                        <div class="col-2">
-                            الى
-                        </div>
-                        <div class="col-4">
-                            <input type="time" id="timeFrom" style="border-radius:10px;text-align:center">
-                        </div>
-                        <div class="col-2">
-                            من
-                        </div>
-                    </div-->
-                    
+                            <div class="col-4">
+                                <input type="time" id="timeTo" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                الى
+                            </div>
+                            <div class="col-4">
+                                <input type="time" id="timeFrom" style="border-radius:10px;text-align:center">
+                            </div>
+                            <div class="col-2">
+                                من
+                            </div>
+                        </div-->
+
                     <div class="row">
                         <div class="col-3">
                             الوردية
@@ -500,7 +496,8 @@
                     </div>
                     <div class="row">
                         <div class="col-11">
-                            <select class="form-control" name="shiftId" id="shiftId" style="border-radius:10px;text-align:center"></select>
+                            <select class="form-control" name="shiftId" id="shiftId"
+                                style="border-radius:10px;text-align:center"></select>
                         </div>
 
                     </div>
@@ -704,7 +701,8 @@
                                 </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" placeholder="في حالة الخصم بالايام لا تضع المبلغ" class="form-control" name="amount" id="amount" required="">
+                                <input type="text" placeholder="في حالة الخصم بالايام لا تضع المبلغ" class="form-control"
+                                    name="amount" id="amount" required="">
                             </div>
                             <div class="col-3">
                                 <label>
@@ -1239,8 +1237,8 @@
             alert("خطأ");
         }
     }
-function delete_dedu(){
-     let sqlC = `
+    function delete_dedu() {
+        let sqlC = `
           delete from Deductions where
           Date=${valu($("#MODALDEDU #date").val())} and 
           PaymentDeductionId =4 and 
@@ -1254,7 +1252,7 @@ function delete_dedu(){
         else {
             alert("خطأ");
         }
-}
+    }
 
 
 

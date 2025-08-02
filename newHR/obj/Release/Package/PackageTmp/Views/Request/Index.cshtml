@@ -120,7 +120,7 @@
     function getABS(user) {
     }
     var sql1 =
-        `declare @@userId int=(select id from Users2 where UserName='${$("#userName").html()}')
+        `declare @@userId int=(select id from ak_users where UserName='${$("#userName").html()}')
         select *,(select id from employees where filenumber=employeeid)'empId' 
         from  Requests
         where requestType=1 --and 

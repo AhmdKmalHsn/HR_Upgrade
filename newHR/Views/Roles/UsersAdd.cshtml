@@ -4,7 +4,7 @@
     var db = Database.Open("CS");
     if (IsPost)
     {
-        var sql = "insert users2(UserName,Password,Name,RoleId) values(@0,@1,@2,@3)";
+        var sql = "insert ak_users(UserName,Password,Name,RoleId) values(@0,@1,@2,@3)";
         db.Execute(sql, Request["userName"], Request["passWord"], Request["name"], Request["roles"]);
         Response.Redirect(@Href("~/roles/UsersIndex"));
     }

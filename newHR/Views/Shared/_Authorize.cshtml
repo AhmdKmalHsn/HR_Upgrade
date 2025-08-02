@@ -16,9 +16,9 @@ INNER JOIN dbo.AK_Roles_lines
 ON AK_Roles_lines.module_line_id = AK_Modules_lines.id
 INNER JOIN dbo.AK_Roles
 ON AK_Roles_lines.role_id = AK_Roles.Id
-INNER JOIN dbo.Users2
-ON Users2.RoleId = AK_Roles.Id
-WHERE Users2.Id =" + @Request.Cookies["UserId"].Value;
+INNER JOIN dbo.ak_users
+ON ak_users.RoleId = AK_Roles.Id
+WHERE ak_users.Id =" + @Request.Cookies["UserId"].Value;
     var data = db.Query(selectQueryString);
 }
 

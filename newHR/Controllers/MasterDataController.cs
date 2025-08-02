@@ -18,11 +18,11 @@ namespace newHR.Controllers
         }
         public ActionResult Employees()
         {
-            return View();
+            return static_class.GetView(this, "Employees");
         }
         public ActionResult BasicPayWorks()
         {
-            return View();
+            return static_class.GetView(this, "basic_pay_works");
         }
         public ActionResult JobHistory()
         {

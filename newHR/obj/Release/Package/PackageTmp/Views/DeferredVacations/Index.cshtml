@@ -141,31 +141,6 @@ if(data.length==0)
 
 
     }
-/*else
-	{
-        var html='<table border=1 dir="rtl" class="table table-bordered"><tr><th>التاريخ</th><th>الاجازة</th><th>الرصيد</th></tr>';
-        html+='<tr style="background-color:yellow"><th>'+mainData.OBdate+'</th><th></th><th>'+mainData.OB+'</th></tr>'
-        var balance=parseFloat(mainData.OB);
-        var now= new Date();
-        var daysOfYear = [];
-        for (var d = new Date(mainData.OBdate); d <= now; d.setDate(d.getDate() + 1)) 
-        {
-            if(d.getDate()==26)balance+=1.75;
-            let row=data.find((e)=>e.DateFrom.substr(0,10) == new Date(d).toISOString().substr(0,10))
-            if(row)
-            {
-                balance-=row.DayPart
-                html+='<tr><td>'+row.DateFrom.substr(0,10)+'</td><td>'+row.DayPart+'</td><td>'+balance+'</td></tr>'   
-            }
-            else
-            {
-            }
-        }
-        html+='<tr style="background-color:yellow"><th>'+new Date().toISOString().substr(0,10)+'</th><th></th><th>'+mainData.balance+'</th></tr>'
-        html+='</table>';
-       //console.log(html);
-        $("#dialog-form").html(html);
-	}*/
 }
 var dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
