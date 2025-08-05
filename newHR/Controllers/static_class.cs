@@ -75,6 +75,7 @@ namespace newHR.Controllers
             }
             ds.Tables.Add(dt_status);
             ds.Tables.Add(dt_data);
+            
             return ds;
         }
         static public DataSet insertbysql(string sql)
@@ -327,9 +328,9 @@ namespace newHR.Controllers
                     if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
                     {
                         if (ds.Tables[0].Rows[0]["message"].ToString() == "Not Authorized")
-                            return new string[] { "_NotAuthorized", "Home" };
+                            return new string[] { "_NotAuthorized", "AK_users" };
                         else
-                            return new string[] { "Log", "Home" };
+                            return new string[] { "Log", "AK_users" };
                     }
                     else
                     {
@@ -338,12 +339,12 @@ namespace newHR.Controllers
                 }
                 else
                 {
-                    return new string[] { "Log", "Home" };
+                    return new string[] { "Log", "AK_users" };
                 }
             }
             catch (Exception)
             {
-                return new string[] { "Log", "Home" };
+                return new string[] { "Log", "AK_users" };
             }
 
         }

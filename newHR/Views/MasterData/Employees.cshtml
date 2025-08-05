@@ -137,9 +137,9 @@
                                         */
 
 
-                                    <li>
-                                        <a href="#tab-0">البيانات الشخصية</a>
-                                    </li>
+                                <li>
+                                    <a href="#tab-0">البيانات الشخصية</a>
+                                </li>
                                     }
                                     @if (ViewBag.perms.Select("module_name='employees_work'").Length > 0 && ViewBag.perms.Select("module_name='employees_work'")[0]["p_access"] == true)
                                     {
@@ -540,218 +540,216 @@
         }
     });
 
-    var columns = [
-        {
-            data: "Id",
-            title: "id",
-        },
-        {
-            data: "FileNumber",
-            title: "رقم الملف",
-        },
-        {
-            data: "name",
-            title: "الأسم",
-        },
-        {
-            data: "dept",
-            title: "القسم",
-        },
-        {
-            data: "job",
-            title: "الوظيفة",
-        },
-        {
-            data: "DateOfBirth",
-            title: "تاريخ الميلاد",
-            render: function (a) {
-                return a == null ? '' : a.substr(0, 10);
-            },
-            visible: false
-        },
-        {
-            data: "age",
-            title: "العمر",
-        },
-        {
-            data: "JoiningDate",
-            title: "تاريخ الالتحاق",
-            render: function (a) {
-                return a == null ? '' : a.substr(0, 10);
-            },
-            visible: false
-        },
-        {
-            data: "MobilePhone",
-            title: "التليفون",
-            visible: false
-        },
-        {
-            data: "HomePhone",
-            title: "تليفون الشركة",
-            visible: false
-        },
-        {
-            data: "IDNo",
-            title: "رقم البطاقة",
-            visible: false
-        },
-        {
-            data: "Education",
-            title: "التعليم",
-        },
-        {
-            data: "status",
-            title: "حالة العمل",
-            visible: false
-        },
-        {
-            data: "EmployeeFixedSalary",
-            title: "حالة التأمين",
-            render: function (a) {
-                return a == 0 || a == null ? 'غير مؤمن' : 'مؤمن'
-            },
-            visible: false
-        },
-        {
-            data: "EmployeeFixedSalary",
-            title: "الاجر التاميني",
-            visible: false
-        },
-        {
-            data: "InsuranceNumber",
-            title: "رقم التأمين",
-            visible: false
-        },
-        {
-            data: "Percentage",
-            title: "نسبة التأمين",
-            visible: false
-        },
-        {
-            data: "AccountNo",
-            title: "Visa",
-            //visible: false
-        },
-        {
-            data: "BankCode",
-            title: "BankCode1",
-            visible: false
-        },
-        {
-            data: "BankCode2",
-            title: "BankCode2",
-            visible: false
-        },
-
-        {
-            data: "shift",
-            title: "الوردية",
-            visible: false
-        },
-        {
-            data: "religion",
-            title: "الديانة",
-            visible: false
-        },
-        {
-            data: "Division",
-            title: "Division",
-            visible: false
-        },
-        {
-            data: "SubDivision",
-            title: "SubDivision",
-            visible: false
-        },
-        {
-            data: "PersonalArea",
-            title: "PersonalArea",
-            visible: false
-        },
-        {
-            data: "PersonalSubArea",
-            title: "PersonalSubArea",
-            visible: false
-        },
-        {
-            data: "Email",
-            title: "Email",
-            visible: false
-        },
-        {
-            data: "EmployeeGroup",
-            title: "EmployeeGroup",
-            visible: false
-        },
-        {
-            data: "EmployeeSubGroup",
-            title: "EmployeeSubGroup",
-            visible: false
-        },
-        {
-            data: "HomeCity",
-            title: "HomeCity",
-            visible: false
-        },
-        {
-            data: "HomeCountry",
-            title: "HomeCountry",
-            visible: false
-        },
-        {
-            data: "HomeStreet",
-            title: "HomeStreet",
-            visible: false
-        },
-        {
-            data: "Level",
-            title: "Level",
-            visible: false
-        },
-        {
-            data: "Location",
-            title: "Location",
-            visible: false
-        },
-        {
-            data: "TerminationDate",
-            title: "TerminationDate",
-            render: function (a) {
-                return a == null ? '' : a.substr(0, 10);
-            },
-            visible: false
-        },
-        {
-            data: "TerminationReason",
-            title: "TerminationReason",
-            visible: false
-        },
-        {
-            data: "deferredDate",
-            title: "deferredDate",
-            render: function (a) {
-                return a == null ? '' : a.substr(0, 10);
-            },
-            visible: false
-        },
-        {
-            data: "deferredDays",
-            title: "deferredDays",
-            visible: false
-        },
-
-        (@ViewBag.perms.Select("module_name='employees'").Length > 0 && '@ViewBag.perms.Select("module_name='employees'")[0]["p_update"]' == 'True')?
-            {
-                "title": "Edit",
-                "data": "Id",
-                render: (a) => {
-                    return "<button id='edt-btn' data-bs-toggle='modal'  data-bs-target='.modal'  class='btn btn-success' onclick=filterData(" + a + ") >show</button>"
-                }
-            } :
-            {
-                "title": "Edit", "defaultContent": ""
-            }
+    var columns =  [
+                        {
+                            data: "Id",
+                            title: "id",
+                        },
+                        {
+                            data: "FileNumber",
+                            title: "رقم الملف",
+                        },
+                        {
+                            data: "name",
+                            title: "الأسم",
+                        },
+                        {
+                            data: "dept",
+                            title: "القسم",
+                        },
+                        {
+                            data: "job",
+                            title: "الوظيفة",
+                        },
+                        {
+                            data: "DateOfBirth",
+                            title: "تاريخ الميلاد",
+                            render: function (a) {
+                                return a == null ? '' : a.substr(0, 10);
+                            },
+                            visible: false
+                        },
+                        {
+                            data: "age",
+                            title: "العمر",
+                        },
+                        {
+                            data: "JoiningDate",
+                            title: "تاريخ الالتحاق",
+                            render: function (a) {
+                                return a == null ? '' : a.substr(0, 10);
+                            },
+                            visible: false
+                        },
+                        {
+                            data: "MobilePhone",
+                            title: "التليفون",
+                            visible: false
+                        },
+                        {
+                            data: "HomePhone",
+                            title: "تليفون الشركة",
+                            visible: false
+                        },
+                        {
+                            data: "IDNo",
+                            title: "رقم البطاقة",
+                            visible: false
+                        },
+                        {
+                            data: "Education",
+                            title: "التعليم",
+                        },
+                        {
+                            data: "status",
+                            title: "حالة العمل",
+                            visible: false
+                        },
+                        {
+                            data: "EmployeeFixedSalary",
+                            title: "حالة التأمين",
+                            render: function (a) {
+                                return a == 0 || a == null ? 'غير مؤمن' : 'مؤمن'
+                            },
+                            visible: false
+                        },
+                        {
+                            data: "EmployeeFixedSalary",
+                            title: "الاجر التاميني",
+                            visible: false
+                        },
+                        {
+                            data: "InsuranceNumber",
+                            title: "رقم التأمين",
+                            visible: false
+                        },
+                        {
+                            data: "Percentage",
+                            title: "نسبة التأمين",
+                            visible: false
+                        },
+                        {
+                            data: "AccountNo",
+                            title: "Visa",
+                            //visible: false
+                        },
+                        {
+                            data: "BankCode",
+                            title: "BankCode1",
+                            visible: false
+                        },
+                        {
+                            data: "BankCode2",
+                            title: "BankCode2",
+                            visible: false
+                        },
+                        {
+                            data: "shift",
+                            title: "الوردية",
+                            visible: false
+                        },
+                        {
+                            data: "religion",
+                            title: "الديانة",
+                            visible: false
+                        },
+                        {
+                            data: "Division",
+                            title: "Division",
+                            visible: false
+                        },
+                        {
+                            data: "SubDivision",
+                            title: "SubDivision",
+                            visible: false
+                        },
+                        {
+                            data: "PersonalArea",
+                            title: "PersonalArea",
+                            visible: false
+                        },
+                        {
+                            data: "PersonalSubArea",
+                            title: "PersonalSubArea",
+                            visible: false
+                        },
+                        {
+                            data: "Email",
+                            title: "Email",
+                            visible: false
+                        },
+                        {
+                            data: "EmployeeGroup",
+                            title: "EmployeeGroup",
+                            visible: false
+                        },
+                        {
+                            data: "EmployeeSubGroup",
+                            title: "EmployeeSubGroup",
+                            visible: false
+                        },
+                        {
+                            data: "HomeCity",
+                            title: "HomeCity",
+                            visible: false
+                        },
+                        {
+                            data: "HomeCountry",
+                            title: "HomeCountry",
+                            visible: false
+                        },
+                        {
+                            data: "HomeStreet",
+                            title: "HomeStreet",
+                            visible: false
+                        },
+                        {
+                            data: "Level",
+                            title: "Level",
+                            visible: false
+                        },
+                        {
+                            data: "Location",
+                            title: "Location",
+                            visible: false
+                        },
+                        {
+                            data: "TerminationDate",
+                            title: "TerminationDate",
+                            render: function (a) {
+                                return a == null ? '' : a.substr(0, 10);
+                            },
+                            visible: false
+                        },
+                        {
+                            data: "TerminationReason",
+                            title: "TerminationReason",
+                            visible: false
+                        },
+                        {
+                            data: "deferredDate",
+                            title: "deferredDate",
+                            render: function (a) {
+                                return a == null ? '' : a.substr(0, 10);
+                            },
+                            visible: false
+                        },
+                        {
+                            data: "deferredDays",
+                            title: "deferredDays",
+                            visible: false
+                        },
+                        (@ViewBag.perms.Select("module_name='employees'").Length > 0 && '@ViewBag.perms.Select("module_name='employees'")[0]["p_update"]' == 'True')?
+                            {
+                                "title": "Edit",
+                                "data": "Id",
+                                render: (a) => {
+                                    return "<button id='edt-btn' data-bs-toggle='modal'  data-bs-target='.modal'  class='btn btn-success' onclick=filterData(" + a + ") >show</button>"
+                                }
+                            } :
+                            {
+                                "title": "Edit", "defaultContent": ""
+                            }
     ];
 
     function upload() {

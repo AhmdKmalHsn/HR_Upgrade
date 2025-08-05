@@ -24,15 +24,22 @@ namespace newHR.Controllers
         }
         public JsonResult Read(string sql)
         {
-            if (static_class.is_Authenticated(Request.Cookies.Get("token").Value))
+            try
             {
-                SqlCommand com = new SqlCommand(sql);
-                com.CommandTimeout = 60;
-                return Json(db.toJSON(db.getData(com)), JsonRequestBehavior.AllowGet);
+                if (static_class.is_Authenticated(Request.Cookies.Get("token").Value))
+                {
+                    SqlCommand com = new SqlCommand(sql);
+                    com.CommandTimeout = 60;
+                    return Json(db.toJSON(db.getData(com)), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { error = "Not Authenticated !?" }, JsonRequestBehavior.AllowGet);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new {error="Not Authenticated !?" }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = "Not Authenticated !?" }, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult ReadSQL(string sql)

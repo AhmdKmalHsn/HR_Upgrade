@@ -210,7 +210,7 @@
             success: (res) => {
                 console.log(res); *@
                 $.ajax({
-                    url: "ak_login?" + $("#login-form").serialize(),
+                    url: "/AK_Users/ak_login?" + $("#login-form").serialize(),
                     success: (res) => {
                         console.log(res);
                         if (res[0].status == "success") {

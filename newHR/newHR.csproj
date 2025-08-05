@@ -217,8 +217,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AhmdKmal.cs" />
+    <Compile Include="Controllers\AK_UsersController.cs" />
     <Compile Include="Controllers\AttTableController.cs" />
     <Compile Include="Controllers\ChangeLogController.cs" />
     <Compile Include="Controllers\CRUDController.cs" />
@@ -237,7 +237,6 @@
     <Compile Include="Controllers\Info\UserInfo.cs" />
     <Compile Include="Controllers\LeaveController.cs" />
     <Compile Include="Controllers\MacController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterDataController.cs" />
     <Compile Include="Controllers\moduleController.cs" />
     <Compile Include="Controllers\mySql\MySqlController.cs" />
@@ -1187,7 +1186,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\ChangeLog\Index.cshtml" />
     <Content Include="Views\DeferredVacations\Index.cshtml" />
-    <Content Include="Views\Home\Log.cshtml" />
+    <Content Include="Views\AK_Users\Log.cshtml" />
     <Content Include="Views\Mac\Index.cshtml" />
     <Content Include="Views\Mac\MacAtt.cshtml" />
     <Content Include="Views\Mac\MacAtt2.cshtml" />
@@ -1203,11 +1202,8 @@
     <Content Include="Views\Reports\Loans.cshtml" />
     <Content Include="Views\Reports\payments.cshtml" />
     <Content Include="Views\Reports\report.cshtml" />
-    <Content Include="Views\Roles\Add.cshtml" />
-    <Content Include="Views\Roles\Edit.cshtml" />
-    <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\Roles\UsersAdd.cshtml" />
-    <Content Include="Views\Roles\UsersIndex.cshtml" />
+    <Content Include="Views\AK_Users\UsersAdd.cshtml" />
+    <Content Include="Views\AK_Users\UsersIndex.cshtml" />
     <Content Include="Views\Shared\Layout.cshtml" />
     <Content Include="Views\SQL\Index.cshtml" />
     <Content Include="Views\TempShift\All.cshtml" />
@@ -1277,10 +1273,13 @@
     <Content Include="Views\MasterData\Shifts.cshtml" />
     <Content Include="Views\MasterData\Shifts_index.cshtml" />
     <Content Include="Views\MasterData\Shift_entry.cshtml" />
-    <Content Include="Views\Home\_NotAuthorized.cshtml" />
+    <Content Include="Views\AK_Users\_NotAuthorized.cshtml" />
     <Content Include="Views\Shared\_SideBar.cshtml" />
     <Content Include="Views\Shared\_NavBar.cshtml" />
     <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\AK_Users\modulesIndex.cshtml" />
+    <Content Include="Views\AK_Users\rolesIndex.cshtml" />
+    <Content Include="Views\AK_Users\loginAudit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1290,7 +1289,6 @@
     <Folder Include="Views\Send\" />
     <Folder Include="Views\Setting\" />
     <Folder Include="Views\Shared\component\" />
-    <Folder Include="Views\test\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

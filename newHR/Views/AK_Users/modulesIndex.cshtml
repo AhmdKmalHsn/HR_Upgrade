@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "modulesIndex";
+    var dt = ViewBag.Data;
+}
+<h1>modules Index</h1>
+
+<script>
+    let datatable = [];
+    function pushData(d,i,h)
+    {
+        datatable[i][h]=d;
+    }
+</script>
+@for(int i = 0; i < dt.Rows.Count; i++)
+    {
+    <script>datatable.push({});</script>
+        foreach(var h in dt.Columns)
+            {
+                <script>pushData("@dt.Rows[i][h]",@i,"@h")</script>
+            }
+    }
+
+ <script> 
+    console.log(datatable);
+    
+
+    function convertToHeaderBody(pure_data, header_cols, body_cols, id_col="id", line_id = '') 
+    {
+        let header = {};
+        let body = {};
+        let res = [];
+
+        pure_data.forEach((row) => {
+            let header_row = {};
+            let body_row = {};
+
+            for (let col in row) {
+                if (header_cols.includes(col)) {
+                    header_row[col] = row[col];
+                } else if (body_cols.includes(col)) {
+                    body_row[col] = row[col];
+                }
+            }
+
+            let existing_header_index = res.findIndex((item) => {
+                let match = true;
+                for (let h_col of header_cols) {
+                    if (item.header[h_col] !== header_row[h_col]) {
+                        match = false;
+                        break;
+                    }
+                }
+                return match;
+            });
+
+            if (existing_header_index === -1) {
+                let new_entry = { header: header_row, body: [body_row] };
+                res.push(new_entry);
+            } else {
+                res[existing_header_index].body.push(body_row);
+            }
+        });
+        return res;
+    }
+    
+
+    jsonAfterConvert = convertToHeaderBody(datatable, ["Id","ModuleName"], 
+    ["line_id","label","url","is_sidebar","ordr","line_id"], "Id", 'line_id');
+    console.log("jsonAfterConvert",jsonAfterConvert);
+</script>
+@Html.Partial("_loading")
+<script>
+    $(document).ready(() => {
+
+        $("table").DataTable({
+            dom: 'QBlfrtip',
+            order: [
+                [0, 'desc']
+            ]
+        });
+    })
+</script>

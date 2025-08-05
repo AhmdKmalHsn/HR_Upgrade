@@ -33,17 +33,10 @@ namespace newHR.Controllers
         public ActionResult Index()
         {
             //repeat state 
-            
-                return View();
-            
-        }
-        public ActionResult Log()
-        {
-            
-                return View();
-           
-        }
 
+            return static_class.GetView(this,"Home");
+            
+        }
         /**************************************/
         public ActionResult LogIn()
         {
@@ -115,116 +108,6 @@ namespace newHR.Controllers
             }
             return View("Log");
 
-        }
-        public ActionResult AK_LogIn(string username = "", string password = "")
-        {
-            string clientIP = Request.UserHostAddress;
-            DataSet update;
-            string sql = @"SELECT u.Id userId,*
-                           from AK_Users u 
-                           where active='Y' and u.UserName='" + username + "' and u.password='" + password + "'";
-            string output = "[{\"status\" : \"error\" ,\"message\" : \"user name or password is error\"}]";
-            var ds = static_class.getbysql(sql);
-            if (ds.Tables["status"].Rows[0][0].ToString() == "success")
-            {
-                if (ds.Tables["data"].Rows.Count > 0)
-                {
-                    Guid g = Guid.NewGuid();
-                    string GuidString = Convert.ToBase64String(g.ToByteArray());
-                    GuidString = GuidString.Replace("=", "");
-                    GuidString = GuidString.Replace("+", "");
-                    
-                    if (
-                        ds.Tables["data"].Rows[0]["ip_restrict"] == DBNull.Value
-                        || ds.Tables["data"].Rows[0]["ip_restrict"].ToString() == ""
-                        || ds.Tables["data"].Rows[0]["ip_restrict"].ToString() == clientIP
-                        )
-                    {
-                        if (ds.Tables["data"].Rows[0]["login_permit"] != DBNull.Value)
-                        {
-                            update = static_class.updatebysql(
-                                    @"update AK_Users set login_at='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                    "',login_to='" + DateTime.Now.AddMinutes(Convert.ToInt32(ds.Tables["data"].Rows[0]["login_permit"])).ToString("yyyy-MM-dd HH:mm:ss") +
-                                    "',token ='" + GuidString +
-                                    "' where id=" + ds.Tables["data"].Rows[0]["Id"]
-                                    );
-                        }
-                        else
-                        {
-                            update = static_class.updatebysql(
-                                    @"update AK_Users set login_at ='" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                    "',login_to ='" + DateTime.Now.AddMinutes(24 * 60).ToString("yyyy-MM-dd HH:mm:ss") +
-                                    "',token ='" + GuidString +
-                                    "' where id=" + ds.Tables["data"].Rows[0]["Id"]
-                                    );
-                        }
-                        static_class.insertbysql(
-                                    @"INSERT INTO dbo.AK_logins
-                                (
-                                  userid
-                                 ,username
-                                 ,login_from
-                                 ,token
-                                )
-                                VALUES
-                                ('" +
-                                     ds.Tables["data"].Rows[0]["Id"] + "','" +
-                                     ds.Tables["data"].Rows[0]["UserName"] + "','" +
-                                     Request.UserHostAddress + "','" +
-                                     GuidString + "'" +
-                                     ");"
-                                    );
-                        output = JsonConvert.SerializeObject(update.Tables[0]);
-                    }
-                    else
-                    {
-                        output = "[{\"status\" : \"error\" ,\"message\" : \"user name cannot log in from this pc \"}]";
-                    }
-                    HttpCookie token = new HttpCookie("token", GuidString);
-                    HttpCookie userName = new HttpCookie("UserName", ds.Tables["data"].Rows[0]["UserName"].ToString());
-                    HttpCookie UserId = new HttpCookie("UserId", ds.Tables["data"].Rows[0]["userId"].ToString());
-
-                    token.Expires = DateTime.Now.AddDays(1);
-                    userName.Expires = DateTime.Now.AddDays(1);
-                    UserId.Expires = DateTime.Now.AddDays(1);
-
-                    Response.Cookies.Add(token);
-                    Response.Cookies.Add(userName);
-                    Response.Cookies.Add(UserId);
-
-                    
-                }
-               
-            }
-            return Content(output, "application/json");
-        }
-        public ActionResult AK_LogOut()
-        {
-            Response.Cookies["userName"].Expires = DateTime.Now.AddDays(-1);
-            Response.Cookies["token"].Expires = DateTime.Now.AddDays(-1);
-            return RedirectToAction("log", "home");
-        }
-        public ActionResult test()
-        {
-            DataSet ds;
-            try
-            {
-                ds = static_class.is_Authrize("shifts", Request.Cookies.Get("token").Value, "p_access");
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("Log", "Home");
-            }
-            if (ds.Tables[0].Rows[0]["status"].ToString() == "error")
-            {
-                return View("_NotAuthorized");
-            }
-            else
-            {
-                ViewBag.perms = static_class.o_Authrizes(Request.Cookies.Get("token").Value);//.AsEnumerable().ToList();
-                return View();
-            }
-            // return Content(JsonConvert.SerializeObject(ds), "application/json");
         }
         public ActionResult meals()
         {
